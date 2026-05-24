@@ -1812,7 +1812,7 @@
       <button class="form-close" id="formClose" aria-label="Close form">&times;</button>
     </div>
     <div class="form-progress">
-      <div class="form-progress-bar" id="progressBar" style="width:33%"></div>
+      <div class="form-progress-bar" id="progressBar" style="width:20%"></div>
     </div>
     <div class="form-body">
 
@@ -1872,6 +1872,60 @@
 
       <!-- Step 3 -->
       <div class="form-step" id="formStep3">
+        <h3>What's your biggest lead problem?</h3>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="problem" value="Leads go unanswered">
+            <span class="radio-dot"></span>
+            Leads go unanswered
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="problem" value="Can't qualify tire-kickers">
+            <span class="radio-dot"></span>
+            Can't qualify tire-kickers
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="problem" value="No follow-up system">
+            <span class="radio-dot"></span>
+            No follow-up system
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="problem" value="Tried chatbots, didn't work">
+            <span class="radio-dot"></span>
+            Tried chatbots, didn't work
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="form-step" id="formStep4">
+        <h3>How many agents on your team?</h3>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="teamsize" value="Just me">
+            <span class="radio-dot"></span>
+            Just me
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="teamsize" value="2-3">
+            <span class="radio-dot"></span>
+            2 – 3 agents
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="teamsize" value="4-10">
+            <span class="radio-dot"></span>
+            4 – 10 agents
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="teamsize" value="10+">
+            <span class="radio-dot"></span>
+            10+ agents
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="form-step" id="formStep5">
         <h3>Where should we send your audit?</h3>
         <div class="form-input-group">
           <label for="formName">Full Name</label>
@@ -2009,27 +2063,29 @@
       var formStep1 = document.getElementById('formStep1');
       var formStep2 = document.getElementById('formStep2');
       var formStep3 = document.getElementById('formStep3');
+      var formStep4 = document.getElementById('formStep4');
+      var formStep5 = document.getElementById('formStep5');
       var formResults = document.getElementById('formResults');
       var formSubmitBtn = document.getElementById('formSubmitBtn');
 
       var selectedLeads = null;
       var selectedResponse = null;
+      var selectedProblem = null;
+      var selectedTeamSize = null;
 
       function openForm() {
         formPanel.classList.add('active');
         formOverlay.classList.add('active');
         document.body.classList.add('scroll-locked');
-        // Reset form to step 1
         showStep(1);
         selectedLeads = null;
         selectedResponse = null;
-        // Clear radio selections
+        selectedProblem = null;
+        selectedTeamSize = null;
         document.querySelectorAll('.form-step input[type="radio"]').forEach(function(r) { r.checked = false; });
-        // Clear text inputs
         document.getElementById('formName').value = '';
         document.getElementById('formEmail').value = '';
         document.getElementById('formPhone').value = '';
-        // Hide results
         formResults.classList.remove('active');
         formStep1.classList.add('active');
       }
@@ -2044,16 +2100,24 @@
         formStep1.classList.remove('active');
         formStep2.classList.remove('active');
         formStep3.classList.remove('active');
+        formStep4.classList.remove('active');
+        formStep5.classList.remove('active');
         formResults.classList.remove('active');
 
         if (stepNum === 1) {
           formStep1.classList.add('active');
-          progressBar.style.width = '33%';
+          progressBar.style.width = '20%';
         } else if (stepNum === 2) {
           formStep2.classList.add('active');
-          progressBar.style.width = '66%';
+          progressBar.style.width = '40%';
         } else if (stepNum === 3) {
           formStep3.classList.add('active');
+          progressBar.style.width = '60%';
+        } else if (stepNum === 4) {
+          formStep4.classList.add('active');
+          progressBar.style.width = '80%';
+        } else if (stepNum === 5) {
+          formStep5.classList.add('active');
           progressBar.style.width = '100%';
         }
       }
@@ -2093,7 +2157,23 @@
         });
       });
 
-      // Step 3 - form submission
+      // Step 3 - auto-advance on radio select
+      document.querySelectorAll('input[name="problem"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          selectedProblem = this.value;
+          setTimeout(function() { showStep(4); }, 300);
+        });
+      });
+
+      // Step 4 - auto-advance on radio select
+      document.querySelectorAll('input[name="teamsize"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          selectedTeamSize = this.value;
+          setTimeout(function() { showStep(5); }, 300);
+        });
+      });
+
+      // Step 5 - form submission
       formSubmitBtn.addEventListener('click', function(e) {
         e.preventDefault();
 
@@ -2109,7 +2189,7 @@
         var result = calculateLoss(selectedLeads, selectedResponse);
 
         // Show results
-        formStep3.classList.remove('active');
+        formStep5.classList.remove('active');
         formResults.classList.add('active');
         progressBar.style.width = '100%';
 
