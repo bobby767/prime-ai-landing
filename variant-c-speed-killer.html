@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The 60-Second Close System | Prime AI</title>
+  <meta name="description" content="78% of buyers work with the first agent to respond. The 60-Second Close System answers every lead in under 60 seconds so you close more deals without hiring an assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap">
+  <style>
+    /* ============================================
+       CSS Custom Properties (Design Tokens)
+       ============================================ */
+    :root {
+      --bg-primary: #F8F7F4;
+      --bg-white: #FFFFFF;
+      --bg-dark: #0A0A0A;
+      --accent: #DC2626;
+      --accent-hover: #B91C1C;
+      --text-primary: #0A0A0A;
+      --text-secondary: rgba(10, 10, 10, 0.5);
+      --text-light: #FFFFFF;
+      --text-light-secondary: rgba(255, 255, 255, 0.6);
+      --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Libre Franklin', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-base: 16px;
+      --font-sm: 14px;
+      --font-md: 20px;
+      --font-lg: 25px;
+      --font-xl: 31px;
+      --font-2xl: 39px;
+      --font-3xl: 49px;
+      --font-4xl: 61px;
+      --font-5xl: 77px;
+      --font-stat: 120px;
+      --font-hero: 96px;
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 32px;
+      --space-5: 40px;
+      --space-6: 48px;
+      --space-7: 56px;
+      --space-8: 64px;
+      --space-10: 80px;
+      --space-12: 96px;
+      --max-width: 1200px;
+      --radius: 8px;
+    }
+
+    /* ============================================
+       Reset & Base Styles
+       ============================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: var(--font-base);
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body.scroll-locked {
+      overflow: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    /* ============================================
+       Typography
+       ============================================ */
+    h1, h2, h3 {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .hero__headline {
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+
+    /* ============================================
+       Utility
+       ============================================ */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-3);
+      width: 100%;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ============================================
+       Shared Section — Full Viewport Screens
+       ============================================ */
+    .screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-12) var(--space-3);
+      position: relative;
+    }
+
+    .screen__inner {
+      max-width: 900px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* ============================================
+       Nav Bar
+       ============================================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: var(--space-3) var(--space-4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.3s ease;
+    }
+
+    .nav--hidden {
+      transform: translateY(-100%);
+    }
+
+    .nav__logo {
+      font-family: var(--font-serif);
+      font-size: var(--font-md);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .nav__cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--text-light);
+      font-family: var(--font-sans);
+      font-size: var(--font-sm);
+      font-weight: 500;
+      padding: 12px var(--space-3);
+      border-radius: var(--radius);
+      min-height: 48px;
+      min-width: 48px;
+      transition: background 0.2s ease;
+    }
+
+    .nav__cta:hover,
+    .nav__cta:focus-visible {
+      background: var(--accent-hover);
+    }
+
+    /* ============================================
+       CTA Buttons
+       ============================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--text-light);
+      font-family: var(--font-sans);
+      font-size: var(--font-base);
+      font-weight: 500;
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius);
+      min-height: 48px;
+      min-width: 48px;
+      cursor: pointer;
+      border: none;
+      letter-spacing: 0.01em;
+    }
+
+    .btn:focus-visible {
+      background: var(--accent-hover);
+    }
+
+    .btn--large {
+      font-size: var(--font-md);
+      padding: var(--space-2) var(--space-6);
+    }
+
+    .micro-copy {
+      display: block;
+      margin-top: var(--space-2);
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+
+    .micro-copy--light {
+      color: var(--text-light-secondary);
+    }
+
+    .unity-line {
+      display: block;
+      margin-top: var(--space-1);
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .unity-line--light {
+      color: var(--text-light-secondary);
+    }
+
+    /* ============================================
+       Screen 1: Hero
+       ============================================ */
+    .hero {
+      background: var(--bg-primary);
+      padding-top: calc(var(--space-12) + 80px);
+    }
+
+    .hero__headline {
+      font-size: var(--font-hero);
+      max-width: 900px;
+      margin: 0 auto var(--space-6);
+    }
+
+    .hero__cta-wrap {
+      margin-top: var(--space-5);
+    }
+
+    /* ============================================
+       Screen 2: The Stat
+       ============================================ */
+    .stat-screen {
+      background: var(--bg-primary);
+    }
+
+    .stat-screen__number {
+      font-family: var(--font-serif);
+      font-size: var(--font-stat);
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+    }
+
+    .stat-screen__label {
+      font-family: var(--font-serif);
+      font-size: var(--font-xl);
+      font-weight: 400;
+      line-height: 1.4;
+      max-width: 600px;
+      margin: 0 auto var(--space-3);
+    }
+
+    .stat-screen__detail {
+      font-size: var(--font-md);
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin: 0 auto var(--space-3);
+    }
+
+    .stat-screen__source {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* ============================================
+       Screen 3: The Problem
+       ============================================ */
+    .problem-screen {
+      background: var(--bg-primary);
+    }
+
+    .problem-screen__inner {
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .problem-screen__line {
+      font-family: var(--font-serif);
+      font-size: var(--font-xl);
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+
+    .problem-screen__line + .problem-screen__line {
+      margin-top: var(--space-6);
+    }
+
+    .problem-screen__cta-wrap {
+      margin-top: var(--space-8);
+    }
+
+    /* ============================================
+       Screen 4: The Solution
+       ============================================ */
+    .solution-screen {
+      background: var(--bg-white);
+    }
+
+    .solution-screen__inner {
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .solution-screen__headline {
+      font-size: var(--font-3xl);
+      text-align: center;
+      margin-bottom: var(--space-10);
+    }
+
+    .solution-screen__steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+
+    .step {
+      text-align: center;
+      padding: 0 var(--space-3);
+    }
+
+    .step__number {
+      font-family: var(--font-serif);
+      font-size: var(--font-2xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+
+    .step__accent {
+      display: block;
+      width: 40px;
+      height: 4px;
+      background: var(--accent);
+      margin: 0 auto var(--space-3);
+      border-radius: 2px;
+    }
+
+    .step__title {
+      font-family: var(--font-serif);
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+    }
+
+    .step__desc {
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    /* ============================================
+       Screen 5: Founder + Proof
+       ============================================ */
+    .proof-screen {
+      background: var(--bg-primary);
+    }
+
+    .proof-screen__inner {
+      max-width: 640px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .proof-screen__photo {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #CBD5E1;
+      margin: 0 auto var(--space-4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: var(--font-lg);
+      font-weight: 700;
+      color: var(--text-light);
+    }
+
+    .proof-screen__headline {
+      font-size: var(--font-3xl);
+      margin-bottom: var(--space-5);
+    }
+
+    .proof-screen__story {
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+    }
+
+    .proof-screen__credential {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-5);
+    }
+
+    .proof-screen__killer {
+      font-family: var(--font-serif);
+      font-size: var(--font-lg);
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    /* ============================================
+       Screen 6: FAQ
+       ============================================ */
+    .faq-screen {
+      background: var(--bg-primary);
+    }
+
+    .faq-screen__inner {
+      max-width: 640px;
+      width: 100%;
+    }
+
+    .faq-screen__headline {
+      font-size: var(--font-2xl);
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(10, 10, 10, 0.1);
+    }
+
+    .faq-item:first-child {
+      border-top: 1px solid rgba(10, 10, 10, 0.1);
+    }
+
+    .faq-item__question {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+      padding: var(--space-3) 0;
+      font-family: var(--font-serif);
+      font-size: var(--font-md);
+      font-weight: 400;
+      color: var(--text-primary);
+      cursor: pointer;
+      background: none;
+      border: none;
+      min-height: 48px;
+      gap: var(--space-2);
+    }
+
+    .faq-item__question:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .faq-item__chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      transition: transform 0.25s ease;
+    }
+
+    .faq-item--open .faq-item__chevron {
+      transform: rotate(180deg);
+    }
+
+    .faq-item__answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+
+    .faq-item--open .faq-item__answer {
+      max-height: 300px;
+      padding-bottom: var(--space-3);
+    }
+
+    .faq-item__answer p {
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       Screen 7: Video
+       ============================================ */
+    .video-screen {
+      background: var(--bg-primary);
+    }
+
+    .video-screen__inner {
+      text-align: center;
+    }
+
+    .video-screen__play {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-5);
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s ease, transform 0.15s ease;
+      min-height: 48px;
+      min-width: 48px;
+    }
+
+    .video-screen__play:hover,
+    .video-screen__play:focus-visible {
+      background: var(--accent-hover);
+      transform: scale(1.05);
+    }
+
+    .video-screen__play:focus-visible {
+      outline: 2px solid var(--text-primary);
+      outline-offset: 4px;
+    }
+
+    .video-screen__play svg {
+      width: 28px;
+      height: 28px;
+      fill: var(--text-light);
+      margin-left: 4px;
+    }
+
+    .video-screen__label {
+      font-family: var(--font-serif);
+      font-size: var(--font-xl);
+      font-weight: 400;
+    }
+
+    /* ============================================
+       Screen 8: The Close (Dark)
+       ============================================ */
+    .close-screen {
+      background: var(--bg-dark);
+      color: var(--text-light);
+    }
+
+    .close-screen__inner {
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .close-screen__headline {
+      font-size: var(--font-3xl);
+      color: var(--text-light);
+      margin-bottom: var(--space-4);
+    }
+
+    .close-screen__subline {
+      font-size: var(--font-md);
+      color: var(--text-light-secondary);
+      margin-bottom: var(--space-8);
+    }
+
+    .close-screen__cta-wrap {
+      margin-bottom: var(--space-6);
+    }
+
+    .close-screen__guarantee {
+      font-size: var(--font-sm);
+      color: var(--text-light-secondary);
+      margin-bottom: var(--space-2);
+    }
+
+    .close-screen__scarcity {
+      font-size: var(--font-sm);
+      color: var(--text-light-secondary);
+      margin-bottom: var(--space-6);
+    }
+
+    .close-screen__footer {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.3);
+      position: absolute;
+      bottom: var(--space-4);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .close-screen__footer a {
+      color: rgba(255, 255, 255, 0.3);
+      transition: color 0.2s ease;
+    }
+
+    .close-screen__footer a:hover {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* ============================================
+       Mobile Sticky CTA Bar
+       ============================================ */
+    .mobile-cta-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background: var(--accent);
+      padding: var(--space-2) var(--space-3);
+    }
+
+    .mobile-cta-bar__btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      background: transparent;
+      color: var(--text-light);
+      font-family: var(--font-sans);
+      font-size: var(--font-base);
+      font-weight: 500;
+      padding: 14px var(--space-3);
+      border: none;
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    /* ============================================
+       Modal Form — Full-Screen Takeover
+       ============================================ */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(10, 10, 10, 0.92);
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-3);
+    }
+
+    .modal-overlay--open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-white);
+      border-radius: var(--radius);
+      max-width: 480px;
+      width: 100%;
+      padding: var(--space-6);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: var(--space-2);
+      right: var(--space-2);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: var(--font-lg);
+      border-radius: 50%;
+      transition: background 0.2s ease;
+    }
+
+    .modal-close:hover,
+    .modal-close:focus-visible {
+      background: rgba(10, 10, 10, 0.05);
+    }
+
+    .modal-close:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Progress Bar */
+    .form-progress {
+      height: 4px;
+      background: rgba(10, 10, 10, 0.08);
+      border-radius: 2px;
+      margin-bottom: var(--space-5);
+      overflow: hidden;
+    }
+
+    .form-progress__bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* Form Steps */
+    .form-step {
+      display: none;
+    }
+
+    .form-step--active {
+      display: block;
+    }
+
+    .form-step__title {
+      font-family: var(--font-serif);
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+      color: var(--text-primary);
+    }
+
+    .form-step__subtitle {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-4);
+    }
+
+    /* Radio Cards */
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .radio-card {
+      position: relative;
+    }
+
+    .radio-card input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-card label {
+      display: flex;
+      align-items: center;
+      padding: var(--space-2) var(--space-3);
+      border: 2px solid rgba(10, 10, 10, 0.12);
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: var(--font-base);
+      font-weight: 400;
+      color: var(--text-primary);
+      transition: border-color 0.15s ease, background 0.15s ease;
+      min-height: 48px;
+    }
+
+    .radio-card label:hover {
+      border-color: rgba(10, 10, 10, 0.3);
+    }
+
+    .radio-card input:checked + label {
+      border-color: var(--accent);
+      background: rgba(220, 38, 38, 0.04);
+    }
+
+    .radio-card input:focus-visible + label {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Form Inputs */
+    .form-field {
+      margin-bottom: var(--space-3);
+    }
+
+    .form-field label {
+      display: block;
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+
+    .form-field input {
+      width: 100%;
+      padding: 14px var(--space-2);
+      border: 2px solid rgba(10, 10, 10, 0.12);
+      border-radius: var(--radius);
+      font-family: var(--font-sans);
+      font-size: var(--font-base);
+      color: var(--text-primary);
+      background: var(--bg-white);
+      transition: border-color 0.15s ease;
+      min-height: 48px;
+    }
+
+    .form-field input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-field input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .form-trust {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+      margin-bottom: var(--space-4);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .form-trust svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .form-submit {
+      width: 100%;
+      background: var(--accent);
+      color: var(--text-light);
+      font-family: var(--font-sans);
+      font-size: var(--font-base);
+      font-weight: 500;
+      padding: var(--space-2) var(--space-3);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      min-height: 48px;
+      transition: background 0.2s ease;
+    }
+
+    .form-submit:hover,
+    .form-submit:focus-visible {
+      background: var(--accent-hover);
+    }
+
+    .form-submit:focus-visible {
+      outline: 2px solid var(--text-primary);
+      outline-offset: 2px;
+    }
+
+    .form-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: var(--space-3);
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      min-height: 48px;
+      min-width: 48px;
+      padding: var(--space-1) var(--space-2);
+    }
+
+    .form-back:hover {
+      color: var(--text-primary);
+    }
+
+    /* Results Screen */
+    .form-results {
+      display: none;
+      text-align: center;
+    }
+
+    .form-results--active {
+      display: block;
+    }
+
+    .form-results__lost {
+      font-family: var(--font-serif);
+      font-size: var(--font-3xl);
+      font-weight: 700;
+      color: var(--accent);
+      margin: var(--space-3) 0 var(--space-1);
+    }
+
+    .form-results__label {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-4);
+    }
+
+    .form-results__detail {
+      font-size: var(--font-base);
+      line-height: 1.7;
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+    }
+
+    .form-results__followup {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      padding: var(--space-2) var(--space-3);
+      background: rgba(10, 10, 10, 0.03);
+      border-radius: var(--radius);
+    }
+
+    /* ============================================
+       Responsive — Mobile First
+       ============================================ */
+
+    /* Small phones (375px+) */
+    @media (min-width: 375px) {
+      .hero__headline {
+        font-size: 42px;
+      }
+
+      .stat-screen__number {
+        font-size: 80px;
+      }
+    }
+
+    /* Tablets (768px+) */
+    @media (min-width: 768px) {
+      .mobile-cta-bar {
+        display: none !important;
+      }
+
+      .hero__headline {
+        font-size: 64px;
+      }
+
+      .stat-screen__number {
+        font-size: 100px;
+      }
+
+      .stat-screen__label {
+        font-size: var(--font-xl);
+      }
+
+      .problem-screen__line {
+        font-size: var(--font-xl);
+      }
+
+      .solution-screen__steps {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-5);
+      }
+
+      .close-screen__headline {
+        font-size: var(--font-3xl);
+      }
+
+      .modal-card {
+        padding: var(--space-6) var(--space-8);
+      }
+
+      .screen {
+        padding: var(--space-12) var(--space-5);
+      }
+    }
+
+    /* Desktops (1024px+) */
+    @media (min-width: 1024px) {
+      .hero__headline {
+        font-size: var(--font-hero);
+      }
+
+      .stat-screen__number {
+        font-size: var(--font-stat);
+      }
+
+      .stat-screen__label {
+        font-size: var(--font-2xl);
+      }
+
+      .problem-screen__line {
+        font-size: var(--font-2xl);
+      }
+
+      .solution-screen__headline {
+        font-size: var(--font-3xl);
+      }
+
+      .close-screen__headline {
+        font-size: var(--font-4xl);
+      }
+
+      .screen {
+        padding: var(--space-12) var(--space-8);
+      }
+    }
+
+    /* Large desktops (1440px+) */
+    @media (min-width: 1440px) {
+      .hero__headline {
+        font-size: var(--font-hero);
+        max-width: 1000px;
+      }
+
+      .stat-screen__number {
+        font-size: var(--font-stat);
+      }
+
+      .screen__inner {
+        max-width: 1000px;
+      }
+    }
+
+    /* Mobile base (below 375px fallback and general mobile) */
+    @media (max-width: 767px) {
+      .mobile-cta-bar {
+        display: block;
+      }
+
+      .nav__cta {
+        font-size: 13px;
+        padding: 10px var(--space-2);
+      }
+
+      .hero {
+        padding-bottom: calc(var(--space-12) + 60px);
+      }
+
+      .close-screen {
+        padding-bottom: calc(var(--space-12) + 60px);
+      }
+
+      .close-screen__headline {
+        font-size: var(--font-xl);
+      }
+
+      .solution-screen__headline {
+        font-size: var(--font-2xl);
+      }
+
+      .proof-screen__headline {
+        font-size: var(--font-2xl);
+      }
+
+      .proof-screen__killer {
+        font-size: var(--font-md);
+      }
+
+      .faq-screen__headline {
+        font-size: var(--font-lg);
+      }
+
+      .faq-item__question {
+        font-size: 18px;
+      }
+
+      .video-screen__label {
+        font-size: var(--font-lg);
+      }
+
+      .modal-card {
+        padding: var(--space-4);
+        max-height: 95vh;
+      }
+
+      .form-step__title {
+        font-size: var(--font-md);
+      }
+    }
+
+    /* ============================================
+       Scroll-Triggered Reveals
+       ============================================ */
+    .reveal {
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+    }
+
+    /* Staggered problem lines */
+    .problem-screen__line.reveal:nth-child(1) { transition-delay: 0s; }
+    .problem-screen__line.reveal:nth-child(2) { transition-delay: 0.3s; }
+    .problem-screen__line.reveal:nth-child(3) { transition-delay: 0.6s; }
+
+    /* 78% stat scale-in */
+    .stat-screen__number.reveal {
+      transform: scale(0.95);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .stat-screen__number.reveal.visible {
+      transform: scale(1);
+    }
+
+    /* ============================================
+       78% Stat Enhancement
+       ============================================ */
+    .stat-screen__number {
+      text-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    /* ============================================
+       Button Polish
+       ============================================ */
+    .btn {
+      transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                  box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    /* ============================================
+       Close Section Enhancement
+       ============================================ */
+    .close-screen {
+      position: relative;
+    }
+
+    .close-screen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .close-screen > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .close-screen .btn:hover {
+      box-shadow: 0 0 40px rgba(220, 38, 38, 0.3);
+    }
+
+    /* ============================================
+       Divider Accent Lines
+       ============================================ */
+    .divider {
+      width: 60px;
+      height: 2px;
+      background: var(--accent);
+      margin: 0 auto;
+      border: none;
+    }
+
+    /* ============================================
+       Founder Section Editorial Framing
+       ============================================ */
+    .proof-screen__inner::before,
+    .proof-screen__inner::after {
+      content: '';
+      display: block;
+      width: 120px;
+      height: 1px;
+      background: rgba(10, 10, 10, 0.15);
+      margin: 0 auto var(--space-6);
+    }
+
+    .proof-screen__inner::after {
+      margin: var(--space-6) auto 0;
+    }
+
+    /* ============================================
+       Modal Form Enhancement
+       ============================================ */
+    .modal-overlay {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .modal-overlay--open {
+      opacity: 1;
+    }
+
+    .modal-card {
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      transform: scale(0.95);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-overlay--open .modal-card {
+      transform: scale(1);
+    }
+
+    /* ============================================
+       prefers-reduced-motion
+       ============================================ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      .nav {
+        transition: none;
+      }
+
+      .faq-item__answer {
+        transition: none;
+      }
+
+      .form-progress__bar {
+        transition: none;
+      }
+
+      .faq-item__chevron {
+        transition: none;
+      }
+
+      .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+
+      .modal-overlay {
+        transition: none;
+      }
+
+      .modal-card {
+        transform: none !important;
+        transition: none !important;
+      }
+
+      .btn {
+        transition: none !important;
+      }
+
+      .btn:hover {
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =============================================
+       Nav Bar
+       ============================================= -->
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <a href="#" class="nav__logo">Prime AI</a>
+    <button class="nav__cta" data-open-modal aria-label="Get Your Audit - opens form">Get Your Audit</button>
+  </nav>
+
+  <!-- =============================================
+       Screen 1: Hero — The One-Liner
+       ============================================= -->
+  <section id="hero" class="screen hero" aria-label="Hero">
+    <div class="screen__inner">
+      <h1 class="hero__headline">Your Leads Are Calling. Nobody's Answering. That's $23,400 a Year.</h1>
+      <div class="hero__cta-wrap">
+        <button class="btn btn--large" data-open-modal>See How Many Leads You're Losing</button>
+        <span class="micro-copy">Free audit. Keep the findings either way.</span>
+        <span class="unity-line">Built for agents who refuse to lose on speed.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       Screen 2: The One Stat
+       ============================================= -->
+  <section id="stat" class="screen stat-screen" aria-label="Key statistic">
+    <div class="screen__inner">
+      <div class="stat-screen__number reveal" aria-label="78 percent">78%</div>
+      <p class="stat-screen__label reveal">of buyers work with the first agent to respond.</p>
+      <p class="stat-screen__detail reveal">Each portal lead goes to 3-5 agents. Only the fastest wins.</p>
+      <p class="stat-screen__source reveal">&mdash; National Association of Realtors</p>
+    </div>
+  </section>
+
+  <hr class="divider" aria-hidden="true">
+
+  <!-- =============================================
+       Screen 3: The Problem — Three Lines
+       ============================================= -->
+  <section id="problem" class="screen problem-screen" aria-label="The problem">
+    <div class="problem-screen__inner">
+      <p class="problem-screen__line reveal">A lead comes in while you're showing a house.</p>
+      <p class="problem-screen__line reveal">It also went to 4 other agents.</p>
+      <p class="problem-screen__line reveal">The one who responds first gets the viewing. That agent isn't you.</p>
+      <div class="problem-screen__cta-wrap">
+        <button class="btn" data-open-modal>See How Many You're Missing</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       Screen 4: The Solution
+       ============================================= -->
+  <section id="solution" class="screen solution-screen" aria-label="The solution">
+    <div class="solution-screen__inner">
+      <h2 class="solution-screen__headline reveal">The 60-Second Close System.</h2>
+      <div class="solution-screen__steps">
+        <div class="step">
+          <div class="step__number">1</div>
+          <span class="step__accent"></span>
+          <h3 class="step__title">We audit</h3>
+          <p class="step__desc">Your pipeline. Your response times. Your gaps. Free &mdash; and the findings are yours to keep.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">2</div>
+          <span class="step__accent"></span>
+          <h3 class="step__title">We build</h3>
+          <p class="step__desc">An AI system that responds in under 60 seconds &mdash; so leads get a personal response while you're showing houses.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">3</div>
+          <span class="step__accent"></span>
+          <h3 class="step__title">We run it</h3>
+          <p class="step__desc">You sell houses. We operate your lead machine &mdash; so you get more closings without hiring anyone.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       Screen 5: Founder + Proof
+       ============================================= -->
+  <section id="proof" class="screen proof-screen" aria-label="Founder and proof">
+    <div class="proof-screen__inner">
+      <div class="proof-screen__photo" aria-hidden="true">C</div>
+      <h2 class="proof-screen__headline reveal">I've Done This Before.</h2>
+      <p class="proof-screen__story">I built a full AI lead pipeline across 5 countries &mdash; Facebook Ads, AI qualification, automated nurture, booked calls, AI call scoring. Same architecture. Now built for real estate.</p>
+      <p class="proof-screen__credential">Chase &mdash; AI systems engineer. Cybersecurity background.</p>
+      <p class="proof-screen__killer">One extra deal from a recovered lead covers the entire year.</p>
+    </div>
+  </section>
+
+  <hr class="divider" aria-hidden="true">
+
+  <!-- =============================================
+       Screen 6: Condensed FAQ — Three Questions
+       ============================================= -->
+  <section id="faq" class="screen faq-screen" aria-label="Frequently asked questions">
+    <div class="faq-screen__inner">
+      <h2 class="faq-screen__headline">Three Things You're Wondering.</h2>
+
+      <div class="faq-item" data-faq>
+        <button class="faq-item__question" aria-expanded="false" aria-controls="faq-answer-1">
+          <span>&ldquo;We tried chatbots before and it was terrible.&rdquo;</span>
+          <svg class="faq-item__chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="5 8 10 13 15 8" />
+          </svg>
+        </button>
+        <div class="faq-item__answer" id="faq-answer-1" role="region">
+          <p>We hear this constantly, and you're right &mdash; most chatbots are terrible. They follow rigid scripts, give generic answers, and frustrate your clients. This isn't a chatbot. It's a fully operated AI system that handles calls, texts, emails, and portal inquiries with natural, context-aware responses. We build it, we train it on your pipeline, and we run it for you. If something goes wrong, we fix it &mdash; you never touch the backend.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-faq>
+        <button class="faq-item__question" aria-expanded="false" aria-controls="faq-answer-2">
+          <span>&ldquo;What if my clients want a real person?&rdquo;</span>
+          <svg class="faq-item__chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="5 8 10 13 15 8" />
+          </svg>
+        </button>
+        <div class="faq-item__answer" id="faq-answer-2" role="region">
+          <p>They will &mdash; and that's fine. The AI's job is to respond instantly, qualify the lead, and book a call or viewing with you. It doesn't replace you &mdash; it makes sure no lead ever waits. The moment a lead needs a human conversation, it routes to you with full context. You show up informed, not cold.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" data-faq>
+        <button class="faq-item__question" aria-expanded="false" aria-controls="faq-answer-3">
+          <span>&ldquo;What's the investment?&rdquo;</span>
+          <svg class="faq-item__chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="5 8 10 13 15 8" />
+          </svg>
+        </button>
+        <div class="faq-item__answer" id="faq-answer-3" role="region">
+          <p>Most agents lose $23,400 or more per year to slow follow-up. One extra recovered deal &mdash; a deal you would have lost to a faster competitor &mdash; covers the entire year of service. We share specific pricing tailored to your pipeline on the discovery call, because the cost depends on your lead volume and sources. The audit is free, and you keep the findings regardless.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       Screen 7: Video Placeholder
+       ============================================= -->
+  <section id="video" class="screen video-screen" aria-label="Video">
+    <div class="video-screen__inner">
+      <button class="video-screen__play" id="video-play-btn" aria-label="Play video - Watch how it works">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <polygon points="6,3 20,12 6,21" />
+        </svg>
+      </button>
+      <p class="video-screen__label">Watch how it works.</p>
+    </div>
+  </section>
+
+  <!-- =============================================
+       Screen 8: The Close (Dark)
+       ============================================= -->
+  <section id="close" class="screen close-screen" aria-label="Final call to action">
+    <div class="close-screen__inner">
+      <h2 class="close-screen__headline reveal">The Agents Who Win Aren't Better. They're Faster.</h2>
+      <p class="close-screen__subline">48% of agents never follow up. Be the one who always does.</p>
+      <div class="close-screen__cta-wrap">
+        <button class="btn btn--large" data-open-modal>See How Many Leads You're Losing</button>
+        <span class="micro-copy micro-copy--light">Free audit. We'll reach out within 2 hours.</span>
+      </div>
+      <p class="close-screen__guarantee">90-day performance guarantee.</p>
+      <p class="close-screen__scarcity">5 agents per month. 3 spots left.</p>
+    </div>
+    <footer class="close-screen__footer">
+      &copy; Prime AI 2026 <span aria-hidden="true">|</span> <a href="#">Privacy Policy</a>
+    </footer>
+  </section>
+
+  <!-- =============================================
+       Mobile Sticky CTA Bar
+       ============================================= -->
+  <div class="mobile-cta-bar" role="complementary" aria-label="Quick action">
+    <button class="mobile-cta-bar__btn" data-open-modal>See How Many Leads You're Losing</button>
+  </div>
+
+  <!-- =============================================
+       Full-Screen Modal Form
+       ============================================= -->
+  <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-label="Get your free audit">
+    <div class="modal-card" id="modal-card">
+      <button class="modal-close" id="modal-close" aria-label="Close form">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      <!-- Progress Bar -->
+      <div class="form-progress" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" aria-label="Form progress">
+        <div class="form-progress__bar" id="progress-bar" style="width: 33%"></div>
+      </div>
+
+      <!-- Step 1: Lead Volume -->
+      <div class="form-step form-step--active" id="form-step-1" data-step="1">
+        <h3 class="form-step__title">How many leads do you get per month?</h3>
+        <p class="form-step__subtitle">This helps us estimate your opportunity gap.</p>
+        <div class="radio-group">
+          <div class="radio-card">
+            <input type="radio" name="leads" id="leads-1" value="<10">
+            <label for="leads-1">Fewer than 10</label>
+          </div>
+          <div class="radio-card">
+            <input type="radio" name="leads" id="leads-2" value="10-30">
+            <label for="leads-2">10 &ndash; 30</label>
+          </div>
+          <div class="radio-card">
+            <input type="radio" name="leads" id="leads-3" value="30-50">
+            <label for="leads-3">30 &ndash; 50</label>
+          </div>
+          <div class="radio-card">
+            <input type="radio" name="leads" id="leads-4" value="50+">
+            <label for="leads-4">50 or more</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Response Time -->
+      <div class="form-step" id="form-step-2" data-step="2">
+        <h3 class="form-step__title">How fast do you typically respond?</h3>
+        <p class="form-step__subtitle">Be honest &mdash; this is just for your calculation.</p>
+        <div class="radio-group">
+          <div class="radio-card">
+            <input type="radio" name="response" id="response-1" value="<5 min">
+            <label for="response-1">Under 5 minutes</label>
+          </div>
+          <div class="radio-card">
+            <input type="radio" name="response" id="response-2" value="5-30 min">
+            <label for="response-2">5 &ndash; 30 minutes</label>
+          </div>
+          <div class="radio-card">
+            <input type="radio" name="response" id="response-3" value="1-4 hrs">
+            <label for="response-3">1 &ndash; 4 hours</label>
+          </div>
+          <div class="radio-card">
+            <input type="radio" name="response" id="response-4" value="4+ hrs">
+            <label for="response-4">4+ hours</label>
+          </div>
+        </div>
+        <button class="form-back" id="back-to-1" type="button">&larr; Back</button>
+      </div>
+
+      <!-- Step 3: Contact Info -->
+      <div class="form-step" id="form-step-3" data-step="3">
+        <h3 class="form-step__title">Where should we send your results?</h3>
+        <div class="form-field">
+          <label for="form-name">Name</label>
+          <input type="text" id="form-name" name="name" placeholder="Your full name" required autocomplete="name">
+        </div>
+        <div class="form-field">
+          <label for="form-email">Email</label>
+          <input type="email" id="form-email" name="email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label for="form-phone">Phone</label>
+          <input type="tel" id="form-phone" name="phone" placeholder="+1 (555) 000-0000" autocomplete="tel">
+        </div>
+        <div class="form-trust">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>Your information is secure. No spam, ever.</span>
+        </div>
+        <button class="form-submit" id="form-submit" type="button">Show My Results</button>
+        <button class="form-back" id="back-to-2" type="button">&larr; Back</button>
+      </div>
+
+      <!-- Results Screen -->
+      <div class="form-results" id="form-results">
+        <h3 class="form-step__title">Your Opportunity Gap</h3>
+        <div class="form-results__lost" id="results-revenue">$0</div>
+        <p class="form-results__label">in estimated lost commissions per month</p>
+        <p class="form-results__detail" id="results-detail"></p>
+        <p class="form-results__followup">We'll reach out within 2 hours with your full personalized audit &mdash; including exactly which leads you can recover.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =============================================
+       Nav — Hide on Scroll Down, Show on Scroll Up
+       ============================================= */
+    (function() {
+      var nav = document.querySelector('.nav');
+      var lastScrollY = 0;
+      var ticking = false;
+
+      function onScroll() {
+        var currentScrollY = window.scrollY;
+        if (currentScrollY > 80 && currentScrollY > lastScrollY) {
+          nav.classList.add('nav--hidden');
+        } else {
+          nav.classList.remove('nav--hidden');
+        }
+        lastScrollY = currentScrollY;
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          window.requestAnimationFrame(onScroll);
+          ticking = true;
+        }
+      }, { passive: true });
+    })();
+
+    /* =============================================
+       FAQ Accordion
+       ============================================= */
+    (function() {
+      var faqItems = document.querySelectorAll('[data-faq]');
+      faqItems.forEach(function(item) {
+        var btn = item.querySelector('.faq-item__question');
+        btn.addEventListener('click', function() {
+          var isOpen = item.classList.contains('faq-item--open');
+          // Close all
+          faqItems.forEach(function(i) {
+            i.classList.remove('faq-item--open');
+            i.querySelector('.faq-item__question').setAttribute('aria-expanded', 'false');
+          });
+          // Toggle clicked
+          if (!isOpen) {
+            item.classList.add('faq-item--open');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+    })();
+
+    /* =============================================
+       Video Placeholder
+       ============================================= */
+    document.getElementById('video-play-btn').addEventListener('click', function() {
+      alert('Video coming soon — check back for a walkthrough of The 60-Second Close System.');
+    });
+
+    /* =============================================
+       Modal Form — Open / Close / Focus Trap
+       ============================================= */
+    (function() {
+      var modal = document.getElementById('modal');
+      var modalCard = document.getElementById('modal-card');
+      var closeBtn = document.getElementById('modal-close');
+      var triggers = document.querySelectorAll('[data-open-modal]');
+      var lastFocusedElement = null;
+
+      function openModal() {
+        lastFocusedElement = document.activeElement;
+        modal.classList.add('modal-overlay--open');
+        document.body.classList.add('scroll-locked');
+        // Reset form to step 1
+        resetForm();
+        // Focus first element
+        setTimeout(function() {
+          closeBtn.focus();
+        }, 100);
+      }
+
+      function closeModal() {
+        modal.classList.remove('modal-overlay--open');
+        document.body.classList.remove('scroll-locked');
+        if (lastFocusedElement) {
+          lastFocusedElement.focus();
+        }
+      }
+
+      triggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          openModal();
+        });
+      });
+
+      closeBtn.addEventListener('click', closeModal);
+
+      // Click overlay to close
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      // ESC to close
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('modal-overlay--open')) {
+          closeModal();
+        }
+      });
+
+      // Focus trap
+      document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Tab' || !modal.classList.contains('modal-overlay--open')) return;
+
+        var focusableElements = modalCard.querySelectorAll(
+          'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        var visibleFocusable = Array.from(focusableElements).filter(function(el) {
+          return el.offsetParent !== null && !el.closest('.form-step:not(.form-step--active)') && !el.closest('.form-results:not(.form-results--active)');
+        });
+
+        if (visibleFocusable.length === 0) return;
+
+        var firstFocusable = visibleFocusable[0];
+        var lastFocusable = visibleFocusable[visibleFocusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstFocusable) {
+            e.preventDefault();
+            lastFocusable.focus();
+          }
+        } else {
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            firstFocusable.focus();
+          }
+        }
+      });
+
+      // Expose for other code
+      window.closeModal = closeModal;
+    })();
+
+    /* =============================================
+       Scroll-Triggered Reveals (IntersectionObserver)
+       ============================================= */
+    (function() {
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) {
+        // Show everything immediately
+        document.querySelectorAll('.reveal').forEach(function(el) {
+          el.classList.add('visible');
+        });
+        return;
+      }
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -60px 0px'
+      });
+
+      document.querySelectorAll('.reveal').forEach(function(el) {
+        observer.observe(el);
+      });
+    })();
+
+    /* =============================================
+       Multi-Step Form Logic
+       ============================================= */
+    (function() {
+      var currentStep = 1;
+      var formData = { leads: null, response: null };
+      var progressBar = document.getElementById('progress-bar');
+      var progressContainer = progressBar.parentElement;
+
+      function showStep(n) {
+        document.querySelectorAll('.form-step').forEach(function(s) {
+          s.classList.remove('form-step--active');
+        });
+        document.getElementById('form-step-' + n).classList.add('form-step--active');
+        currentStep = n;
+        var pct = Math.round((n / 3) * 100);
+        progressBar.style.width = pct + '%';
+        progressContainer.setAttribute('aria-valuenow', pct);
+      }
+
+      function resetForm() {
+        currentStep = 1;
+        formData = { leads: null, response: null };
+        // Uncheck all radios
+        document.querySelectorAll('.modal-card input[type="radio"]').forEach(function(r) {
+          r.checked = false;
+        });
+        // Clear text inputs
+        document.getElementById('form-name').value = '';
+        document.getElementById('form-email').value = '';
+        document.getElementById('form-phone').value = '';
+        // Hide results
+        document.getElementById('form-results').classList.remove('form-results--active');
+        // Show step 1
+        showStep(1);
+        // Show progress
+        progressContainer.style.display = '';
+      }
+
+      window.resetForm = resetForm;
+
+      // Step 1: auto-advance on radio select
+      document.querySelectorAll('input[name="leads"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          formData.leads = this.value;
+          setTimeout(function() { showStep(2); }, 250);
+        });
+      });
+
+      // Step 2: auto-advance on radio select
+      document.querySelectorAll('input[name="response"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          formData.response = this.value;
+          setTimeout(function() { showStep(3); }, 250);
+        });
+      });
+
+      // Back buttons
+      document.getElementById('back-to-1').addEventListener('click', function() {
+        showStep(1);
+      });
+      document.getElementById('back-to-2').addEventListener('click', function() {
+        showStep(2);
+      });
+
+      // Submit + ROI Calculation
+      document.getElementById('form-submit').addEventListener('click', function() {
+        var name = document.getElementById('form-name').value.trim();
+        var email = document.getElementById('form-email').value.trim();
+
+        if (!name || !email) {
+          alert('Please enter your name and email so we can send your results.');
+          return;
+        }
+
+        // Calculate
+        var result = calculateLoss(formData.leads, formData.response);
+
+        // Show results
+        document.querySelectorAll('.form-step').forEach(function(s) {
+          s.classList.remove('form-step--active');
+        });
+        progressBar.parentElement.style.display = 'none';
+
+        var resultsEl = document.getElementById('form-results');
+        document.getElementById('results-revenue').textContent = '$' + result.lostRevenue.toLocaleString();
+        document.getElementById('results-detail').textContent =
+          'Based on ' + formatLeads(formData.leads) + ' leads/month and a ' + formData.response + ' response time, you\'re likely losing approximately ' + result.lostLeads + ' qualified leads and $' + result.lostRevenue.toLocaleString() + ' in commissions every month.';
+        resultsEl.classList.add('form-results--active');
+      });
+
+      function calculateLoss(leadsPerMonth, responseTime) {
+        var leadCounts = { '<10': 7, '10-30': 20, '30-50': 40, '50+': 60 };
+        var lossRates = { '<5 min': 0.05, '5-30 min': 0.15, '1-4 hrs': 0.40, '4+ hrs': 0.65 };
+        var leads = leadCounts[leadsPerMonth] || 20;
+        var rate = lossRates[responseTime] || 0.15;
+        var lostLeads = Math.round(leads * rate);
+        var avgCommission = 8000;
+        var closeRate = 0.16;
+        var lostRevenue = Math.round(lostLeads * avgCommission * closeRate);
+        return { lostLeads: lostLeads, lostRevenue: lostRevenue };
+      }
+
+      function formatLeads(val) {
+        var map = { '<10': 'fewer than 10', '10-30': '10-30', '30-50': '30-50', '50+': '50+' };
+        return map[val] || val;
+      }
+    })();
+  </script>
+
+</body>
+</html>

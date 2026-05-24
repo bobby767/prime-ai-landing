@@ -1,0 +1,2495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The 60-Second Close System — First Responder AI for Real Estate | Prime AI</title>
+  <meta name="description" content="78% of buyers work with the first agent to respond. The 60-Second Close System answers every inquiry in under 60 seconds — so you close more deals without hiring an assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================
+       CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+       ========================================= */
+    :root {
+      --bg-primary: #FAFAFA;
+      --bg-card: #FFFFFF;
+      --bg-stats: #F1F5F9;
+      --bg-navy: #1E293B;
+      --bg-red-tint: #FEF2F2;
+      --bg-green-tint: #F0FDF4;
+      --accent: #F97316;
+      --accent-hover: #EA580C;
+      --accent-light: rgba(249, 115, 22, 0.1);
+      --text-primary: #1E293B;
+      --text-secondary: rgba(30, 41, 59, 0.6);
+      --text-light: #FFFFFF;
+      --border: #E2E8F0;
+      --red-text: #DC2626;
+      --green-text: #16A34A;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
+      --shadow-hover: 0 10px 25px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
+      --font-heading: 'Bricolage Grotesque', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-body: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-base: 16px;
+      --font-sm: 14px;
+      --font-md: 20px;
+      --font-lg: 25px;
+      --font-xl: 31px;
+      --font-2xl: 39px;
+      --font-3xl: 49px;
+      --font-4xl: 61px;
+      --font-hero: 80px;
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 32px;
+      --space-5: 40px;
+      --space-6: 48px;
+      --space-7: 56px;
+      --space-8: 64px;
+      --space-10: 80px;
+      --space-12: 96px;
+      --max-width: 1200px;
+      --radius: 8px;
+      --radius-lg: 16px;
+    }
+
+    /* =========================================
+       RESET & BASE STYLES
+       ========================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: var(--font-base);
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background-color: #FAFAFA;
+      background-image: radial-gradient(circle, #E2E8F0 1px, transparent 1px);
+      background-size: 24px 24px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body.scroll-locked {
+      overflow: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: var(--font-body);
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    input {
+      font-family: var(--font-body);
+      font-size: var(--font-base);
+    }
+
+    /* =========================================
+       LAYOUT UTILITIES
+       ========================================= */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-3);
+      width: 100%;
+    }
+
+    /* =========================================
+       TYPOGRAPHY
+       ========================================= */
+    h1, h2, h3 {
+      font-family: var(--font-heading);
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: var(--font-2xl);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: var(--font-xl);
+      margin-bottom: var(--space-3);
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: var(--font-md);
+    }
+
+    .subheadline {
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* =========================================
+       BUTTONS
+       ========================================= */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--text-light);
+      font-family: var(--font-heading);
+      font-size: var(--font-base);
+      font-weight: 600;
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius);
+      min-height: 48px;
+      min-width: 48px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+    }
+
+    .btn-primary--large {
+      font-size: var(--font-md);
+      padding: var(--space-2) var(--space-5);
+    }
+
+    .micro-copy {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-top: var(--space-1);
+    }
+
+    /* =========================================
+       1. NAV BAR
+       ========================================= */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav.scrolled {
+      border-bottom-color: var(--border);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav__logo {
+      font-family: var(--font-heading);
+      font-size: var(--font-md);
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .nav__cta {
+      font-size: var(--font-sm);
+      padding: var(--space-1) var(--space-3);
+    }
+
+    /* Mobile sticky bottom bar */
+    .mobile-cta-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background: var(--accent);
+      padding: var(--space-1) var(--space-2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+    }
+
+    .mobile-cta-bar .btn-primary {
+      width: 100%;
+      background: var(--text-light);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .mobile-cta-bar .btn-primary:hover {
+      background: #F1F5F9;
+    }
+
+    /* =========================================
+       2. HERO — SPLIT LAYOUT
+       ========================================= */
+    .hero {
+      padding: var(--space-8) 0 var(--space-10);
+      overflow: hidden;
+    }
+
+    .hero__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+      align-items: center;
+    }
+
+    .hero__content h1 {
+      margin-bottom: var(--space-3);
+    }
+
+    .hero__content .subheadline {
+      margin-bottom: var(--space-4);
+      max-width: 560px;
+      font-size: var(--font-md);
+    }
+
+    /* CSS-only Dashboard Mockup */
+    .dashboard-mockup {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+      padding: var(--space-3);
+      min-height: 380px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, 0.6);
+    }
+
+    .dashboard-mockup__header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      margin-bottom: var(--space-3);
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dashboard-mockup__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dashboard-mockup__dot--red { background: #EF4444; }
+    .dashboard-mockup__dot--yellow { background: #F59E0B; }
+    .dashboard-mockup__dot--green { background: #22C55E; }
+
+    .dashboard-mockup__title {
+      font-size: var(--font-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-left: var(--space-1);
+    }
+
+    .dashboard-mockup__stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+    }
+
+    .dashboard-stat {
+      background: var(--bg-stats);
+      border-radius: var(--radius);
+      padding: var(--space-2);
+      text-align: center;
+    }
+
+    .dashboard-stat__number {
+      font-family: var(--font-heading);
+      font-size: var(--font-lg);
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .dashboard-stat__label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .dashboard-mockup__feed-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-1);
+    }
+
+    .lead-notification {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2);
+      border-radius: var(--radius);
+      background: var(--bg-card);
+      margin-bottom: var(--space-1);
+      opacity: 0;
+      transform: translateY(12px);
+      animation: leadCycle 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+    .lead-notification:nth-child(1) { animation-delay: 0s; }
+    .lead-notification:nth-child(2) { animation-delay: 1s; }
+    .lead-notification:nth-child(3) { animation-delay: 2s; }
+    .lead-notification:nth-child(4) { animation-delay: 3s; }
+
+    @keyframes leadCycle {
+      0% { opacity: 0; transform: translateY(10px); }
+      8% { opacity: 1; transform: translateY(0); }
+      88% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-6px); }
+    }
+
+    .lead-notification__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .lead-notification__dot--responded { background: #22C55E; }
+    .lead-notification__dot--missed { background: #EF4444; }
+    .lead-notification__dot--pending { background: #F59E0B; }
+
+    .lead-notification__info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .lead-notification__name {
+      font-size: var(--font-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .lead-notification__status {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .lead-notification__time {
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .dashboard-mockup__feed {
+      position: relative;
+    }
+
+    /* =========================================
+       3. STATS BAR
+       ========================================= */
+    .stats-bar {
+      background: var(--bg-stats);
+      padding: var(--space-6) 0;
+    }
+
+    .stats-bar__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+      text-align: center;
+    }
+
+    .stat-item__number {
+      font-family: var(--font-heading);
+      font-size: var(--font-2xl);
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: var(--space-1);
+    }
+
+    .stat-item__label {
+      font-size: var(--font-sm);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .stat-item__source {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* =========================================
+       4. BEFORE / AFTER COMPARISON
+       ========================================= */
+    .comparison {
+      padding: var(--space-10) 0;
+    }
+
+    .comparison__header {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .comparison__header h2 {
+      font-size: var(--font-2xl);
+    }
+
+    .comparison__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+      position: relative;
+    }
+
+    .comparison__vs-badge {
+      display: none;
+    }
+
+    .comparison__column {
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .comparison__column:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .comparison__column--before {
+      background: var(--bg-red-tint);
+      border: 2px solid #FECACA;
+    }
+
+    .comparison__column--after {
+      background: var(--bg-green-tint);
+      border: 2px solid #BBF7D0;
+    }
+
+    .comparison__column-title {
+      font-family: var(--font-heading);
+      font-size: var(--font-md);
+      font-weight: 700;
+      margin-bottom: var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .comparison__column--before .comparison__column-title {
+      color: var(--red-text);
+    }
+
+    .comparison__column--after .comparison__column-title {
+      color: var(--green-text);
+    }
+
+    .comparison__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .comparison__row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .comparison__row-label {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .comparison__row-value {
+      font-size: var(--font-sm);
+      font-weight: 600;
+      text-align: right;
+      max-width: 55%;
+    }
+
+    .comparison__column--before .comparison__row-value {
+      color: var(--red-text);
+    }
+
+    .comparison__column--after .comparison__row-value {
+      color: var(--green-text);
+    }
+
+    .comparison__cta {
+      text-align: center;
+      margin-top: var(--space-6);
+    }
+
+    /* =========================================
+       5. BENTO GRID
+       ========================================= */
+    .bento {
+      padding: var(--space-10) 0;
+    }
+
+    .bento__header {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .bento__header h2 {
+      font-size: var(--font-2xl);
+    }
+
+    .bento__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+
+    .bento__card {
+      background: var(--bg-navy);
+      color: var(--text-light);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bento__card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(249, 115, 22, 0.3);
+      box-shadow: 0 0 20px rgba(249, 115, 22, 0.1), 0 12px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .bento__card-stat {
+      font-family: var(--font-heading);
+      font-size: var(--font-3xl);
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: var(--space-1);
+      line-height: 1;
+    }
+
+    .bento__card-label {
+      font-size: var(--font-base);
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+    }
+
+    .bento__card-source {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      margin-top: var(--space-1);
+    }
+
+    .bento__card-highlight {
+      font-family: var(--font-heading);
+      font-size: var(--font-lg);
+      font-weight: 700;
+      color: var(--text-light);
+      line-height: 1.3;
+    }
+
+    .bento__card-case-label {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: var(--font-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-2);
+    }
+
+    .bento__card--killer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+    }
+
+    .bento__card--killer .bento__card-highlight {
+      text-align: center;
+      font-size: var(--font-lg);
+    }
+
+    /* =========================================
+       6. HOW IT WORKS
+       ========================================= */
+    .how-it-works {
+      padding: var(--space-10) 0;
+      background: var(--bg-card);
+      background-image: none;
+    }
+
+    .how-it-works__header {
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+
+    .how-it-works__header h2 {
+      font-size: var(--font-2xl);
+    }
+
+    .how-it-works__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+      position: relative;
+    }
+
+    .how-it-works__step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step__circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--bg-navy);
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: var(--font-md);
+      font-weight: 700;
+      margin: 0 auto var(--space-3);
+    }
+
+    .step__title {
+      font-family: var(--font-heading);
+      font-size: var(--font-md);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+      color: var(--text-primary);
+    }
+
+    .step__description {
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .how-it-works__connector {
+      display: none;
+    }
+
+    /* =========================================
+       7. BONUS STACK
+       ========================================= */
+    .bonus {
+      padding: var(--space-10) 0;
+    }
+
+    .bonus__card {
+      background: var(--bg-card);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      max-width: 720px;
+      margin: 0 auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .bonus__card h2 {
+      font-size: var(--font-lg);
+      margin-bottom: var(--space-4);
+    }
+
+    .bonus__item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+    }
+
+    .bonus__item-icon {
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .bonus__item-text {
+      font-size: var(--font-base);
+      color: var(--text-primary);
+    }
+
+    .bonus__item-value {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .bonus__bottom {
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--border);
+      font-size: var(--font-md);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* =========================================
+       8. FOUNDER STORY + CASE STUDY
+       ========================================= */
+    .founder {
+      padding: var(--space-10) 0;
+      background: var(--bg-card);
+      background-image: none;
+    }
+
+    .founder__card {
+      background: var(--bg-primary);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .founder__top {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+
+    .founder__photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--bg-navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      font-size: var(--font-lg);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .founder__intro h3 {
+      font-size: var(--font-lg);
+      margin-bottom: var(--space-1);
+    }
+
+    .founder__intro p {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+
+    .founder__story {
+      font-size: var(--font-base);
+      color: var(--text-primary);
+      line-height: 1.8;
+      margin-bottom: var(--space-3);
+    }
+
+    .founder__shared-enemy {
+      font-size: var(--font-base);
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-primary);
+      padding: var(--space-3);
+      background: var(--accent-light);
+      border-radius: var(--radius);
+      margin-bottom: var(--space-3);
+    }
+
+    .founder__credentials {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-4);
+    }
+
+    .founder__testimonial-placeholder {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-3);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: var(--font-sm);
+      font-style: italic;
+    }
+
+    /* =========================================
+       9. VIDEO SECTION
+       ========================================= */
+    .video-section {
+      padding: var(--space-10) 0;
+    }
+
+    .video__card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: var(--space-8) var(--space-4);
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+
+    .video__play-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-3);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      min-width: 48px;
+      min-height: 48px;
+    }
+
+    .video__play-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
+    }
+
+    .video__play-btn svg {
+      width: 28px;
+      height: 28px;
+      margin-left: 4px;
+    }
+
+    .video__card h3 {
+      font-size: var(--font-lg);
+      color: var(--text-primary);
+    }
+
+    /* =========================================
+       10. PRE-QUALIFICATION
+       ========================================= */
+    .qualify {
+      padding: var(--space-10) 0;
+      background: var(--bg-card);
+      background-image: none;
+    }
+
+    .qualify__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .qualify__column h3 {
+      font-size: var(--font-md);
+      margin-bottom: var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .qualify__item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+      font-size: var(--font-base);
+    }
+
+    .qualify__icon {
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .qualify__icon--check {
+      color: var(--accent);
+    }
+
+    .qualify__icon--x {
+      color: #94A3B8;
+    }
+
+    /* =========================================
+       11. FAQ
+       ========================================= */
+    .faq {
+      padding: var(--space-10) 0;
+    }
+
+    .faq__header {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .faq__header h2 {
+      font-size: var(--font-2xl);
+    }
+
+    .faq__list {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq__item {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      margin-bottom: var(--space-2);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      overflow: hidden;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .faq__item.active {
+      border-left-color: var(--accent);
+      box-shadow: var(--shadow-md);
+    }
+
+    .faq__question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: var(--space-3);
+      font-family: var(--font-heading);
+      font-size: var(--font-base);
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: left;
+      cursor: pointer;
+      min-height: 48px;
+      gap: var(--space-2);
+      background: none;
+      border: none;
+    }
+
+    .faq__question:hover {
+      background: var(--bg-stats);
+    }
+
+    .faq__chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: var(--accent);
+      transition: transform 0.3s ease;
+    }
+
+    .faq__item.active .faq__chevron {
+      transform: rotate(180deg);
+    }
+
+    .faq__answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+
+    .faq__item.active .faq__answer {
+      max-height: 400px;
+    }
+
+    .faq__answer-inner {
+      padding: 0 var(--space-3) var(--space-3);
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* =========================================
+       12. FINAL CTA + GUARANTEE + SCARCITY
+       ========================================= */
+    .final-cta {
+      background: var(--bg-navy);
+      color: var(--text-light);
+      padding: var(--space-12) 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(to bottom, transparent, var(--bg-navy));
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .final-cta::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(249, 115, 22, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(249, 115, 22, 0.04) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .final-cta h2 {
+      font-size: var(--font-xl);
+      color: var(--text-light);
+      max-width: 720px;
+      margin: 0 auto var(--space-4);
+    }
+
+    .final-cta__guarantee {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: var(--radius);
+      padding: var(--space-2) var(--space-3);
+      margin-bottom: var(--space-4);
+      font-size: var(--font-sm);
+    }
+
+    .final-cta__guarantee svg {
+      flex-shrink: 0;
+    }
+
+    .final-cta__scarcity {
+      font-size: var(--font-base);
+      margin-bottom: var(--space-4);
+      color: rgba(255,255,255,0.8);
+    }
+
+    .final-cta__scarcity strong {
+      color: var(--accent);
+    }
+
+    .final-cta .micro-copy {
+      color: rgba(255,255,255,0.6);
+    }
+
+    .final-cta__unity {
+      margin-top: var(--space-4);
+      font-size: var(--font-sm);
+      color: rgba(255,255,255,0.5);
+      font-style: italic;
+    }
+
+    /* Inline Form — CTA-to-form transformation */
+    .final-cta__content {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .final-cta__content.hidden {
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+      left: 0;
+    }
+
+    .inline-form {
+      max-width: 520px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+      display: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .inline-form.visible {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .inline-form__card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-3);
+      color: var(--text-primary);
+      text-align: left;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .inline-form__progress {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: var(--space-3);
+      overflow: hidden;
+    }
+
+    .inline-form__progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .inline-form__step-label {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-1);
+    }
+
+    .inline-form__question {
+      font-family: var(--font-heading);
+      font-size: var(--font-md);
+      font-weight: 700;
+      margin-bottom: var(--space-3);
+      color: var(--text-primary);
+    }
+
+    .inline-form__options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+    }
+
+    .inline-form__option {
+      position: relative;
+    }
+
+    .inline-form__option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .inline-form__option label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: var(--font-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      min-height: 48px;
+      text-align: center;
+    }
+
+    .inline-form__option input[type="radio"]:checked + label {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent-hover);
+    }
+
+    .inline-form__option input[type="radio"]:focus-visible + label {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .inline-form__fields {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .inline-form__input {
+      width: 100%;
+      padding: var(--space-2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: var(--font-base);
+      transition: border-color 0.2s ease;
+      min-height: 48px;
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
+    .inline-form__input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .inline-form__input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .inline-form__security {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: var(--space-1);
+    }
+
+    .inline-form__security svg {
+      flex-shrink: 0;
+    }
+
+    .inline-form__submit {
+      width: 100%;
+      margin-top: var(--space-2);
+    }
+
+    .inline-form__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: var(--space-1) 0;
+      margin-bottom: var(--space-2);
+      min-height: 48px;
+    }
+
+    .inline-form__back:hover {
+      color: var(--text-primary);
+    }
+
+    .inline-form__cancel {
+      display: block;
+      text-align: center;
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      margin-top: var(--space-2);
+      background: none;
+      border: none;
+      min-height: 48px;
+      width: 100%;
+    }
+
+    .inline-form__cancel:hover {
+      color: var(--text-primary);
+    }
+
+    /* Form step visibility */
+    .form-step {
+      display: none;
+    }
+
+    .form-step.active {
+      display: block;
+    }
+
+    /* Results screen */
+    .inline-form__results {
+      text-align: center;
+      padding: var(--space-3) 0;
+    }
+
+    .inline-form__results-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--bg-green-tint);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-3);
+    }
+
+    .inline-form__results h3 {
+      font-size: var(--font-md);
+      margin-bottom: var(--space-2);
+      color: var(--text-primary);
+    }
+
+    .inline-form__results-stat {
+      font-family: var(--font-heading);
+      font-size: var(--font-lg);
+      font-weight: 700;
+      color: var(--red-text);
+      margin: var(--space-2) 0;
+      line-height: 1.3;
+    }
+
+    .inline-form__results p {
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .inline-form__results-followup {
+      margin-top: var(--space-3);
+      padding: var(--space-2);
+      background: var(--bg-stats);
+      border-radius: var(--radius);
+      font-size: var(--font-sm);
+      color: var(--text-primary);
+    }
+
+    /* =========================================
+       13. FOOTER
+       ========================================= */
+    .footer {
+      background: var(--bg-navy);
+      color: rgba(255,255,255,0.6);
+      padding: var(--space-4) 0;
+      text-align: center;
+      font-size: var(--font-sm);
+    }
+
+    .footer a {
+      color: rgba(255,255,255,0.6);
+      transition: color 0.2s ease;
+    }
+
+    .footer a:hover {
+      color: var(--text-light);
+    }
+
+    .footer__divider {
+      margin: 0 var(--space-1);
+    }
+
+    /* =========================================
+       MOBILE BOTTOM CTA SPACER
+       ========================================= */
+    .mobile-cta-spacer {
+      height: 64px;
+    }
+
+    /* =========================================
+       RESPONSIVE: TABLET (768px+)
+       ========================================= */
+    @media (min-width: 768px) {
+      h1 {
+        font-size: var(--font-3xl);
+      }
+
+      h2 {
+        font-size: var(--font-2xl);
+      }
+
+      .hero {
+        padding: var(--space-10) 0 var(--space-12);
+      }
+
+      .hero__grid {
+        grid-template-columns: 3fr 2fr;
+      }
+
+      .stats-bar__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .comparison__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-5);
+      }
+
+      .comparison__vs-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--bg-navy);
+        color: var(--text-light);
+        font-family: var(--font-heading);
+        font-size: var(--font-sm);
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        z-index: 2;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .bento__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .bento__card--wide {
+        grid-column: span 2;
+      }
+
+      .how-it-works__grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .qualify__grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .mobile-cta-bar {
+        display: none;
+      }
+
+      .mobile-cta-spacer {
+        display: none;
+      }
+
+      .inline-form__card {
+        padding: var(--space-5) var(--space-4);
+      }
+    }
+
+    /* =========================================
+       RESPONSIVE: DESKTOP (1024px+)
+       ========================================= */
+    @media (min-width: 1024px) {
+      h1 {
+        font-size: var(--font-4xl);
+      }
+
+      h2 {
+        font-size: var(--font-2xl);
+      }
+
+      .hero__content .subheadline {
+        font-size: var(--font-md);
+      }
+
+      .stats-bar__grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .bento__grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .bento__card--wide {
+        grid-column: span 2;
+      }
+
+      /* How it works connecting line */
+      .how-it-works__connector {
+        display: block;
+        position: absolute;
+        top: 28px;
+        left: calc(16.67% + 28px);
+        right: calc(16.67% + 28px);
+        height: 2px;
+        background: var(--border);
+        z-index: 0;
+      }
+
+      .how-it-works__step {
+        position: relative;
+        z-index: 1;
+      }
+
+      .final-cta h2 {
+        font-size: var(--font-2xl);
+      }
+    }
+
+    /* =========================================
+       RESPONSIVE: LARGE DESKTOP (1440px+)
+       ========================================= */
+    @media (min-width: 1440px) {
+      h1 {
+        font-size: var(--font-hero);
+      }
+
+      .container {
+        max-width: 1280px;
+      }
+    }
+
+    /* =========================================
+       SCROLL-TRIGGERED REVEAL ANIMATIONS
+       ========================================= */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-child {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .reveal.visible .reveal-child {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================================
+       PREFERS REDUCED MOTION
+       ========================================= */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+
+      .lead-notification {
+        opacity: 1;
+        transform: none;
+      }
+
+      .reveal,
+      .reveal-child {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* =========================================
+       FOCUS STYLES (ACCESSIBILITY)
+       ========================================= */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* =========================================
+       PRINT STYLES
+       ========================================= */
+    @media print {
+      .nav, .mobile-cta-bar, .video-section {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       1. NAV BAR
+       ========================================== -->
+  <nav class="nav" id="nav">
+    <div class="container nav__inner">
+      <span class="nav__logo">Prime AI</span>
+      <button class="btn-primary nav__cta" onclick="openForm()" aria-label="Get Your Free Audit">Get Your Free Audit</button>
+    </div>
+  </nav>
+
+  <!-- ==========================================
+       2. HERO — SPLIT LAYOUT
+       ========================================== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <h1>78% of Deals Go to the First Responder. Make Sure That's You.</h1>
+          <p class="subheadline">The 60-Second Close System responds to every lead instantly — calls, texts, portal inquiries — so you close more deals without hiring anyone.</p>
+          <button class="btn-primary btn-primary--large" onclick="openForm()">See How Many Leads You're Losing</button>
+          <p class="micro-copy">Free audit. Keep the findings either way.</p>
+        </div>
+        <div class="dashboard-mockup" aria-hidden="true">
+          <div class="dashboard-mockup__header">
+            <span class="dashboard-mockup__dot dashboard-mockup__dot--red"></span>
+            <span class="dashboard-mockup__dot dashboard-mockup__dot--yellow"></span>
+            <span class="dashboard-mockup__dot dashboard-mockup__dot--green"></span>
+            <span class="dashboard-mockup__title">Lead Dashboard</span>
+          </div>
+          <div class="dashboard-mockup__stats">
+            <div class="dashboard-stat">
+              <div class="dashboard-stat__number">47</div>
+              <div class="dashboard-stat__label">Leads Today</div>
+            </div>
+            <div class="dashboard-stat">
+              <div class="dashboard-stat__number">12s</div>
+              <div class="dashboard-stat__label">Avg Response</div>
+            </div>
+            <div class="dashboard-stat">
+              <div class="dashboard-stat__number">94%</div>
+              <div class="dashboard-stat__label">Contacted</div>
+            </div>
+          </div>
+          <div class="dashboard-mockup__feed-label">Live Feed</div>
+          <div class="dashboard-mockup__feed">
+            <div class="lead-notification">
+              <span class="lead-notification__dot lead-notification__dot--responded"></span>
+              <div class="lead-notification__info">
+                <div class="lead-notification__name">Sarah M.</div>
+                <div class="lead-notification__status">Responded — viewing booked</div>
+              </div>
+              <span class="lead-notification__time">12s ago</span>
+            </div>
+            <div class="lead-notification">
+              <span class="lead-notification__dot lead-notification__dot--responded"></span>
+              <div class="lead-notification__info">
+                <div class="lead-notification__name">James R.</div>
+                <div class="lead-notification__status">Qualified — callback scheduled</div>
+              </div>
+              <span class="lead-notification__time">Just now</span>
+            </div>
+            <div class="lead-notification">
+              <span class="lead-notification__dot lead-notification__dot--pending"></span>
+              <div class="lead-notification__info">
+                <div class="lead-notification__name">Maria L.</div>
+                <div class="lead-notification__status">New inquiry — responding...</div>
+              </div>
+              <span class="lead-notification__time">3s ago</span>
+            </div>
+            <div class="lead-notification">
+              <span class="lead-notification__dot lead-notification__dot--responded"></span>
+              <div class="lead-notification__info">
+                <div class="lead-notification__name">David K.</div>
+                <div class="lead-notification__status">Responded — info sent</div>
+              </div>
+              <span class="lead-notification__time">8s ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       3. SOCIAL PROOF STATS BAR
+       ========================================== -->
+  <section class="stats-bar" id="stats">
+    <div class="container">
+      <div class="stats-bar__grid reveal">
+        <div class="stat-item reveal-child">
+          <div class="stat-item__number">78%</div>
+          <div class="stat-item__label">of buyers work with the first responder</div>
+          <div class="stat-item__source">National Association of Realtors</div>
+        </div>
+        <div class="stat-item reveal-child">
+          <div class="stat-item__number">21x</div>
+          <div class="stat-item__label">more likely to convert in under 5 minutes</div>
+          <div class="stat-item__source">Harvard Business Review</div>
+        </div>
+        <div class="stat-item reveal-child">
+          <div class="stat-item__number">48%</div>
+          <div class="stat-item__label">of agents NEVER follow up with leads</div>
+          <div class="stat-item__source">National Association of Realtors</div>
+        </div>
+        <div class="stat-item reveal-child">
+          <div class="stat-item__number">$23,400</div>
+          <div class="stat-item__label">lost per year to slow follow-up</div>
+          <div class="stat-item__source">Harvard Business Review</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       4. BEFORE / AFTER COMPARISON
+       ========================================== -->
+  <section class="comparison" id="comparison">
+    <div class="container">
+      <div class="comparison__header reveal">
+        <h2>The Gap You Can't See</h2>
+      </div>
+      <div class="comparison__grid reveal">
+        <div class="comparison__vs-badge" aria-hidden="true">VS</div>
+        <div class="comparison__column comparison__column--before">
+          <div class="comparison__column-title">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#EF4444"/><path d="M13 7L7 13M7 7l6 6" stroke="#FFF" stroke-width="2" stroke-linecap="round"/></svg>
+            Without The 60-Second Close System
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Response time</span>
+            <span class="comparison__row-value">1-4 hours</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Portal leads</span>
+            <span class="comparison__row-value">Go to 4 other agents first</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Qualified by</span>
+            <span class="comparison__row-value">You, manually, between showings</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Follow-up</span>
+            <span class="comparison__row-value">Sporadic texts when you remember</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Admin time</span>
+            <span class="comparison__row-value">10-15 hrs/week</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Lost leads</span>
+            <span class="comparison__row-value">~16/month</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Annual cost</span>
+            <span class="comparison__row-value">$23,400+</span>
+          </div>
+        </div>
+        <div class="comparison__column comparison__column--after">
+          <div class="comparison__column-title">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#22C55E"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            With The 60-Second Close System
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Response time</span>
+            <span class="comparison__row-value">Under 60 seconds</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Portal leads</span>
+            <span class="comparison__row-value">You respond first, every time</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Qualified by</span>
+            <span class="comparison__row-value">AI, instantly, 24/7</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Follow-up</span>
+            <span class="comparison__row-value">Automated multi-channel sequences</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Admin time</span>
+            <span class="comparison__row-value">0 hrs — we run it</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">Lost leads</span>
+            <span class="comparison__row-value">Near zero</span>
+          </div>
+          <div class="comparison__row">
+            <span class="comparison__row-label">ROI</span>
+            <span class="comparison__row-value">One extra deal covers the entire year</span>
+          </div>
+        </div>
+      </div>
+      <div class="comparison__cta">
+        <button class="btn-primary btn-primary--large" onclick="openForm()">See How Many Leads You're Losing</button>
+        <p class="micro-copy">Free audit. No commitment required.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       5. BENTO GRID — PROOF POINTS
+       ========================================== -->
+  <section class="bento" id="bento">
+    <div class="container">
+      <div class="bento__header reveal">
+        <h2>The Evidence Speaks for Itself</h2>
+      </div>
+      <div class="bento__grid reveal">
+        <div class="bento__card bento__card--wide reveal-child">
+          <div class="bento__card-case-label">Case Study</div>
+          <div class="bento__card-highlight">Built a full AI lead pipeline across 5 countries — Facebook Ads, AI qualification, WhatsApp nurture, booked calls, AI call scoring.</div>
+          <div class="bento__card-label" style="margin-top: var(--space-2);">Same architecture. Built for real estate.</div>
+        </div>
+        <div class="bento__card reveal-child">
+          <div class="bento__card-stat">48%</div>
+          <div class="bento__card-label">of agents NEVER follow up with leads</div>
+          <div class="bento__card-source">National Association of Realtors</div>
+        </div>
+        <div class="bento__card reveal-child">
+          <div class="bento__card-stat">3-5</div>
+          <div class="bento__card-label">agents get every portal lead simultaneously. Only the fastest one wins the client.</div>
+        </div>
+        <div class="bento__card reveal-child">
+          <div class="bento__card-stat">21x</div>
+          <div class="bento__card-label">more likely to convert when contacted in under 5 minutes</div>
+          <div class="bento__card-source">Harvard Business Review</div>
+        </div>
+        <div class="bento__card reveal-child">
+          <div class="bento__card-stat">$23,400</div>
+          <div class="bento__card-label">lost per year to slow follow-up and manual lead management</div>
+        </div>
+        <div class="bento__card bento__card--wide bento__card--killer reveal-child">
+          <div class="bento__card-highlight">One extra deal from a recovered lead covers the entire year of service.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       6. HOW IT WORKS
+       ========================================== -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="how-it-works__header reveal">
+        <h2>Three Steps. Two Weeks. Zero Effort From You.</h2>
+      </div>
+      <div class="how-it-works__grid reveal">
+        <div class="how-it-works__connector" aria-hidden="true"></div>
+        <div class="how-it-works__step reveal-child">
+          <div class="step__circle">1</div>
+          <h3 class="step__title">We Audit Your Pipeline</h3>
+          <p class="step__description">We analyze your lead sources, response times, and conversion gaps — so you see exactly where deals are slipping before you spend a cent.</p>
+        </div>
+        <div class="how-it-works__step reveal-child">
+          <div class="step__circle">2</div>
+          <h3 class="step__title">We Build Your AI System</h3>
+          <p class="step__description">Custom AI that handles calls, texts, emails, and portal inquiries — so every lead gets a personal response while you're showing houses, sleeping, or on vacation.</p>
+        </div>
+        <div class="how-it-works__step reveal-child">
+          <div class="step__circle">3</div>
+          <h3 class="step__title">We Run It For You</h3>
+          <p class="step__description">You sell houses. We operate, optimize weekly, and report results — so you get more closings without hiring staff or learning new software.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       7. BONUS STACK
+       ========================================== -->
+  <section class="bonus" id="bonus">
+    <div class="container">
+      <div class="bonus__card reveal">
+        <h2>What You Get With The 60-Second Close System</h2>
+        <div class="bonus__item">
+          <span class="bonus__item-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 10l3 3 7-7" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="bonus__item-text">Custom AI lead response system <span class="bonus__item-value">(core system)</span></span>
+        </div>
+        <div class="bonus__item">
+          <span class="bonus__item-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 10l3 3 7-7" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="bonus__item-text">Weekly performance report <span class="bonus__item-value">($500/mo value)</span></span>
+        </div>
+        <div class="bonus__item">
+          <span class="bonus__item-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 10l3 3 7-7" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="bonus__item-text">Portal integration audit <span class="bonus__item-value">($1,200 value)</span></span>
+        </div>
+        <div class="bonus__item">
+          <span class="bonus__item-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 10l3 3 7-7" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="bonus__item-text">Lead qualification playbook <span class="bonus__item-value">($800 value)</span></span>
+        </div>
+        <div class="bonus__bottom">All included. One extra recovered deal covers the entire year.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       8. FOUNDER STORY + CASE STUDY
+       ========================================== -->
+  <section class="founder" id="proof">
+    <div class="container">
+      <div class="founder__card reveal">
+        <div class="founder__top">
+          <div class="founder__photo" aria-label="Chase, Founder of Prime AI">C</div>
+          <div class="founder__intro">
+            <h3>How We Built a Lead System That Operates Across 5 Countries</h3>
+            <p>Chase — Founder, Prime AI</p>
+          </div>
+        </div>
+        <p class="founder__story">I spent 2 years building AI pipelines for a football academy that operates across 5 countries. I watched the same system — AI qualification, instant response, automated nurture — fill cohort after cohort. Then I realized: real estate agents need this even more. One missed call is one lost commission. I built Prime AI to make sure that call never goes unanswered again.</p>
+        <div class="founder__shared-enemy">"We're both tired of 'AI solutions' that are just glorified chatbots with a fancy dashboard. This is a fully operated lead system."</div>
+        <p class="founder__credentials">Full-stack AI engineer. Cybersecurity background. Production systems shipped across 5 countries (Mexico, UAE, Saudi Arabia, Canada, France).</p>
+        <div class="founder__testimonial-placeholder">Real estate agent results coming soon — be one of our first success stories.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       9. VIDEO SECTION
+       ========================================== -->
+  <section class="video-section" id="video">
+    <div class="container">
+      <div class="video__card reveal">
+        <button class="video__play-btn" id="videoPlayBtn" aria-label="Play video: Watch how The 60-Second Close System works">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><polygon points="6,3 20,12 6,21" fill="white"/></svg>
+        </button>
+        <h3>Watch How The 60-Second Close System Works</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       10. PRE-QUALIFICATION
+       ========================================== -->
+  <section class="qualify" id="qualify">
+    <div class="container">
+      <div class="qualify__grid reveal">
+        <div class="qualify__column">
+          <h3>
+            <svg class="qualify__icon qualify__icon--check" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#F97316"/><path d="M7 12.5l3 3 7-7" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            This Is For You If...
+          </h3>
+          <div class="qualify__item">
+            <svg class="qualify__icon qualify__icon--check" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10l3 3 7-7" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>You get 20+ leads/month but can't respond fast enough</span>
+          </div>
+          <div class="qualify__item">
+            <svg class="qualify__icon qualify__icon--check" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10l3 3 7-7" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>You're spending on ads but losing leads to faster agents</span>
+          </div>
+          <div class="qualify__item">
+            <svg class="qualify__icon qualify__icon--check" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10l3 3 7-7" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>You want more closings without hiring more staff</span>
+          </div>
+        </div>
+        <div class="qualify__column">
+          <h3>
+            <svg class="qualify__icon qualify__icon--x" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#94A3B8"/><path d="M15 9l-6 6M9 9l6 6" stroke="#FFF" stroke-width="2" stroke-linecap="round"/></svg>
+            This Is NOT For You If...
+          </h3>
+          <div class="qualify__item">
+            <svg class="qualify__icon qualify__icon--x" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M13 7L7 13M7 7l6 6" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span>You get fewer than 10 leads/month</span>
+          </div>
+          <div class="qualify__item">
+            <svg class="qualify__icon qualify__icon--x" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M13 7L7 13M7 7l6 6" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span>You want a chatbot you manage yourself</span>
+          </div>
+          <div class="qualify__item">
+            <svg class="qualify__icon qualify__icon--x" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M13 7L7 13M7 7l6 6" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span>You want the cheapest option, not the best results</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       11. FAQ
+       ========================================== -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="faq__header reveal">
+        <h2>Frequently Asked Questions</h2>
+      </div>
+      <div class="faq__list reveal">
+        <div class="faq__item">
+          <button class="faq__question" aria-expanded="false">
+            <span>We tried a chatbot before and it was terrible.</span>
+            <svg class="faq__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq__answer" role="region">
+            <div class="faq__answer-inner">We hear this constantly, and honestly, most chatbots deserve that reputation. They follow rigid scripts, can't handle nuance, and make your business look amateur. The 60-Second Close System is fundamentally different — it's a fully operated AI pipeline, not a widget you paste onto your website and forget about. We build custom response logic for your specific market, train it on real estate conversations, and actively manage it weekly. You're not buying software; you're hiring an AI-powered lead team that we run for you.</div>
+          </div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question" aria-expanded="false">
+            <span>What if my clients want to talk to a real person?</span>
+            <svg class="faq__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq__answer" role="region">
+            <div class="faq__answer-inner">They absolutely can — and they will. The AI doesn't replace you; it makes sure you never miss the first contact. It responds instantly, qualifies the lead, answers initial questions, and schedules the conversation with you. By the time you pick up the phone, you already know what the lead wants, their budget range, and their timeline. The client gets a faster, better experience and you get a warm, qualified lead instead of a cold callback.</div>
+          </div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question" aria-expanded="false">
+            <span>How is this different from a chatbot I can set up myself?</span>
+            <svg class="faq__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq__answer" role="region">
+            <div class="faq__answer-inner">A DIY chatbot handles one channel with canned responses. The 60-Second Close System is a multi-channel AI pipeline — calls, texts, emails, and portal inquiries — custom-built for your market and fully operated by us. We handle the integration with your lead sources, the ongoing optimization, and the weekly reporting. You could technically build this yourself, but it would take months of development time, ongoing maintenance, and expertise in AI, real estate workflows, and lead qualification. We've already built it, tested it across 5 countries, and we run it so you don't have to.</div>
+          </div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question" aria-expanded="false">
+            <span>I respond pretty fast already — do I really need this?</span>
+            <svg class="faq__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq__answer" role="region">
+            <div class="faq__answer-inner">Fast is relative. If you respond in 5 minutes, that feels fast — but research shows leads contacted in under 60 seconds are 21x more likely to convert. And "fast" only counts when you're available. What happens when you're in a showing, driving, at dinner, or asleep? Every portal lead goes to 3-5 agents simultaneously. The agent who responds first wins 78% of the time. The 60-Second Close System responds in seconds, 24/7, 365 days a year — including the moments when you physically can't.</div>
+          </div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question" aria-expanded="false">
+            <span>What happens if the AI makes a mistake?</span>
+            <svg class="faq__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq__answer" role="region">
+            <div class="faq__answer-inner">We build in guardrails from day one. The AI is trained specifically on real estate conversations — not generic chatbot scripts — and it's configured to escalate to you when a situation goes beyond its scope. It won't quote prices it shouldn't, make promises about properties, or pretend to be human. We review conversations weekly and continuously refine the system. In two years of operating similar pipelines, our escalation rate has stayed below 5%, and every escalation routes directly to you with full context.</div>
+          </div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question" aria-expanded="false">
+            <span>Is my data safe? What about privacy regulations?</span>
+            <svg class="faq__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq__answer" role="region">
+            <div class="faq__answer-inner">Data security isn't an afterthought — it's foundational. Our founder has a cybersecurity background, and the system is built with encryption at rest and in transit, role-based access controls, and full audit trails. We comply with applicable privacy regulations and can configure the system for GDPR, CCPA, or other regional requirements. Your lead data stays in your pipeline — we don't sell it, share it, or use it to train models for anyone else. We'll walk through the full security architecture during your audit call.</div>
+          </div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question" aria-expanded="false">
+            <span>I don't get enough leads to justify this.</span>
+            <svg class="faq__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq__answer" role="region">
+            <div class="faq__answer-inner">If you're getting fewer than 10 leads per month, you're right — lead response speed isn't your bottleneck yet, and we'll tell you that honestly during the audit. But if you're getting 20+ leads and closing 2-3 deals, the math changes fast. You're likely losing 30-40% of those leads to slower response times without realizing it. One extra deal from a recovered lead covers the entire year of service. The free audit will show you exactly how many leads you're leaving on the table — and whether the system makes sense for your volume.</div>
+          </div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question" aria-expanded="false">
+            <span>Can't I just hire a VA for less?</span>
+            <svg class="faq__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq__answer" role="region">
+            <div class="faq__answer-inner">You can, and many agents do — at $1,500-$2,500/month. But a VA works 8-hour shifts, takes holidays, calls in sick, needs training, and can't respond in 12 seconds. They handle one conversation at a time. The 60-Second Close System responds instantly to every lead, simultaneously, 24/7/365 — and it never forgets to follow up. A VA is a person doing a job. This is a system that scales with your pipeline. The annual cost comparison ($18,000-$30,000/year for a VA vs. a fraction of that for a system that never sleeps) makes the decision straightforward.</div>
+          </div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question" aria-expanded="false">
+            <span>How long until I see results?</span>
+            <svg class="faq__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq__answer" role="region">
+            <div class="faq__answer-inner">The system is live within two weeks of kickoff. You'll see immediate improvements in response time from day one — leads that used to wait hours will get a response in seconds. Qualified bookings typically start within the first 2-4 weeks. For meaningful pipeline impact (more closings), we calibrate expectations at 60-90 days because real estate deal cycles take time. That's also why our guarantee is 90 days: if we haven't generated qualified leads by then, we optimize at no cost until we do.</div>
+          </div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question" aria-expanded="false">
+            <span>What's the investment?</span>
+            <svg class="faq__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq__answer" role="region">
+            <div class="faq__answer-inner">Most agents lose $23,400+ per year to slow follow-up — that's 15 hours a week of manual lead management at $30/hour, plus $12,480 in scheduling costs. One extra recovered deal covers the entire year of service. We share specific pricing tailored to your pipeline volume and lead sources on the audit call, because the right investment depends on your deal size, volume, and how many channels you need covered. The audit itself is free, and the findings are yours to keep regardless.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       12. FINAL CTA + GUARANTEE + SCARCITY
+       ========================================== -->
+  <section class="final-cta" id="final-cta">
+    <div class="container" style="position: relative;">
+      <div class="final-cta__content reveal" id="finalCtaContent">
+        <h2>The Deals Are There. The Leads Are Coming In. The Only Question Is: Who Responds First?</h2>
+        <div class="final-cta__guarantee">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 1l2.5 2H16a1 1 0 011 1v3.5L19 10l-2 2.5V16a1 1 0 01-1 1h-3.5L10 19l-2.5-2H4a1 1 0 01-1-1v-3.5L1 10l2-2.5V4a1 1 0 011-1h3.5L10 1z" stroke="#FFF" stroke-width="1.5" fill="none"/><path d="M7 10l2 2 4-4" stroke="#F97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>90-day performance guarantee. Audit findings yours to keep.</span>
+        </div>
+        <p class="final-cta__scarcity">We onboard 5 agents per month. <strong>3 spots remaining for June.</strong></p>
+        <button class="btn-primary btn-primary--large" onclick="openForm()" style="margin-bottom: var(--space-1);">Get Your Free Audit Now</button>
+        <p class="micro-copy">Free audit. No commitment. We'll reach out within 2 hours.</p>
+        <p class="final-cta__unity">Join the first group of agents building their AI advantage.</p>
+      </div>
+
+      <div class="inline-form" id="inlineForm">
+        <div class="inline-form__card">
+          <div class="inline-form__progress">
+            <div class="inline-form__progress-bar" id="formProgressBar" style="width: 33%;"></div>
+          </div>
+
+          <!-- Step 1 -->
+          <div class="form-step active" id="formStep1">
+            <p class="inline-form__step-label">Step 1 of 3</p>
+            <p class="inline-form__question">How many leads do you get per month?</p>
+            <div class="inline-form__options">
+              <div class="inline-form__option">
+                <input type="radio" name="leads" id="leads1" value="<10">
+                <label for="leads1">&lt; 10</label>
+              </div>
+              <div class="inline-form__option">
+                <input type="radio" name="leads" id="leads2" value="10-30">
+                <label for="leads2">10-30</label>
+              </div>
+              <div class="inline-form__option">
+                <input type="radio" name="leads" id="leads3" value="30-50">
+                <label for="leads3">30-50</label>
+              </div>
+              <div class="inline-form__option">
+                <input type="radio" name="leads" id="leads4" value="50+">
+                <label for="leads4">50+</label>
+              </div>
+            </div>
+            <button class="inline-form__cancel" onclick="closeForm()">Cancel</button>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="form-step" id="formStep2">
+            <button class="inline-form__back" onclick="goToStep(1)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Back
+            </button>
+            <p class="inline-form__step-label">Step 2 of 3</p>
+            <p class="inline-form__question">How fast do you typically respond?</p>
+            <div class="inline-form__options">
+              <div class="inline-form__option">
+                <input type="radio" name="response" id="resp1" value="<5 min">
+                <label for="resp1">&lt; 5 min</label>
+              </div>
+              <div class="inline-form__option">
+                <input type="radio" name="response" id="resp2" value="5-30 min">
+                <label for="resp2">5-30 min</label>
+              </div>
+              <div class="inline-form__option">
+                <input type="radio" name="response" id="resp3" value="1-4 hrs">
+                <label for="resp3">1-4 hrs</label>
+              </div>
+              <div class="inline-form__option">
+                <input type="radio" name="response" id="resp4" value="4+ hrs">
+                <label for="resp4">4+ hrs</label>
+              </div>
+            </div>
+            <button class="inline-form__cancel" onclick="closeForm()">Cancel</button>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="form-step" id="formStep3">
+            <button class="inline-form__back" onclick="goToStep(2)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Back
+            </button>
+            <p class="inline-form__step-label">Step 3 of 3</p>
+            <p class="inline-form__question">Where should we send your audit?</p>
+            <div class="inline-form__fields">
+              <input type="text" class="inline-form__input" id="formName" placeholder="Full name" required autocomplete="name">
+              <input type="email" class="inline-form__input" id="formEmail" placeholder="Email address" required autocomplete="email">
+              <input type="tel" class="inline-form__input" id="formPhone" placeholder="Phone number" required autocomplete="tel">
+              <div class="inline-form__security">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="3" y="6" width="8" height="6" rx="1" stroke="#94A3B8" stroke-width="1.5"/><path d="M5 6V4a2 2 0 014 0v2" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <span>Your information is secure. No spam, ever.</span>
+              </div>
+              <button class="btn-primary inline-form__submit" onclick="submitForm()">Show My Results</button>
+            </div>
+            <button class="inline-form__cancel" onclick="closeForm()">Cancel</button>
+          </div>
+
+          <!-- Results -->
+          <div class="form-step" id="formResults">
+            <div class="inline-form__results">
+              <div class="inline-form__results-icon">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true"><path d="M7 14.5l5 5 9-9" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <h3>Your Estimated Lead Loss</h3>
+              <div class="inline-form__results-stat" id="resultsLostLeads"></div>
+              <p id="resultsText"></p>
+              <div class="inline-form__results-followup" id="resultsFollowup"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       13. FOOTER
+       ========================================== -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; Prime AI 2026 <span class="footer__divider">|</span> <a href="#">Privacy Policy</a> <span class="footer__divider">|</span> <a href="#">Contact</a></p>
+    </div>
+  </footer>
+
+  <div class="mobile-cta-spacer"></div>
+
+  <div class="mobile-cta-bar" id="mobileCta">
+    <button class="btn-primary" onclick="openForm()">See How Many Leads You're Losing</button>
+  </div>
+
+  <!-- ==========================================
+       JAVASCRIPT
+       ========================================== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // =========================================
+      // NAV — Shadow on scroll
+      // =========================================
+      var nav = document.getElementById('nav');
+
+      function handleNavScroll() {
+        if (window.scrollY > 10) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+
+      window.addEventListener('scroll', handleNavScroll, { passive: true });
+
+      // =========================================
+      // VIDEO PLAY BUTTON — Placeholder
+      // =========================================
+      var videoPlayBtn = document.getElementById('videoPlayBtn');
+      if (videoPlayBtn) {
+        videoPlayBtn.addEventListener('click', function() {
+          window.alert('Video coming soon. We are recording the walkthrough now.');
+        });
+      }
+
+      // =========================================
+      // FAQ ACCORDIONS
+      // =========================================
+      var faqItems = document.querySelectorAll('.faq__item');
+
+      faqItems.forEach(function(item) {
+        var question = item.querySelector('.faq__question');
+        question.addEventListener('click', function() {
+          var isActive = item.classList.contains('active');
+
+          faqItems.forEach(function(other) {
+            other.classList.remove('active');
+            other.querySelector('.faq__question').setAttribute('aria-expanded', 'false');
+          });
+
+          if (!isActive) {
+            item.classList.add('active');
+            question.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      // =========================================
+      // INLINE FORM
+      // =========================================
+      var finalCtaContent = document.getElementById('finalCtaContent');
+      var inlineForm = document.getElementById('inlineForm');
+      var formProgressBar = document.getElementById('formProgressBar');
+      var currentStep = 1;
+      var formData = {
+        leads: null,
+        response: null,
+        name: '',
+        email: '',
+        phone: ''
+      };
+
+      function openForm() {
+        var section = document.getElementById('final-cta');
+        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        setTimeout(function() {
+          finalCtaContent.classList.add('hidden');
+          inlineForm.classList.add('visible');
+          resetForm();
+        }, 400);
+      }
+
+      function closeForm() {
+        inlineForm.classList.remove('visible');
+        setTimeout(function() {
+          finalCtaContent.classList.remove('hidden');
+        }, 100);
+        resetForm();
+      }
+
+      function resetForm() {
+        currentStep = 1;
+        formData = { leads: null, response: null, name: '', email: '', phone: '' };
+        showStep(1);
+        formProgressBar.style.width = '33%';
+
+        document.querySelectorAll('.inline-form input[type="radio"]').forEach(function(r) {
+          r.checked = false;
+        });
+
+        document.querySelectorAll('.inline-form__input').forEach(function(input) {
+          input.value = '';
+          input.style.borderColor = '';
+        });
+      }
+
+      function showStep(step) {
+        document.querySelectorAll('.form-step').forEach(function(s) {
+          s.classList.remove('active');
+        });
+
+        if (step === 'Results') {
+          document.getElementById('formResults').classList.add('active');
+          formProgressBar.style.width = '100%';
+        } else {
+          var target = document.getElementById('formStep' + step);
+          if (target) target.classList.add('active');
+
+          var widths = { 1: '33%', 2: '66%', 3: '100%' };
+          if (widths[step]) {
+            formProgressBar.style.width = widths[step];
+          }
+        }
+      }
+
+      function goToStep(step) {
+        currentStep = step;
+        showStep(step);
+      }
+
+      // Auto-advance Step 1
+      document.querySelectorAll('input[name="leads"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          formData.leads = this.value;
+          currentStep = 2;
+          setTimeout(function() { showStep(2); }, 250);
+        });
+      });
+
+      // Auto-advance Step 2
+      document.querySelectorAll('input[name="response"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          formData.response = this.value;
+          currentStep = 3;
+          setTimeout(function() { showStep(3); }, 250);
+        });
+      });
+
+      function submitForm() {
+        var nameField = document.getElementById('formName');
+        var emailField = document.getElementById('formEmail');
+        var phoneField = document.getElementById('formPhone');
+        var name = nameField.value.trim();
+        var email = emailField.value.trim();
+        var phone = phoneField.value.trim();
+
+        var valid = true;
+        if (!name) { nameField.style.borderColor = '#EF4444'; valid = false; }
+        if (!email) { emailField.style.borderColor = '#EF4444'; valid = false; }
+        if (!phone) { phoneField.style.borderColor = '#EF4444'; valid = false; }
+        if (!valid) return;
+
+        formData.name = name;
+        formData.email = email;
+        formData.phone = phone;
+
+        var result = calculateLoss(formData.leads, formData.response);
+
+        document.getElementById('resultsLostLeads').textContent =
+          result.lostLeads + ' leads lost / ~$' + result.lostRevenue.toLocaleString() + ' in commissions monthly';
+
+        var resultsText = document.getElementById('resultsText');
+        resultsText.textContent = 'Based on ' + formData.leads + ' leads/month and a ' +
+          formData.response + ' response time, you are likely losing approximately ' +
+          result.lostLeads + ' qualified leads and $' + result.lostRevenue.toLocaleString() +
+          ' in commissions every month.';
+
+        document.getElementById('resultsFollowup').textContent =
+          'We will reach out within 2 hours with your full personalized audit — including exactly which leads you can recover.';
+
+        showStep('Results');
+      }
+
+      function calculateLoss(leadsPerMonth, responseTime) {
+        var leadCounts = { '<10': 7, '10-30': 20, '30-50': 40, '50+': 60 };
+        var lossRates = { '<5 min': 0.05, '5-30 min': 0.15, '1-4 hrs': 0.40, '4+ hrs': 0.65 };
+        var leads = leadCounts[leadsPerMonth] || 20;
+        var rate = lossRates[responseTime] || 0.15;
+        var lostLeads = Math.round(leads * rate);
+        var avgCommission = 8000;
+        var closeRate = 0.16;
+        var lostRevenue = Math.round(lostLeads * avgCommission * closeRate);
+        return { lostLeads: lostLeads, lostRevenue: lostRevenue };
+      }
+
+      // Reset border color on focus
+      document.querySelectorAll('.inline-form__input').forEach(function(input) {
+        input.addEventListener('focus', function() {
+          this.style.borderColor = '';
+        });
+      });
+
+      // Expose to global scope
+      window.openForm = openForm;
+      window.closeForm = closeForm;
+      window.goToStep = goToStep;
+      window.submitForm = submitForm;
+
+      // =========================================
+      // SCROLL-TRIGGERED REVEAL ANIMATIONS
+      // =========================================
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+        var revealElements = document.querySelectorAll('.reveal');
+
+        var revealObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+
+              // Stagger children with reveal-child class
+              var children = entry.target.querySelectorAll('.reveal-child');
+              children.forEach(function(child, index) {
+                child.style.transitionDelay = (index * 0.1) + 's';
+              });
+
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.15,
+          rootMargin: '0px 0px -40px 0px'
+        });
+
+        revealElements.forEach(function(el) {
+          revealObserver.observe(el);
+        });
+      } else {
+        // If reduced motion or no IntersectionObserver, show everything
+        document.querySelectorAll('.reveal').forEach(function(el) {
+          el.classList.add('visible');
+        });
+      }
+
+      // =========================================
+      // SMOOTH SCROLL for anchor links
+      // =========================================
+      document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>
