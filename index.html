@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prime AI — Landing Page Variants</title>
+<title>Prime AI — Landing Pages</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: system-ui, sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
@@ -11,6 +11,10 @@
   h1 { font-size: 32px; margin-bottom: 12px; }
   p { color: rgba(255,255,255,0.6); margin-bottom: 40px; }
   .links { display: flex; flex-direction: column; gap: 16px; }
+  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.4); margin: 32px 0 16px; font-weight: 600; }
+  h2:first-of-type { margin-top: 0; }
+  .r { background: #00E5FF; color: #0a0a0a; }
+  .r:hover { box-shadow: 0 8px 32px rgba(0,229,255,0.4); }
   a { display: block; padding: 20px 32px; border-radius: 12px; text-decoration: none; font-size: 18px; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; }
   a:hover { transform: translateY(-2px); }
   .a { background: #2563EB; color: #fff; }
@@ -25,7 +29,14 @@
 <body>
 <div class="container">
   <h1>Prime AI — Landing Pages</h1>
-  <p>Three variants of The 60-Second Close System. Pick your favorite.</p>
+  <p>Two offers. Pick a page.</p>
+
+  <h2>AI Receptionist — clinics &amp; trades</h2>
+  <div class="links">
+    <a href="receptionist-dark-closer.html" class="r">The AI Receptionist<small>Dark theme — missed calls + demo line</small></a>
+  </div>
+
+  <h2>60-Second Close — real estate</h2>
   <div class="links">
     <a href="variant-a-dark-closer.html" class="a">Variant A: The Dark Closer<small>Dark theme — urgency + fear of loss</small></a>
     <a href="variant-b-proof-machine.html" class="b">Variant B: The Proof Machine<small>Light theme — certainty + authority</small></a>

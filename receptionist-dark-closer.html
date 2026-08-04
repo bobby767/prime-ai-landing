@@ -1,0 +1,2394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The AI Receptionist | Prime AI</title>
+  <meta name="description" content="62% of calls to small businesses go unanswered. Prime AI's receptionist answers every call, 24/7, books straight into your calendar — and never takes a holiday.">
+  <!-- ============================================
+       TODO BEFORE LAUNCH: replace the placeholder demo
+       number (+31 6 XXXX XXXX) everywhere it appears.
+       Search for DEMO-NUMBER to find all instances.
+       A dead demo line costs more trust than no demo line.
+       ============================================ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0A0A0A;
+      --bg-card: #111111;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --text-primary: #FFFFFF;
+      --text-secondary: rgba(255, 255, 255, 0.6);
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Outfit', sans-serif;
+      --font-base: 16px;
+      --font-sm: 14px;
+      --font-md: 20px;
+      --font-lg: 25px;
+      --font-xl: 31px;
+      --font-2xl: 39px;
+      --font-3xl: 49px;
+      --font-4xl: 61px;
+      --font-5xl: 77px;
+      --font-hero: 64px;
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 32px;
+      --space-5: 40px;
+      --space-6: 48px;
+      --space-7: 56px;
+      --space-8: 64px;
+      --space-10: 80px;
+      --space-12: 96px;
+      --max-width: 1200px;
+      --radius: 8px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: var(--font-base);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .nav-logo, .stat-number, .roi-result-number, .results-number {
+      font-family: var(--font-heading);
+    }
+
+    body.scroll-locked {
+      overflow: hidden;
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-3);
+    }
+
+    /* ============================================
+       NAV BAR
+       ============================================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: var(--bg-primary);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .nav.scrolled {
+      box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+    }
+
+    .nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .nav-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: var(--font-md);
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo svg {
+      flex-shrink: 0;
+    }
+
+    .nav-logo .logo-prime {
+      color: var(--text-primary);
+    }
+
+    .nav-logo .logo-ai {
+      color: #00E5FF;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: var(--font-base);
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 48px;
+      min-width: 48px;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 32px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      color: var(--accent);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .btn-nav {
+      padding: 10px 20px;
+      font-size: var(--font-sm);
+    }
+
+    .mobile-bottom-cta {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background: var(--accent);
+      padding: var(--space-2);
+      display: flex;
+      justify-content: center;
+    }
+
+    .mobile-bottom-cta .btn {
+      width: 100%;
+      background: transparent;
+      color: var(--text-primary);
+      font-weight: 700;
+      padding: 14px;
+    }
+
+    /* ============================================
+       HERO
+       ============================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-12) var(--space-3) var(--space-10);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+      animation: heroGlow 8s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes heroGlow {
+      0% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+    }
+
+    .hero-content {
+      max-width: 800px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: var(--font-hero);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-4);
+    }
+
+    .hero-sub {
+      font-size: var(--font-md);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: var(--space-5);
+      max-width: 600px;
+    }
+
+    .hero .btn {
+      font-size: 18px;
+      padding: 18px 36px;
+    }
+
+    .micro-copy {
+      display: block;
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-top: var(--space-2);
+    }
+
+    /* ============================================
+       GLASSMORPHISM
+       ============================================ */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* ============================================
+       STATS BAR
+       ============================================ */
+    .stats {
+      padding: var(--space-10) 0;
+      background: var(--bg-primary);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+      text-align: center;
+      min-width: 0;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(37, 99, 235, 0.3);
+    }
+
+    .stat-number {
+      font-size: clamp(25px, 3vw, 39px);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+      margin-bottom: var(--space-1);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .stat-label {
+      font-size: var(--font-base);
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: var(--space-1);
+    }
+
+    .stat-source {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* ============================================
+       PROBLEM
+       ============================================ */
+    .problem {
+      padding: var(--space-12) 0;
+    }
+
+    .section-headline {
+      font-size: var(--font-2xl);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-6);
+      line-height: 1.2;
+    }
+
+    .pain-list {
+      list-style: none;
+      max-width: 720px;
+      margin: 0 auto var(--space-6);
+    }
+
+    .pain-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .pain-item:last-child {
+      border-bottom: none;
+    }
+
+    .check-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      margin-top: 3px;
+    }
+
+    .section-cta {
+      text-align: center;
+      margin-top: var(--space-5);
+    }
+
+    /* ============================================
+       SOLUTION
+       ============================================ */
+    .solution {
+      padding: var(--space-12) 0;
+    }
+
+    .solution .section-headline {
+      text-align: center;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+      position: relative;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      width: 56px;
+      height: 56px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: var(--font-md);
+      margin: 0 auto var(--space-3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-title {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+      letter-spacing: -0.01em;
+    }
+
+    .step-desc {
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .steps-connector {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .steps-connector {
+        display: block;
+        position: absolute;
+        top: 28px;
+        left: calc(16.66% + 28px);
+        right: calc(16.66% + 28px);
+        height: 2px;
+        background: rgba(37, 99, 235, 0.3);
+        z-index: 1;
+      }
+    }
+
+    /* ============================================
+       BONUS STACK
+       ============================================ */
+    .bonus {
+      padding: var(--space-12) 0;
+    }
+
+    .bonus-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius);
+      padding: var(--space-6);
+      max-width: 720px;
+      margin: 0 auto;
+      transition: all 0.3s ease;
+    }
+
+    .bonus-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(37, 99, 235, 0.3);
+      border-left-color: var(--accent);
+    }
+
+    .bonus-card h2 {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-5);
+    }
+
+    .bonus-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+      font-size: 18px;
+    }
+
+    .bonus-value {
+      color: var(--accent);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .bonus-bottom {
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    /* ============================================
+       ROI CALCULATOR
+       ============================================ */
+    .roi {
+      padding: var(--space-12) 0;
+    }
+
+    .roi-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      padding: var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+      transition: all 0.3s ease;
+    }
+
+    .roi-card h2 {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-5);
+      text-align: center;
+    }
+
+    .roi-flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-2);
+      margin-bottom: var(--space-5);
+    }
+
+    .roi-step {
+      text-align: center;
+      padding: var(--space-3);
+      background: rgba(37, 99, 235, 0.08);
+      border-radius: var(--radius);
+      position: relative;
+    }
+
+    .roi-step-value {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: var(--space-1);
+    }
+
+    .roi-step-label {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+
+    .roi-result {
+      text-align: center;
+      padding: var(--space-4) 0;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: var(--space-4);
+    }
+
+    .roi-result-number {
+      font-size: var(--font-3xl);
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .roi-result-label {
+      font-size: var(--font-md);
+      color: var(--text-secondary);
+      margin-top: var(--space-1);
+    }
+
+    .roi-killer {
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: var(--space-5);
+      line-height: 1.6;
+    }
+
+    /* ============================================
+       PROOF / FOUNDER
+       ============================================ */
+    .proof {
+      padding: var(--space-12) 0;
+    }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5);
+      align-items: start;
+    }
+
+    .founder-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .founder-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #1a1a2e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-lg);
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .founder-story {
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .founder-story em {
+      color: var(--text-primary);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .founder-creds {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      padding-top: var(--space-2);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .case-study-card {
+      background: var(--bg-card);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+      transition: all 0.3s ease;
+    }
+
+    .case-study-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(37, 99, 235, 0.3);
+      border-left-color: var(--accent);
+    }
+
+    .case-study-card h3 {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+    }
+
+    .case-study-card p {
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: var(--space-2);
+    }
+
+    .case-study-countries {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+    }
+
+    .country-tag {
+      background: rgba(37, 99, 235, 0.12);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .testimonial-placeholder {
+      border: 1px dashed rgba(255,255,255,0.15);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: var(--font-sm);
+      margin-top: var(--space-5);
+      grid-column: 1 / -1;
+    }
+
+    /* ============================================
+       VIDEO
+       ============================================ */
+    .video {
+      padding: var(--space-12) 0;
+    }
+
+    .video-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: var(--space-8) var(--space-4);
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .video-card:hover {
+      border-color: var(--accent);
+    }
+
+    .play-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-3);
+      transition: transform 0.2s ease;
+    }
+
+    .video-card:hover .play-btn {
+      transform: scale(1.08);
+    }
+
+    .play-btn svg {
+      width: 32px;
+      height: 32px;
+      fill: white;
+      margin-left: 4px;
+    }
+
+    .video-card p {
+      font-size: var(--font-md);
+      font-weight: 600;
+    }
+
+    /* ============================================
+       PRE-QUALIFICATION
+       ============================================ */
+    .qualify {
+      padding: var(--space-12) 0;
+    }
+
+    .qualify-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .qualify-col h3 {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+    }
+
+    .qualify-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: var(--space-2) 0;
+      font-size: var(--font-base);
+      line-height: 1.5;
+    }
+
+    .qualify-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      margin-top: 2px;
+    }
+
+    .qualify-not .qualify-item {
+      color: var(--text-secondary);
+    }
+
+    /* ============================================
+       FAQ
+       ============================================ */
+    .faq {
+      padding: var(--space-12) 0;
+    }
+
+    .faq .section-headline {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .faq-list {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .faq-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(37, 99, 235, 0.3);
+    }
+
+    .faq-item.open {
+      border-left: 3px solid #2563EB;
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: left;
+      padding: var(--space-3) var(--space-4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      min-height: 48px;
+    }
+
+    .faq-question:hover {
+      background: rgba(255,255,255,0.03);
+    }
+
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+    }
+
+    .faq-answer-inner {
+      padding: 0 var(--space-4) var(--space-4);
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       FINAL CTA
+       ============================================ */
+    .final-cta {
+      padding: var(--space-12) 0;
+      text-align: center;
+    }
+
+    .final-cta h2 {
+      font-size: var(--font-2xl);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-5);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.2;
+    }
+
+    .guarantee-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(37, 99, 235, 0.1);
+      border: 1px solid rgba(37, 99, 235, 0.25);
+      border-radius: var(--radius);
+      padding: var(--space-2) var(--space-3);
+      margin-bottom: var(--space-4);
+      font-size: var(--font-sm);
+      color: var(--text-primary);
+      max-width: 600px;
+      text-align: left;
+    }
+
+    .guarantee-badge svg {
+      flex-shrink: 0;
+    }
+
+    .scarcity-line {
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-5);
+    }
+
+    .scarcity-count {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .unity-line {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-top: var(--space-5);
+      font-style: italic;
+    }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    .footer {
+      padding: var(--space-6) 0 var(--space-10);
+      text-align: center;
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-contact {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-4);
+      margin-bottom: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .footer-contact a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s ease;
+    }
+
+    .footer-contact a:hover {
+      color: #00E5FF;
+    }
+
+    .footer-response {
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+      font-size: 13px;
+    }
+
+    .footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      color: var(--text-primary);
+    }
+
+    /* ============================================
+       FORM PANEL
+       ============================================ */
+    .form-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .form-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .form-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 480px;
+      height: 100%;
+      background: var(--bg-card);
+      z-index: 2000;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-panel.active {
+      transform: translateX(0);
+    }
+
+    .form-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .form-panel-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .form-close {
+      width: 48px;
+      height: 48px;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+    }
+
+    .form-close:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .form-progress {
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .form-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.4s ease;
+      border-radius: 2px;
+    }
+
+    .form-body {
+      flex: 1;
+      padding: var(--space-5) var(--space-4);
+    }
+
+    .form-step {
+      display: none;
+    }
+
+    .form-step.active {
+      display: block;
+    }
+
+    .form-step h3 {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+      line-height: 1.3;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .radio-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: var(--space-2) var(--space-3);
+      background: rgba(255,255,255,0.04);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      min-height: 48px;
+      font-size: var(--font-base);
+    }
+
+    .radio-card:hover {
+      border-color: var(--accent);
+      background: rgba(37, 99, 235, 0.06);
+    }
+
+    .radio-card input {
+      display: none;
+    }
+
+    .radio-card .radio-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      flex-shrink: 0;
+      position: relative;
+      transition: border-color 0.2s ease;
+    }
+
+    .radio-card input:checked ~ .radio-dot {
+      border-color: var(--accent);
+    }
+
+    .radio-card input:checked ~ .radio-dot::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .form-input-group {
+      margin-bottom: var(--space-3);
+    }
+
+    .form-input-group label {
+      display: block;
+      font-size: var(--font-sm);
+      font-weight: 600;
+      margin-bottom: var(--space-1);
+      color: var(--text-secondary);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px var(--space-2);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: var(--font-base);
+      transition: border-color 0.2s ease;
+      min-height: 48px;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-input::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+
+    .form-trust {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: var(--space-3);
+    }
+
+    .form-trust svg {
+      flex-shrink: 0;
+    }
+
+    .form-submit {
+      width: 100%;
+      margin-top: var(--space-3);
+    }
+
+    .form-results {
+      display: none;
+      text-align: center;
+    }
+
+    .form-results.active {
+      display: block;
+    }
+
+    .form-results h3 {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-3);
+      color: var(--accent);
+    }
+
+    .results-number {
+      font-size: var(--font-3xl);
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: var(--space-1);
+    }
+
+    .results-detail {
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: var(--space-4);
+    }
+
+    .results-detail strong {
+      color: var(--text-primary);
+    }
+
+    .results-followup {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      background: rgba(37, 99, 235, 0.08);
+      padding: var(--space-3);
+      border-radius: var(--radius);
+      line-height: 1.6;
+    }
+
+    /* ============================================
+       RESPONSIVE — MOBILE FIRST
+       ============================================ */
+
+    /* Small phones - 375px base */
+    @media (max-width: 767px) {
+      .hero h1 {
+        font-size: var(--font-2xl);
+      }
+
+      .hero-sub {
+        font-size: var(--font-base);
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stat-number {
+        font-size: var(--font-lg);
+        min-height: 40px;
+      }
+
+      .stat-card {
+        padding: var(--space-3);
+      }
+
+      .section-headline {
+        font-size: var(--font-xl);
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+      }
+
+      .roi-flow {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .roi-result-number {
+        font-size: var(--font-xl);
+      }
+
+      .proof-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .qualify-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-panel {
+        width: 100%;
+      }
+
+      .mobile-bottom-cta {
+        display: flex;
+      }
+
+      .footer {
+        padding-bottom: var(--space-12);
+      }
+
+      .final-cta h2 {
+        font-size: var(--font-xl);
+      }
+
+      .bonus-card {
+        padding: var(--space-4);
+      }
+
+      .roi-card {
+        padding: var(--space-4);
+      }
+    }
+
+    /* Tablet */
+    @media (min-width: 768px) {
+      .mobile-bottom-cta {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: var(--font-2xl);
+      }
+    }
+
+    /* Small desktop */
+    @media (min-width: 1024px) {
+      .hero h1 {
+        font-size: var(--font-3xl);
+      }
+
+      .section-headline {
+        font-size: var(--font-2xl);
+      }
+    }
+
+    /* Large desktop */
+    @media (min-width: 1440px) {
+      .hero h1 {
+        font-size: var(--font-hero);
+      }
+
+      .container {
+        padding: 0 var(--space-5);
+      }
+    }
+
+    /* ============================================
+       SCROLL REVEAL ANIMATIONS
+       ============================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stagger children for sequenced reveals */
+    .reveal.visible .stat-card:nth-child(1),
+    .reveal.visible .step:nth-child(2) { transition-delay: 0s; }
+    .reveal.visible .stat-card:nth-child(2),
+    .reveal.visible .step:nth-child(3) { transition-delay: 0.1s; }
+    .reveal.visible .stat-card:nth-child(3),
+    .reveal.visible .step:nth-child(4) { transition-delay: 0.2s; }
+    .reveal.visible .stat-card:nth-child(4) { transition-delay: 0.3s; }
+
+    /* ============================================
+       ACCENT LINE + NOISE TEXTURE
+       ============================================ */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #2563EB, transparent);
+      z-index: 10000;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      z-index: 9999;
+    }
+
+    /* ============================================
+       REDUCED MOTION
+       ============================================ */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+
+      .hero::before {
+        animation: none;
+        opacity: 0.7;
+      }
+
+      .form-panel {
+        transition: none;
+      }
+
+      .form-overlay {
+        transition: none;
+      }
+
+      .faq-answer {
+        transition: none;
+      }
+
+      .play-btn {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================
+       NAV BAR
+       ============================================ -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="14" stroke="#00E5FF" stroke-width="1.5"/>
+          <circle cx="16" cy="16" r="4" fill="#00E5FF"/>
+          <line x1="16" y1="2" x2="16" y2="10" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="16" y1="22" x2="16" y2="30" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="2" y1="16" x2="10" y2="16" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="22" y1="16" x2="30" y2="16" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="5.86" y1="5.86" x2="11.17" y2="11.17" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="20.83" y1="20.83" x2="26.14" y2="26.14" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="26.14" y1="5.86" x2="20.83" y2="11.17" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="11.17" y1="20.83" x2="5.86" y2="26.14" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <span><span class="logo-prime">Prime</span> <span class="logo-ai">AI</span></span>
+      </a>
+      <!-- DEMO-NUMBER -->
+      <a href="tel:+31600000000" class="btn btn-primary btn-nav">Hear It Live</a>
+    </div>
+  </nav>
+
+  <!-- MOBILE BOTTOM CTA -->
+  <div class="mobile-bottom-cta">
+    <!-- DEMO-NUMBER -->
+    <a href="tel:+31600000000" class="btn">Call the AI Receptionist</a>
+  </div>
+
+  <!-- ============================================
+       HERO
+       ============================================ -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h1>Your Phone Rang 200 Times Last Month. You Answered 76 of Them.</h1>
+      <p class="hero-sub">62% of calls to small businesses go unanswered. Every one of them was someone ready to book — who is now calling the practice down the road. Prime AI answers all of them, 24/7, and books straight into your calendar.</p>
+      <!-- DEMO-NUMBER -->
+      <a href="tel:+31600000000" class="btn btn-primary">Call It Right Now — +31 6 XXXX XXXX</a>
+      <small class="micro-copy">Don't take our word for it. Phone the receptionist yourself and book a fake appointment. Takes 60 seconds.</small>
+      <p style="margin-top:var(--space-3);"><button class="btn btn-secondary cta-trigger">Or see what your missed calls cost</button></p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       STATS BAR
+       ============================================ -->
+  <section class="stats reveal" id="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" data-target="62" data-suffix="%">0%</div>
+          <div class="stat-label">of calls to small businesses go unanswered</div>
+          <div class="stat-source">Source: 411 Locals, 2024 — 85 businesses, 58 industries</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" data-target="21" data-suffix="x">0x</div>
+          <div class="stat-label">more likely to convert when you respond within 5 minutes</div>
+          <div class="stat-source">Source: Harvard Business Review</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" data-target="2791" data-prefix="€" data-suffix="/mo" data-format="currency">€0/mo</div>
+          <div class="stat-label">average salary of a human receptionist</div>
+          <div class="stat-source">Source: Indeed NL — before employer costs and holiday cover</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" data-target="168" data-suffix=" hrs">0 hrs</div>
+          <div class="stat-label">a week your phone is covered — versus 40 with a receptionist</div>
+          <div class="stat-source">Not a statistic. Just a calendar.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PROBLEM
+       ============================================ -->
+  <section class="problem reveal" id="problem">
+    <div class="container">
+      <h2 class="section-headline" style="text-align:center;">Does This Sound Familiar?</h2>
+      <ul class="pain-list">
+        <li class="pain-item">
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 12l2 2 4-4" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="10" stroke="#2563EB" stroke-width="2" opacity="0.3"/>
+          </svg>
+          <span>The phone rings while you're with a patient — it goes to voicemail, and they don't leave one</span>
+        </li>
+        <li class="pain-item">
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 12l2 2 4-4" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="10" stroke="#2563EB" stroke-width="2" opacity="0.3"/>
+          </svg>
+          <span>Someone calls at 19:40 with an urgent job — your competitor's line picks up, yours doesn't</span>
+        </li>
+        <li class="pain-item">
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 12l2 2 4-4" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="10" stroke="#2563EB" stroke-width="2" opacity="0.3"/>
+          </svg>
+          <span>You're paying for Google Ads that ring a phone nobody is free to answer</span>
+        </li>
+        <li class="pain-item">
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 12l2 2 4-4" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="10" stroke="#2563EB" stroke-width="2" opacity="0.3"/>
+          </svg>
+          <span>Your receptionist is excellent — and costs €2,791/month, takes holidays, and sleeps at night</span>
+        </li>
+      </ul>
+      <div class="section-cta">
+        <button class="btn btn-primary cta-trigger">See How Many Calls You're Missing</button>
+        <small class="micro-copy">Free audit. No commitment required.</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SOLUTION
+       ============================================ -->
+  <section class="solution reveal" id="solution">
+    <div class="container">
+      <h2 class="section-headline">The AI Receptionist</h2>
+      <div class="steps-grid">
+        <div class="steps-connector"></div>
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3 class="step-title">We Map Your Calls</h3>
+          <p class="step-desc">We look at when your phone rings, when it goes unanswered, and what those callers wanted — so you see exactly what you're missing before you spend a cent.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3 class="step-title">We Build Your Receptionist</h3>
+          <p class="step-desc">Trained on your services, your prices, your opening hours, and your rules for what counts as an emergency. It answers, qualifies, books into your calendar, and puts real emergencies straight through to you.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3 class="step-title">We Run It For You</h3>
+          <p class="step-desc">You do the work you're trained for. We monitor every call, tune the system weekly, and send you the transcripts — no software to learn, no dashboard to babysit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       BONUS STACK
+       ============================================ -->
+  <section class="bonus reveal" id="bonus">
+    <div class="container">
+      <div class="bonus-card">
+        <h2>What You Get With The AI Receptionist</h2>
+        <div class="bonus-item">
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>AI receptionist trained on your services, prices and hours <span class="bonus-value">— Core System</span></span>
+        </div>
+        <div class="bonus-item">
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Weekly call transcripts + performance report <span class="bonus-value">— €500/mo value</span></span>
+        </div>
+        <div class="bonus-item">
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Calendar &amp; booking system integration <span class="bonus-value">— €1,200 value</span></span>
+        </div>
+        <div class="bonus-item">
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>After-hours cover + emergency escalation rules <span class="bonus-value">— €800 value</span></span>
+        </div>
+        <div class="bonus-bottom">All included. It costs less than the receptionist you'd hire to cover a third of the hours.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       ROI CALCULATOR
+       ============================================ -->
+  <section class="roi reveal" id="roi">
+    <div class="container">
+      <div class="roi-card">
+        <h2>The Math Your Competition Doesn't Want You to See</h2>
+        <div class="roi-flow">
+          <div class="roi-step">
+            <div class="roi-step-value">200</div>
+            <div class="roi-step-label">calls per month</div>
+          </div>
+          <div class="roi-step">
+            <div class="roi-step-value">30%</div>
+            <div class="roi-step-label">go unanswered</div>
+          </div>
+          <div class="roi-step">
+            <div class="roi-step-value">21</div>
+            <div class="roi-step-label">were new customers</div>
+          </div>
+          <div class="roi-step">
+            <div class="roi-step-value">€2,500</div>
+            <div class="roi-step-label">average job value</div>
+          </div>
+        </div>
+        <div class="roi-result">
+          <div class="roi-result-number">€13,125/month</div>
+          <div class="roi-result-label">walking to the business down the road</div>
+        </div>
+        <p class="roi-killer">And that assumes you only miss 30% of calls — less than half the 62% industry average. At the average, it's over €27,000 a month.</p>
+        <p class="micro-copy" style="text-align:center; margin-top:var(--space-2);">Our assumptions, shown openly: roughly a third of inbound calls are new customers rather than existing ones, and a quarter of those would have booked. Change any of them in the calculator below.</p>
+        <div class="section-cta">
+          <button class="btn btn-primary cta-trigger" style="width:100%;">Calculate What Your Missed Calls Cost</button>
+          <small class="micro-copy">Free audit. The findings are yours to keep either way.</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PROOF / FOUNDER
+       ============================================ -->
+  <section class="proof reveal" id="proof">
+    <div class="container">
+      <h2 class="section-headline" style="text-align:center; margin-bottom:var(--space-6);">Built by Someone Who's Done This Before</h2>
+      <div class="proof-grid">
+        <div class="founder-section">
+          <div class="founder-photo">C</div>
+          <p class="founder-story">I spent 2 years building AI pipelines for a football academy that operates across 5 countries — AI qualification, instant response, automated nurture, AI call scoring. I watched it fill cohort after cohort. Then I started phoning local clinics and trades to ask how they handled their calls, and most of the time <em>nobody picked up.</em> That was the whole business case. I built Prime AI so that call gets answered.</p>
+          <p class="founder-story" style="margin-top:var(--space-2);"><em>"We're both tired of 'AI solutions' that are just glorified chatbots with a fancy dashboard. This one answers the phone, and we operate it for you."</em></p>
+          <p class="founder-creds">Dan — Full-stack AI engineer. Cybersecurity background. Production systems shipped across 5 countries.</p>
+        </div>
+        <div>
+          <div class="case-study-card">
+            <h3>Same System. Proven at Scale.</h3>
+            <p>Built a full AI lead pipeline — AI qualification, WhatsApp nurture, booked calls, AI call scoring — operating across 5 countries. Same system architecture. Now pointed at your phone line.</p>
+            <div class="case-study-countries">
+              <span class="country-tag">Mexico</span>
+              <span class="country-tag">UAE</span>
+              <span class="country-tag">Saudi Arabia</span>
+              <span class="country-tag">Canada</span>
+              <span class="country-tag">France</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-placeholder">
+          Clinic and trade results coming soon
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       VIDEO
+       ============================================ -->
+  <section class="video reveal" id="video">
+    <div class="container">
+      <div class="video-card" id="videoCard">
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="8,5 20,12 8,19" fill="white"/>
+          </svg>
+        </div>
+        <p>Hear a real call, start to finish</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PRE-QUALIFICATION
+       ============================================ -->
+  <section class="qualify reveal" id="qualify">
+    <div class="container">
+      <div class="qualify-grid">
+        <div class="qualify-col qualify-for">
+          <h3>This Is For You If...</h3>
+          <div class="qualify-item">
+            <svg class="qualify-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>You take 100+ calls a month and can't answer all of them</span>
+          </div>
+          <div class="qualify-item">
+            <svg class="qualify-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>One new customer is worth €1,000 or more to you</span>
+          </div>
+          <div class="qualify-item">
+            <svg class="qualify-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Your phone already rings outside opening hours — and nobody is there</span>
+          </div>
+        </div>
+        <div class="qualify-col qualify-not">
+          <h3>This Is NOT For You If...</h3>
+          <div class="qualify-item">
+            <svg class="qualify-icon" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#666" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span>You take fewer than 30 calls a month</span>
+          </div>
+          <div class="qualify-item">
+            <svg class="qualify-icon" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#666" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span>You want a phone menu you configure yourself</span>
+          </div>
+          <div class="qualify-item">
+            <svg class="qualify-icon" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#666" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span>You want the cheapest option, not the best results</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FAQ
+       ============================================ -->
+  <section class="faq reveal" id="faq">
+    <div class="container">
+      <h2 class="section-headline">Frequently Asked Questions</h2>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Will my callers know they're talking to an AI?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Most won't, and we don't think you should hide it. The receptionist introduces itself by your business name, speaks naturally, handles interruptions, and doesn't do the robotic call-menu thing. If a caller asks directly whether they're speaking to a person, it tells them the truth — that it's the practice's automated assistant and it can put them through to a human. Pretending otherwise is the fastest way to lose someone's trust, and in some contexts it's legally risky. Being upfront costs you almost nothing: callers care that their question got answered and their appointment got booked.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>What happens when it doesn't know the answer?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">It says so, takes a message, and escalates — it does not guess. This is the single most important design rule in the system, because a receptionist that invents a price or a treatment claim is worse than no receptionist at all. We build explicit boundaries during setup: what it can quote, what it must never quote, and which topics go straight to a human. Anything outside those boundaries becomes a callback request with full context attached, so whoever picks it up already knows what the caller wanted.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Does it actually book into my calendar, or just take messages?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">It books. We integrate directly with your practice management system or calendar, so the receptionist sees real availability and writes a real appointment — including the right appointment length for the treatment type, buffer time, and the right practitioner. Callers get a confirmation by SMS or email. Taking messages is the fallback for cases it can't complete, not the main mode.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>We handle patient data. What about GDPR?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner"><p style="margin-bottom:12px;">You're right to lead with this. Calls to a clinic routinely contain health data, which is special category data under Article 9 of the GDPR — a stricter standard than ordinary customer data, and it needs a lawful basis and a processor agreement in place before a single call is handled.</p><p style="margin-bottom:12px;">Practically, this is what we work through with you: whether audio is recorded at all (transcript-only is an option, and often the better one), how long anything is retained, where it is processed, and a signed processor agreement that keeps you as the data controller. You should also run the setup past whoever handles data protection for your practice — we'd rather you check than take our word for it.</p>This is a genuine consideration, not a checkbox. We'll go through it properly on the call before anything goes live.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>What about emergencies? Some calls can't wait.</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">You define what counts as an emergency in your field, in your words, during setup — and those calls break the normal flow immediately. The receptionist recognises them, skips the booking script, and either transfers live to your on-call number or triggers whatever escalation you specify. This is usually the part clinics and trades test hardest before going live, and it's the part we tune first.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>What if someone just wants to talk to a person?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">They ask, and it transfers — no loops, no insisting, no pressing 4 to return to the main menu. The receptionist exists to catch the 62% of calls that currently reach nobody at all, not to put a wall between you and your customers. In practice it handles the routine bookings and questions, and hands you the calls that genuinely need you, with the context already gathered.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Can it handle Dutch and English?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Yes, and it detects which one the caller is speaking rather than making them choose. For practices near a border or in a city with a lot of expat patients, this is usually one of the more immediately noticeable improvements over a human receptionist who is fluent in one and awkward in the other. Additional languages are possible depending on your patient mix — worth raising on the call.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>How long until it's live?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Two weeks from onboarding in most cases. The bulk of that is not technical — it's sitting down with you to capture your services, prices, opening hours, appointment types, and escalation rules accurately. We then run it in parallel with your existing setup so you can listen to real calls before it takes anything on its own. Nothing goes live on your main line until you've heard it work.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>Can't I just hire a receptionist, or use an answering service?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner"><p style="margin-bottom:12px;">You can, and for some practices that's the right answer. A receptionist in the Netherlands averages around €2,791 a month before employer costs, holiday cover, and sick days — for roughly 40 of the 168 hours in a week. The evenings, weekends, and lunch breaks are precisely when the calls you're losing come in.</p>An answering service covers more hours but usually takes a message rather than booking, doesn't know your treatment types, and hands you a callback list to work through. Our system books the appointment while the caller is still on the phone, which is the entire point — a callback list is just a slower way of losing the ones who already phoned someone else.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>What's the investment?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner"><p style="margin-bottom:12px;">It depends on your call volume and how complex your booking rules are, so we quote it after we understand your setup rather than putting a number on a web page that's wrong for half the people reading it.</p>The useful comparison: a practice taking 200 calls a month and missing 30% of them is losing somewhere around €13,000 a month in work that goes to a competitor. Our pricing sits well below the cost of the receptionist you'd hire to cover a third of those hours. If the audit shows the numbers don't work for your practice, we'll tell you that instead of selling you something.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FINAL CTA + GUARANTEE + SCARCITY
+       ============================================ -->
+  <section class="final-cta reveal" id="final-cta">
+    <div class="container">
+      <h2>Stop Losing Customers to the Business That Simply Picked Up the Phone.</h2>
+
+      <div class="guarantee-badge">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="#2563EB" opacity="0.2"/>
+          <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="#2563EB" stroke-width="1.5"/>
+          <path d="M9 12l2 2 4-4" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>If your answered-call rate doesn't improve within 90 days, we'll keep optimising at no cost until it does. And the audit findings are yours to keep either way.</span>
+      </div>
+
+      <!-- TODO: keep this month current, or delete the line. It read "June" for months. -->
+      <p class="scarcity-line">We onboard 5 businesses per month to guarantee hands-on setup. <span class="scarcity-count">3 spots remaining for August.</span></p>
+
+      <!-- DEMO-NUMBER -->
+      <a href="tel:+31600000000" class="btn btn-primary" style="font-size:18px; padding:18px 40px;">Call the AI Receptionist — +31 6 XXXX XXXX</a>
+      <small class="micro-copy">Or <button class="btn-link cta-trigger">book your free call audit</button> — no commitment required.</small>
+      <p class="unity-line">Built for practices that refuse to let the phone ring out.</p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-contact">
+        <a href="mailto:dan@primeai.agency">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+          dan@primeai.agency
+        </a>
+        <a href="https://linkedin.com/in/danielkooij" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+      <div class="footer-response">We respond within 2 hours on business days.</div>
+      &copy; Prime AI 2026 &nbsp;|&nbsp; <a href="#">Privacy Policy</a>
+    </div>
+  </footer>
+
+  <!-- ============================================
+       FORM PANEL (SLIDE-IN)
+       ============================================ -->
+  <div class="form-overlay" id="formOverlay"></div>
+  <div class="form-panel" id="formPanel">
+    <div class="form-panel-header">
+      <span class="form-panel-title">Your Free Audit</span>
+      <button class="form-close" id="formClose" aria-label="Close form">&times;</button>
+    </div>
+    <div class="form-progress">
+      <div class="form-progress-bar" id="progressBar" style="width:20%"></div>
+    </div>
+    <div class="form-body">
+
+      <!-- Step 1 -->
+      <div class="form-step active" id="formStep1">
+        <h3>How many calls do you take per month?</h3>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="calls" value="fewer than 50">
+            <span class="radio-dot"></span>
+            Fewer than 50
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="calls" value="50-150">
+            <span class="radio-dot"></span>
+            50 &ndash; 150
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="calls" value="150-300">
+            <span class="radio-dot"></span>
+            150 &ndash; 300
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="calls" value="300+">
+            <span class="radio-dot"></span>
+            300+
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="form-step" id="formStep2">
+        <h3>What happens now when nobody can answer?</h3>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="unanswered" value="just rings out">
+            <span class="radio-dot"></span>
+            It just rings out
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="unanswered" value="goes to voicemail">
+            <span class="radio-dot"></span>
+            Goes to voicemail
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="unanswered" value="reaches an answering service">
+            <span class="radio-dot"></span>
+            An answering service takes a message
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="unanswered" value="gets answered eventually">
+            <span class="radio-dot"></span>
+            Someone usually grabs it eventually
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="form-step" id="formStep3">
+        <h3>What kind of business are you?</h3>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="sector" value="Dental or medical">
+            <span class="radio-dot"></span>
+            Dental or medical practice
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="sector" value="Cosmetic or aesthetic">
+            <span class="radio-dot"></span>
+            Cosmetic or aesthetic clinic
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="sector" value="Legal or professional">
+            <span class="radio-dot"></span>
+            Legal or professional services
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="sector" value="Trades">
+            <span class="radio-dot"></span>
+            Trades &mdash; HVAC, plumbing, electrical
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="form-step" id="formStep4">
+        <h3>What's a new customer typically worth to you?</h3>
+        <div class="radio-group">
+          <label class="radio-card">
+            <input type="radio" name="jobvalue" value="<500">
+            <span class="radio-dot"></span>
+            Under &euro;500
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="jobvalue" value="500-1500">
+            <span class="radio-dot"></span>
+            &euro;500 &ndash; &euro;1,500
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="jobvalue" value="1500-5000">
+            <span class="radio-dot"></span>
+            &euro;1,500 &ndash; &euro;5,000
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="jobvalue" value="5000+">
+            <span class="radio-dot"></span>
+            &euro;5,000+
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="form-step" id="formStep5">
+        <h3>Where should we send your call audit?</h3>
+        <div class="form-input-group">
+          <label for="formName">Full Name</label>
+          <input type="text" id="formName" class="form-input" placeholder="John Smith" required>
+        </div>
+        <div class="form-input-group">
+          <label for="formEmail">Email</label>
+          <input type="email" id="formEmail" class="form-input" placeholder="john@example.com" required>
+        </div>
+        <div class="form-input-group">
+          <label for="formPhone">Phone</label>
+          <input type="tel" id="formPhone" class="form-input" placeholder="+1 (555) 123-4567" required>
+        </div>
+        <button class="btn btn-primary form-submit" id="formSubmitBtn">Show My Results</button>
+        <div class="form-trust">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="#888" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>Your information is secure. We'll show you exactly how many calls you're missing. No spam, ever.</span>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="form-results" id="formResults">
+        <h3>Your Missed Call Report</h3>
+        <div class="results-number" id="resultsLostLeads"></div>
+        <div class="results-detail" id="resultsDetail"></div>
+        <div class="results-followup">We'll reach out within 2 hours with your full call audit — including which of those calls you can realistically recover.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================
+       JAVASCRIPT
+       ============================================ -->
+  <script>
+    (function() {
+      'use strict';
+
+      // --- NAV SCROLL SHADOW ---
+      var nav = document.getElementById('nav');
+      var lastScrollY = 0;
+
+      function onScroll() {
+        var scrollY = window.scrollY || window.pageYOffset;
+        if (scrollY > 20) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+        lastScrollY = scrollY;
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // --- ANIMATED STAT COUNTERS ---
+      var statNumbers = document.querySelectorAll('.stat-number[data-target]');
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function animateCounter(el) {
+        var target = parseInt(el.getAttribute('data-target'), 10);
+        var prefix = el.getAttribute('data-prefix') || '';
+        var suffix = el.getAttribute('data-suffix') || '';
+        var isCurrency = el.getAttribute('data-format') === 'currency';
+
+        if (prefersReducedMotion) {
+          el.textContent = prefix + (isCurrency ? target.toLocaleString('en-US') : target) + suffix;
+          return;
+        }
+
+        var duration = 1800;
+        var startTime = null;
+
+        function step(timestamp) {
+          if (!startTime) startTime = timestamp;
+          var progress = Math.min((timestamp - startTime) / duration, 1);
+          // ease-out cubic
+          var eased = 1 - Math.pow(1 - progress, 3);
+          var current = Math.round(eased * target);
+          el.textContent = prefix + (isCurrency ? current.toLocaleString('en-US') : current) + suffix;
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          }
+        }
+
+        requestAnimationFrame(step);
+      }
+
+      var statsObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            statsObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      statNumbers.forEach(function(el) {
+        statsObserver.observe(el);
+      });
+
+      // --- FAQ ACCORDION ---
+      var faqItems = document.querySelectorAll('.faq-item');
+
+      faqItems.forEach(function(item) {
+        var question = item.querySelector('.faq-question');
+        question.addEventListener('click', function() {
+          var isOpen = item.classList.contains('open');
+
+          // Close all other items
+          faqItems.forEach(function(other) {
+            if (other !== item) {
+              other.classList.remove('open');
+              other.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+            }
+          });
+
+          // Toggle current
+          if (isOpen) {
+            item.classList.remove('open');
+            question.setAttribute('aria-expanded', 'false');
+          } else {
+            item.classList.add('open');
+            question.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      // --- FORM PANEL ---
+      var formOverlay = document.getElementById('formOverlay');
+      var formPanel = document.getElementById('formPanel');
+      var formClose = document.getElementById('formClose');
+      var progressBar = document.getElementById('progressBar');
+      var ctaTriggers = document.querySelectorAll('.cta-trigger');
+
+      var formStep1 = document.getElementById('formStep1');
+      var formStep2 = document.getElementById('formStep2');
+      var formStep3 = document.getElementById('formStep3');
+      var formStep4 = document.getElementById('formStep4');
+      var formStep5 = document.getElementById('formStep5');
+      var formResults = document.getElementById('formResults');
+      var formSubmitBtn = document.getElementById('formSubmitBtn');
+
+      var selectedCalls = null;
+      var selectedUnanswered = null;
+      var selectedSector = null;
+      var selectedJobValue = null;
+
+      function openForm() {
+        formPanel.classList.add('active');
+        formOverlay.classList.add('active');
+        document.body.classList.add('scroll-locked');
+        showStep(1);
+        selectedCalls = null;
+        selectedUnanswered = null;
+        selectedSector = null;
+        selectedJobValue = null;
+        document.querySelectorAll('.form-step input[type="radio"]').forEach(function(r) { r.checked = false; });
+        document.getElementById('formName').value = '';
+        document.getElementById('formEmail').value = '';
+        document.getElementById('formPhone').value = '';
+        formResults.classList.remove('active');
+        formStep1.classList.add('active');
+      }
+
+      function closeForm() {
+        formPanel.classList.remove('active');
+        formOverlay.classList.remove('active');
+        document.body.classList.remove('scroll-locked');
+      }
+
+      function showStep(stepNum) {
+        formStep1.classList.remove('active');
+        formStep2.classList.remove('active');
+        formStep3.classList.remove('active');
+        formStep4.classList.remove('active');
+        formStep5.classList.remove('active');
+        formResults.classList.remove('active');
+
+        if (stepNum === 1) {
+          formStep1.classList.add('active');
+          progressBar.style.width = '20%';
+        } else if (stepNum === 2) {
+          formStep2.classList.add('active');
+          progressBar.style.width = '40%';
+        } else if (stepNum === 3) {
+          formStep3.classList.add('active');
+          progressBar.style.width = '60%';
+        } else if (stepNum === 4) {
+          formStep4.classList.add('active');
+          progressBar.style.width = '80%';
+        } else if (stepNum === 5) {
+          formStep5.classList.add('active');
+          progressBar.style.width = '100%';
+        }
+      }
+
+      // CTA triggers
+      ctaTriggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          openForm();
+        });
+      });
+
+      // Close triggers
+      formClose.addEventListener('click', closeForm);
+      formOverlay.addEventListener('click', closeForm);
+
+      // Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && formPanel.classList.contains('active')) {
+          closeForm();
+        }
+      });
+
+      // Step 1 - auto-advance on radio select
+      document.querySelectorAll('input[name="calls"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          selectedCalls = this.value;
+          setTimeout(function() { showStep(2); }, 300);
+        });
+      });
+
+      // Step 2 - auto-advance on radio select
+      document.querySelectorAll('input[name="unanswered"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          selectedUnanswered = this.value;
+          setTimeout(function() { showStep(3); }, 300);
+        });
+      });
+
+      // Step 3 - auto-advance on radio select
+      document.querySelectorAll('input[name="sector"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          selectedSector = this.value;
+          setTimeout(function() { showStep(4); }, 300);
+        });
+      });
+
+      // Step 4 - auto-advance on radio select
+      document.querySelectorAll('input[name="jobvalue"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+          selectedJobValue = this.value;
+          setTimeout(function() { showStep(5); }, 300);
+        });
+      });
+
+      // Step 5 - form submission
+      formSubmitBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        var name = document.getElementById('formName').value.trim();
+        var email = document.getElementById('formEmail').value.trim();
+        var phone = document.getElementById('formPhone').value.trim();
+
+        if (!name || !email || !phone) {
+          return;
+        }
+
+        // Calculate loss
+        var result = calculateLoss(selectedCalls, selectedUnanswered, selectedJobValue);
+
+        // Show results
+        formStep5.classList.remove('active');
+        formResults.classList.add('active');
+        progressBar.style.width = '100%';
+
+        // Build results using safe DOM methods
+        document.getElementById('resultsLostLeads').textContent =
+          result.missedCalls + ' calls missed per month';
+
+        var detailEl = document.getElementById('resultsDetail');
+        while (detailEl.firstChild) {
+          detailEl.removeChild(detailEl.firstChild);
+        }
+
+        function frag(text, bold) {
+          if (!bold) { return document.createTextNode(text); }
+          var el = document.createElement('strong');
+          el.textContent = text;
+          return el;
+        }
+
+        [
+          ['At ', 0], [selectedCalls + ' calls a month', 1],
+          [' where the phone ', 0], [selectedUnanswered, 1],
+          [', roughly ', 0], [String(result.missedNewCustomers) + ' of the callers you miss', 1],
+          [' are new customers rather than existing ones. At your average customer value that is ', 0],
+          ['\u20AC' + result.lostRevenue.toLocaleString('en-US') + ' a month', 1],
+          [' in work going to someone else.', 0]
+        ].forEach(function(part) {
+          detailEl.appendChild(frag(part[0], part[1]));
+        });
+      });
+
+      function calculateLoss(callsPerMonth, unanswered, jobValue) {
+        var callCounts = { 'fewer than 50': 35, '50-150': 100, '150-300': 225, '300+': 400 };
+        var missRates  = { 'just rings out': 0.45, 'goes to voicemail': 0.35, 'reaches an answering service': 0.15, 'gets answered eventually': 0.10 };
+        var jobValues  = { '<500': 350, '500-1500': 1000, '1500-5000': 3000, '5000+': 8000 };
+        // A EUR 5,000 job does not close off a first phone call as often as a EUR 400 one.
+        var closeRates = { '<500': 0.35, '500-1500': 0.30, '1500-5000': 0.20, '5000+': 0.12 };
+        // Most inbound calls are existing customers, suppliers or spam - not new business.
+        // Without this the numbers inflate to figures no owner believes.
+        var NEW_CUSTOMER_SHARE = 0.35;
+
+        var calls = callCounts[callsPerMonth] || 100;
+        var rate  = missRates[unanswered] || 0.35;
+        var value = jobValues[jobValue] || 1000;
+        var close = closeRates[jobValue] || 0.30;
+
+        var missedCalls = Math.round(calls * rate);
+        var missedNewCustomers = Math.round(missedCalls * NEW_CUSTOMER_SHARE);
+        var lostRevenue = Math.round(missedNewCustomers * value * close);
+        return {
+          missedCalls: missedCalls,
+          missedNewCustomers: missedNewCustomers,
+          lostRevenue: lostRevenue
+        };
+      }
+
+      // --- VIDEO PLACEHOLDER ---
+      var videoCard = document.getElementById('videoCard');
+      videoCard.addEventListener('click', function() {
+        alert('Video coming soon — we\'re recording the walkthrough now.');
+      });
+
+      // --- SMOOTH SCROLL FOR ANCHOR LINKS ---
+      document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+
+      // --- SCROLL-TRIGGERED REVEAL ANIMATIONS ---
+      if (!prefersReducedMotion) {
+        var revealElements = document.querySelectorAll('.reveal');
+        var revealObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(function(el) {
+          revealObserver.observe(el);
+        });
+      } else {
+        // If reduced motion, make all reveals visible immediately
+        document.querySelectorAll('.reveal').forEach(function(el) {
+          el.classList.add('visible');
+        });
+      }
+
+    })();
+  </script>
+
+</body>
+</html>
