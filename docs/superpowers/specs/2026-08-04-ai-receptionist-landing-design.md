@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-04
 **Status:** Approved, in build
-**Deliverable:** `receptionist-dark-closer.html` + `index.html` update
+**Deliverable:** `receptionist.html` + `index.html` update
 
 ## Goal
 
@@ -36,7 +36,7 @@ Do not push to GitHub Pages until the number resolves.
 ## Files
 
 ```
-receptionist-dark-closer.html   cp of variant-a-dark-closer.html, content rewritten
+receptionist.html   cp of variant-a-dark-closer.html, content rewritten
 index.html                      two groups: Real Estate / AI Receptionist
 ```
 

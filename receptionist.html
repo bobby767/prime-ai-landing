@@ -17,12 +17,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #0A0A0A;
-      --bg-card: #111111;
+      --bg-primary: #FAFAFA;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F1F5F9;
       --accent: #2563EB;
       --accent-hover: #1D4ED8;
-      --text-primary: #FFFFFF;
-      --text-secondary: rgba(255, 255, 255, 0.6);
+      --brand-cyan: #0891B2;
+      --text-primary: #0F172A;
+      --text-secondary: rgba(15, 23, 42, 0.62);
+      /* Text sitting ON the accent colour. Must not follow --text-primary,
+         or blue buttons end up with dark text when the theme is light. */
+      --text-on-accent: #FFFFFF;
+      --border-subtle: #E2E8F0;
+      --border-strong: #CBD5E1;
+      --surface-hover: rgba(15, 23, 42, 0.03);
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.04);
       --font-heading: 'Space Grotesk', sans-serif;
       --font-body: 'Outfit', sans-serif;
       --font-base: 16px;
@@ -94,11 +104,12 @@
       right: 0;
       z-index: 1000;
       background: var(--bg-primary);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--border-subtle);
       transition: box-shadow 0.3s ease;
     }
 
     .nav.scrolled {
+      box-shadow: var(--shadow-sm);
       box-shadow: 0 2px 16px rgba(0,0,0,0.5);
     }
 
@@ -132,7 +143,7 @@
     }
 
     .nav-logo .logo-ai {
-      color: #00E5FF;
+      color: #0891B2;
     }
 
     .btn {
@@ -158,7 +169,7 @@
 
     .btn-primary {
       background: var(--accent);
-      color: var(--text-primary);
+      color: var(--text-on-accent);
     }
 
     .btn-primary:hover {
@@ -174,7 +185,7 @@
     .btn-secondary {
       background: transparent;
       color: var(--text-secondary);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid var(--border-strong);
     }
 
     .btn-secondary:hover {
@@ -212,7 +223,7 @@
     .mobile-bottom-cta .btn {
       width: 100%;
       background: transparent;
-      color: var(--text-primary);
+      color: var(--text-on-accent);
       font-weight: 700;
       padding: 14px;
     }
@@ -287,10 +298,11 @@
        GLASSMORPHISM
        ============================================ */
     .glass-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
     }
 
     /* ============================================
@@ -308,10 +320,11 @@
     }
 
     .stat-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius);
       padding: var(--space-4);
       text-align: center;
@@ -376,7 +389,7 @@
       align-items: flex-start;
       gap: var(--space-2);
       padding: var(--space-3) 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--border-subtle);
       font-size: 18px;
       line-height: 1.6;
     }
@@ -421,6 +434,7 @@
     }
 
     .step-number {
+      color: var(--text-on-accent);
       width: 56px;
       height: 56px;
       background: var(--accent);
@@ -473,10 +487,11 @@
     }
 
     .bonus-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
       border-left: 4px solid var(--accent);
       border-radius: var(--radius);
       padding: var(--space-6);
@@ -515,7 +530,7 @@
     .bonus-bottom {
       margin-top: var(--space-4);
       padding-top: var(--space-4);
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid var(--border-subtle);
       font-weight: 700;
       font-size: 18px;
     }
@@ -528,7 +543,8 @@
     }
 
     .roi-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 2px solid var(--accent);
@@ -576,8 +592,8 @@
     .roi-result {
       text-align: center;
       padding: var(--space-4) 0;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
       margin-bottom: var(--space-4);
     }
 
@@ -625,7 +641,7 @@
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: #1a1a2e;
+      background: rgba(37, 99, 235, 0.12);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -650,7 +666,7 @@
       font-size: var(--font-sm);
       color: var(--text-secondary);
       padding-top: var(--space-2);
-      border-top: 1px solid rgba(255,255,255,0.06);
+      border-top: 1px solid var(--border-subtle);
     }
 
     .case-study-card {
@@ -690,7 +706,7 @@
 
     .country-tag {
       background: rgba(37, 99, 235, 0.12);
-      color: var(--accent);
+      color: var(--accent-hover);
       font-size: 12px;
       font-weight: 600;
       padding: 4px 10px;
@@ -698,7 +714,7 @@
     }
 
     .testimonial-placeholder {
-      border: 1px dashed rgba(255,255,255,0.15);
+      border: 1px dashed var(--border-subtle);
       border-radius: var(--radius);
       padding: var(--space-4);
       text-align: center;
@@ -724,7 +740,7 @@
       margin: 0 auto;
       cursor: pointer;
       transition: border-color 0.3s ease;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid var(--border-subtle);
     }
 
     .video-card:hover {
@@ -857,7 +873,7 @@
     }
 
     .faq-question:hover {
-      background: rgba(255,255,255,0.03);
+      background: var(--surface-hover);
     }
 
     .faq-chevron {
@@ -952,7 +968,7 @@
       text-align: center;
       font-size: var(--font-sm);
       color: var(--text-secondary);
-      border-top: 1px solid rgba(255,255,255,0.06);
+      border-top: 1px solid var(--border-subtle);
     }
 
     .footer-contact {
@@ -974,7 +990,7 @@
     }
 
     .footer-contact a:hover {
-      color: #00E5FF;
+      color: #0891B2;
     }
 
     .footer-response {
@@ -1034,7 +1050,7 @@
       align-items: center;
       justify-content: space-between;
       padding: var(--space-3) var(--space-4);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--border-subtle);
     }
 
     .form-panel-title {
@@ -1057,12 +1073,12 @@
     }
 
     .form-close:hover {
-      background: rgba(255,255,255,0.06);
+      background: var(--surface-hover);
     }
 
     .form-progress {
       height: 4px;
-      background: rgba(255,255,255,0.1);
+      background: var(--border-subtle);
     }
 
     .form-progress-bar {
@@ -1103,8 +1119,8 @@
       align-items: center;
       gap: 12px;
       padding: var(--space-2) var(--space-3);
-      background: rgba(255,255,255,0.04);
-      border: 2px solid rgba(255,255,255,0.1);
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
       border-radius: var(--radius);
       cursor: pointer;
       transition: border-color 0.2s ease, background 0.2s ease;
@@ -1125,7 +1141,7 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.3);
+      border: 2px solid var(--border-strong);
       flex-shrink: 0;
       position: relative;
       transition: border-color 0.2s ease;
@@ -1161,8 +1177,8 @@
     .form-input {
       width: 100%;
       padding: 14px var(--space-2);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.15);
+      background: var(--surface-hover);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius);
       color: var(--text-primary);
       font-family: inherit;
@@ -1177,7 +1193,7 @@
     }
 
     .form-input::placeholder {
-      color: rgba(255,255,255,0.3);
+      color: var(--text-secondary);
     }
 
     .form-trust {
@@ -1452,16 +1468,16 @@
     <div class="nav-inner">
       <a href="#" class="nav-logo">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="16" cy="16" r="14" stroke="#00E5FF" stroke-width="1.5"/>
-          <circle cx="16" cy="16" r="4" fill="#00E5FF"/>
-          <line x1="16" y1="2" x2="16" y2="10" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="16" y1="22" x2="16" y2="30" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="2" y1="16" x2="10" y2="16" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="22" y1="16" x2="30" y2="16" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="5.86" y1="5.86" x2="11.17" y2="11.17" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="20.83" y1="20.83" x2="26.14" y2="26.14" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="26.14" y1="5.86" x2="20.83" y2="11.17" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="11.17" y1="20.83" x2="5.86" y2="26.14" stroke="#00E5FF" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <circle cx="16" cy="16" r="14" stroke="#0891B2" stroke-width="1.5"/>
+          <circle cx="16" cy="16" r="4" fill="#0891B2"/>
+          <line x1="16" y1="2" x2="16" y2="10" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="16" y1="22" x2="16" y2="30" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="2" y1="16" x2="10" y2="16" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="22" y1="16" x2="30" y2="16" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="5.86" y1="5.86" x2="11.17" y2="11.17" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="20.83" y1="20.83" x2="26.14" y2="26.14" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="26.14" y1="5.86" x2="20.83" y2="11.17" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="11.17" y1="20.83" x2="5.86" y2="26.14" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
         </svg>
         <span><span class="logo-prime">Prime</span> <span class="logo-ai">AI</span></span>
       </a>
@@ -1665,7 +1681,7 @@
       <h2 class="section-headline" style="text-align:center; margin-bottom:var(--space-6);">Built by Someone Who's Done This Before</h2>
       <div class="proof-grid">
         <div class="founder-section">
-          <div class="founder-photo">C</div>
+          <div class="founder-photo">D</div>
           <p class="founder-story">I spent 2 years building AI pipelines for a football academy that operates across 5 countries — AI qualification, instant response, automated nurture, AI call scoring. I watched it fill cohort after cohort. Then I started phoning local clinics and trades to ask how they handled their calls, and most of the time <em>nobody picked up.</em> That was the whole business case. I built Prime AI so that call gets answered.</p>
           <p class="founder-story" style="margin-top:var(--space-2);"><em>"We're both tired of 'AI solutions' that are just glorified chatbots with a fancy dashboard. This one answers the phone, and we operate it for you."</em></p>
           <p class="founder-creds">Dan — Full-stack AI engineer. Cybersecurity background. Production systems shipped across 5 countries.</p>

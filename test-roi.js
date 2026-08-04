@@ -1,4 +1,4 @@
-// Checks the missed-call ROI model in receptionist-dark-closer.html.
+// Checks the missed-call ROI model in receptionist.html.
 // Run: node test-roi.js
 //
 // The radio `value` attributes double as lookup keys in calculateLoss AND as
@@ -9,7 +9,7 @@
 const fs = require('fs');
 const assert = require('assert');
 
-const html = fs.readFileSync(__dirname + '/receptionist-dark-closer.html', 'utf8');
+const html = fs.readFileSync(__dirname + '/receptionist.html', 'utf8');
 
 // new Function() on file contents is deliberate here: the input is our own
 // committed HTML, read by a dev running this locally. Parsing the maps out
