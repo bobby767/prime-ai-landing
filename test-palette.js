@@ -15,14 +15,19 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
 const root = src.match(/:root\s*\{([\s\S]*?)\n\s*\}/);
 if (!root) fail.push('no :root block found');
 const tok = {};
-for (const m of (root ? root[1] : '').matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) tok[m[1]] = m[2].trim();
+// Capture the declaration AND the rest of its line. oklch() tokens carry their
+// hex in a trailing comment that sits after the semicolon, so a pattern ending
+// at the semicolon would never see it and every contrast check would report a
+// missing hex regardless of the palette being correct.
+for (const m of (root ? root[1] : '').matchAll(/(--[\w-]+)\s*:\s*([^;]+);([^\n]*)/g)) {
+  tok[m[1]] = { value: m[2].trim(), comment: (m[3] || '').trim() };
+}
 
-// Hex value per token. oklch() values carry a trailing /* #RRGGBB */ comment
-// so this script can check them without a colour-space library.
+// Hex value per token, read from the value itself or from its trailing comment.
 const hexOf = name => {
-  const v = tok[name];
-  if (!v) return null;
-  const direct = v.match(/#[0-9A-Fa-f]{6}/);
+  const t = tok[name];
+  if (!t) return null;
+  const direct = (t.value + ' ' + t.comment).match(/#[0-9A-Fa-f]{6}/);
   return direct ? direct[0].toUpperCase() : null;
 };
 
@@ -48,10 +53,19 @@ for (const [fg, bg, min] of PAIRS) {
   if (r < min) fail.push(`contrast ${fg} on ${bg} = ${r.toFixed(2)}:1, need ${min}:1`);
 }
 
-// Amber must NOT be usable as body text on sand — assert the constraint is real,
-// so a future palette tweak that silently makes it passable gets flagged for review.
-const amberSand = (hexOf('--amber') && hexOf('--sand')) ? ratio(hexOf('--amber'), hexOf('--sand')) : 0;
-if (amberSand >= 3.0) fail.push(`--amber on --sand is now ${amberSand.toFixed(2)}:1; spec assumes it is unusable as type. Update the spec before relaxing this.`);
+// Amber must NOT be usable as body text on sand. Assert the constraint is real,
+// so a future palette tweak that silently makes it passable gets flagged.
+// Never fall back to a passing value when a hex is missing: a check that skips
+// itself silently is worse than no check at all.
+{
+  const a = hexOf('--amber'), s = hexOf('--sand');
+  if (!a || !s) {
+    fail.push('cannot check the --amber on --sand constraint: missing hex for --amber or --sand');
+  } else {
+    const r = ratio(a, s);
+    if (r >= 3.0) fail.push(`--amber on --sand is now ${r.toFixed(2)}:1; the spec assumes it is unusable as type. Update the spec before relaxing this.`);
+  }
+}
 
 // ---- dead tokens ----------------------------------------------------
 for (const name of Object.keys(tok)) {
@@ -65,10 +79,10 @@ const BANS = [
   [/backdrop-filter/g,                 'backdrop-filter (dead over opaque bg)'],
   [/border-left:\s*[2-9]px/g,          'side-stripe border-left'],
   [/border-right:\s*[2-9]px/g,         'side-stripe border-right'],
-  [/rgba\(\s*0\s*,\s*0\s*,\s*0/g,      'rgba(0,0,0,x) — use a tinted ink'],
-  [/rgba\(\s*255\s*,\s*255\s*,\s*255/g,'rgba(255,255,255,x) — use a tinted paper'],
-  [/rgba\(\s*37,\s*99,\s*235/g,        'hardcoded accent rgba — use a token'],
-  [/rgba\(\s*15,\s*23,\s*42/g,         'cool slate shadow — retint warm'],
+  [/rgba\(\s*0\s*,\s*0\s*,\s*0/g,      'rgba(0,0,0,x): use a tinted ink'],
+  [/rgba\(\s*255\s*,\s*255\s*,\s*255/g,'rgba(255,255,255,x): use a tinted paper'],
+  [/rgba\(\s*37,\s*99,\s*235/g,        'hardcoded accent rgba: use a token'],
+  [/rgba\(\s*15,\s*23,\s*42/g,         'cool slate shadow: retint warm'],
   [/background-clip:\s*text/g,         'gradient text'],
 ];
 for (const [re, label] of BANS) {
@@ -88,4 +102,4 @@ if (demo !== 5) fail.push(`expected 5 DEMO-NUMBER markers, found ${demo}`);
 
 // ---- report ----------------------------------------------------------
 if (fail.length) { console.error('FAIL\n' + fail.map(f => '  - ' + f).join('\n')); process.exit(1); }
-console.log(`OK — ${PAIRS.length} contrast pairs, ${BANS.length} ban rules, ${Object.keys(tok).length} tokens checked`);
+console.log(`OK: ${PAIRS.length} contrast pairs, ${BANS.length} ban rules, ${Object.keys(tok).length} tokens checked`);
