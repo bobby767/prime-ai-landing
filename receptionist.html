@@ -17,22 +17,43 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #FAFAFA;
-      --bg-card: #FFFFFF;
-      --bg-subtle: #F1F5F9;
-      --accent: #2563EB;
+      /* Warm neutral scale. Every value carries its hex in a comment because
+         test-palette.js checks contrast without an oklch conversion library. */
+      --paper:     oklch(0.98 0.006 70);  /* #FAF8F5 */
+      --shell:     oklch(0.96 0.008 70);  /* #F5F1EA */
+      --sand:      oklch(0.93 0.012 68);  /* #EBE5DC */
+      --clay:      oklch(0.87 0.016 65);  /* #DED6CA */
+      --ink:       oklch(0.19 0.014 48);  /* #221D19 */
+      --ink-deep:  oklch(0.14 0.012 45);  /* #171310 */
+
+      /* Amber carries money. Text-safe on ink at any size; on paper/shell only
+         at >=24px or >=18.66px bold; never as type on sand (2.95:1). */
+      --amber:     oklch(0.62 0.12 50);   /* #C2703D */
+
+      /* Blue is buttons, links, and form affordances. Not decoration. */
+      --accent:       #2563EB;
       --accent-hover: #1D4ED8;
-      --brand-cyan: #0891B2;
-      --text-primary: #0F172A;
-      --text-secondary: rgba(15, 23, 42, 0.62);
       /* Text sitting ON the accent colour. Must not follow --text-primary,
          or blue buttons end up with dark text when the theme is light. */
-      --text-on-accent: #FFFFFF;
-      --border-subtle: #E2E8F0;
-      --border-strong: #CBD5E1;
-      --surface-hover: rgba(15, 23, 42, 0.03);
-      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
-      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.04);
+      --text-on-accent: var(--paper);
+
+      --text-primary:   oklch(0.19 0.014 48);  /* #221D19 */
+      --text-secondary: oklch(0.48 0.02 55);   /* #6B5F54 */
+      --text-on-ink:    oklch(0.75 0.015 60);  /* #B8ABA0 */
+
+      --border-subtle: var(--clay);
+      --border-strong: oklch(0.80 0.02 62);    /* #C9BCAC */
+      --surface-hover: oklch(0.19 0.014 48 / 0.04);
+
+      /* Tints, replacing 14 hardcoded rgba(37,99,235,x) sites. */
+      --tint-amber:   oklch(0.62 0.12 50 / 0.10);
+      --tint-accent:  oklch(0.55 0.22 264 / 0.08);
+      --tint-on-ink:  oklch(0.98 0.006 70 / 0.07);
+
+      /* Warm shadows. The old values were rgba(15,23,42,x) cool slate. */
+      --shadow-sm:   0 1px 2px oklch(0.19 0.014 48 / 0.05), 0 1px 3px oklch(0.19 0.014 48 / 0.07);
+      --shadow-md:   0 4px 12px oklch(0.19 0.014 48 / 0.07), 0 2px 4px oklch(0.19 0.014 48 / 0.05);
+      --shadow-lift: 0 12px 32px oklch(0.19 0.014 48 / 0.12);
       --font-heading: 'Space Grotesk', sans-serif;
       --font-body: 'Outfit', sans-serif;
       --font-base: 16px;
@@ -42,8 +63,6 @@
       --font-xl: 31px;
       --font-2xl: 39px;
       --font-3xl: 49px;
-      --font-4xl: 61px;
-      --font-5xl: 77px;
       --font-hero: 64px;
       --space-1: 8px;
       --space-2: 16px;
@@ -51,7 +70,6 @@
       --space-4: 32px;
       --space-5: 40px;
       --space-6: 48px;
-      --space-7: 56px;
       --space-8: 64px;
       --space-10: 80px;
       --space-12: 96px;
@@ -75,7 +93,7 @@
     body {
       font-family: var(--font-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       color: var(--text-primary);
-      background: var(--bg-primary);
+      background: var(--paper);
       line-height: 1.6;
       overflow-x: hidden;
     }
@@ -103,7 +121,7 @@
       left: 0;
       right: 0;
       z-index: 1000;
-      background: var(--bg-primary);
+      background: var(--paper);
       border-bottom: 1px solid var(--border-subtle);
       transition: box-shadow 0.3s ease;
     }
@@ -295,22 +313,11 @@
     }
 
     /* ============================================
-       GLASSMORPHISM
-       ============================================ */
-    .glass-card {
-      background: var(--bg-card);
-      box-shadow: var(--shadow-sm);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--border-subtle);
-    }
-
-    /* ============================================
        STATS BAR
        ============================================ */
     .stats {
       padding: var(--space-10) 0;
-      background: var(--bg-primary);
+      background: var(--paper);
     }
 
     .stats-grid {
@@ -320,7 +327,7 @@
     }
 
     .stat-card {
-      background: var(--bg-card);
+      background: var(--paper);
       box-shadow: var(--shadow-sm);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -487,7 +494,7 @@
     }
 
     .bonus-card {
-      background: var(--bg-card);
+      background: var(--paper);
       box-shadow: var(--shadow-sm);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -543,7 +550,7 @@
     }
 
     .roi-card {
-      background: var(--bg-card);
+      background: var(--paper);
       box-shadow: var(--shadow-sm);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -670,7 +677,7 @@
     }
 
     .case-study-card {
-      background: var(--bg-card);
+      background: var(--paper);
       border-left: 4px solid var(--accent);
       border-radius: var(--radius);
       padding: var(--space-4);
@@ -732,7 +739,7 @@
     }
 
     .video-card {
-      background: var(--bg-card);
+      background: var(--paper);
       border-radius: var(--radius);
       padding: var(--space-8) var(--space-4);
       text-align: center;
@@ -837,7 +844,7 @@
     }
 
     .faq-item {
-      background: var(--bg-card);
+      background: var(--paper);
       border-radius: var(--radius);
       overflow: hidden;
       transition: all 0.3s ease;
@@ -1032,7 +1039,7 @@
       right: 0;
       width: 480px;
       height: 100%;
-      background: var(--bg-card);
+      background: var(--paper);
       z-index: 2000;
       transform: translateX(100%);
       transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1119,7 +1126,7 @@
       align-items: center;
       gap: 12px;
       padding: var(--space-2) var(--space-3);
-      background: var(--bg-card);
+      background: var(--paper);
       border: 2px solid var(--border-subtle);
       border-radius: var(--radius);
       cursor: pointer;
