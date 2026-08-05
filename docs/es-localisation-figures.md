@@ -1,31 +1,40 @@
 # Spanish localisation — every market-specific figure, researched and flagged
 
-_Researched 2026-08-05. Rows 1, 1b and 3 went live on the ENGLISH page
-2026-08-05 (Dan: the salary was Dutch and the page sells in Málaga). Rows 2
-and 4 are still unconfirmed — confirm them before the Spanish page ships._
+_Researched 2026-08-05. Row 3 is live on the English page. Rows 1 and 1b are
+**deliberately not used** — see below. Rows 2 and 4 are closed or blocked._
 
 The English page at `prime-ai.es/en/` was written with Dutch-market figures even
-though it sells to businesses in Spain, so the corrections below are not only for
-a future Spanish page — the ones marked LIVE are already on the English one.
-`test-palette.js` pins them so the Dutch values cannot come back.
+though it sells to businesses in Spain. The Dutch values are gone either way, but
+in two different senses: row 3 was corrected, and rows 1/1b were removed from the
+page entirely rather than corrected. `test-palette.js` pins both outcomes.
 
 ## Needs replacing
 
 | # | Claim on the English page | Source there | Spanish equivalent found | Source | Confidence |
 |---|---|---|---|---|---|
-| 1 | ~~`€2,791/mo` average receptionist salary~~ **LIVE** | Indeed NL | **1.603 €/mes bruto** (19.235 €/año ÷ 12) | [Indeed ES](https://es.indeed.com/career/recepcionista/salaries), updated 29 Mar 2026 | High |
-| 1b | **LIVE** — the headline stat is this one, not the gross | — | **2.118 €/mes true cost to employer** (1.603 € + 32,15% cotización empresarial) | [Grupo Castilla](https://www.grupocastilla.es/coste-trabajador/), [Factorial](https://factorial.es/blog/coste-empresa-trabajador/) | High |
+| 1 | ~~`€2,791/mo` average receptionist salary~~ **OFF THE PAGE** | Indeed NL | **1.603 €/mes bruto** (19.235 €/año ÷ 12) | [Indeed ES](https://es.indeed.com/career/recepcionista/salaries), updated 29 Mar 2026 | High |
+| 1b | **NOT USED** — kept here for the Spanish page only if it ever needs it | — | **2.118 €/mes true cost to employer** (1.603 € + 32,15% cotización empresarial) | [Grupo Castilla](https://www.grupocastilla.es/coste-trabajador/), [Factorial](https://factorial.es/blog/coste-empresa-trabajador/) | High |
 | 2 | `€2,500` average job value (ROI calculator default) | unsourced | **150–300 €** general dental ticket medio; **400–700 €** depending on specialty | [consultoriadental.com](https://consultoriadental.com/como-optimizar-el-ticket-medio-en-tu-clinica/), [traspasodental.es](https://www.traspasodental.es/estetica-dental-valoracion-traspaso-clinica/) | **Low — still blocked, see below** |
 | 3 | ~~FAQ "Can it handle Dutch and English?"~~ **LIVE** — now Spanish and English | — | Should read Spanish and English | — | n/a |
 | 4 | `+31` phone formatting, NL references | — | Spanish formatting | — | n/a |
 
-**Row 4 status.** No `+31` number survives on the English page — the demo CTA is
-not a phone number at all any more, it opens the in-page call panel. What is left
-under row 4 is only whatever a future Spanish page introduces.
+**Why rows 1 and 1b are not on the page.** Dan, 2026-08-05: a receptionist's
+salary is the wrong argument regardless of which country's figure is correct. A
+prospect doing salary arithmetic is picturing a firing, not the calls they are
+losing. The page now prices against the missed calls and says so out loud
+("priced against the calls you're currently losing — not against anybody's
+salary"). The research stays here because a Spanish page may still want it for a
+different purpose — but `test-palette.js` fails the build if either figure
+reappears on the English page.
 
-**Which basis row 1 uses.** The page quotes 1.603 €/mes, i.e. the annual figure
-over 12. If you would rather publish the 14-pagas basis (1.374 €/mes), the
-all-in stat and `test-palette.js` both have to move with it.
+**Row 2 is now visible, and still unsourced.** The €2,500 job value moved up into
+a stat card (€13,125/mo walking out of a phone that misses 30% of 200 calls),
+which raises the stakes on getting it right. Its source line says plainly that it
+is our own arithmetic and not a statistic, which is the honest holding position —
+but it is still the figure that needs the vertical decision below.
+
+**Row 4 is closed.** No `+31` number survives on the English page — the demo CTA
+is not a phone number at all any more, it opens the in-page call panel.
 
 **Cross-check on #1.** Jobted gives 1.379–1.759 €/mes bruto starting and
 1.449–1.914 €/mes after five years, which brackets the Indeed figure. Two

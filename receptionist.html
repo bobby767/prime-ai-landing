@@ -3,19 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The AI Receptionist | Prime AI</title>
-  <meta name="description" content="62% of calls to small businesses go unanswered. Prime AI's receptionist answers every call, 24/7, books straight into your calendar — and never takes a holiday.">
+  <title>The Phone That Never Goes Unanswered | Prime AI</title>
+  <meta name="description" content="62% of calls to small businesses go unanswered. Prime AI answers your phone when you can't — while you're with a patient, on the other line, or closed for the night — and books straight into your calendar.">
   <!-- ============================================
-       This is the only page. Every "call the receptionist" CTA opens the
-       call panel at the bottom of this file and the Retell web call runs
-       right here — no phone number, and no second page to read first.
-       The CTAs used to link to /voice, whose chrome is Spanish, so an
-       English visitor was sent to a Spanish landing page to reach the
-       demo. That is what this replaced.
-       /voice itself stays up: it is the Spanish cold-outreach page, and
-       it serves POST /voice/token and /voice/retell.js to the panel here.
-       Same origin — nginx maps prime-ai.es/en/ to this file and
-       prime-ai.es/voice to the Bun app on :3023 (pm2 prime-voice).
+       FRAME — read this before touching the copy.
+       The pitch is the MISSED CALL, never the receptionist. Nothing on
+       this page may invite a prospect to imagine firing anyone: no
+       salary comparison, no "versus a human", no "costs less than the
+       person you'd hire". Dan, 2026-08-05 — a page that argues about a
+       salary makes the owner think about a firing, and they stop
+       thinking about the calls that are the actual reason to buy.
+       So the product is the phone LINE, not a person: it answers for
+       you when you cannot pick up. Ported from the Spanish page at
+       /voice, which was already framed this way — "el teléfono que
+       nunca se queda sin contestar", "contesta por ti cuando no puedes
+       cogerlo" — including its three moments and its three steps.
+       test-palette.js pins the ban.
+
+       This is the only page. Every CTA opens the call panel at the
+       bottom of this file and the Retell web call runs right here — no
+       phone number, and no second page to read first.
+       Same origin is what makes that work: nginx maps prime-ai.es/en/
+       to this file and prime-ai.es/voice to the Bun app on :3023 (pm2
+       prime-voice), which still serves POST /voice/token,
+       /voice/retell.js and /voice/privacidad to the panel below.
        ============================================ -->
   <!-- Inline data URI, not a file: this page deploys as a single self-contained
        HTML file, and a /favicon.ico request 404s against the static location. -->
@@ -300,6 +311,15 @@
       max-width: 800px;
       position: relative;
       z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-size: var(--font-sm);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-2);
     }
 
     .hero h1 {
@@ -1667,13 +1687,13 @@
         </svg>
         <span><span class="logo-prime">Prime</span> <span class="logo-ai">AI</span></span>
       </a>
-      <button class="btn btn-primary btn-nav call-trigger">Hear It Live</button>
+      <button class="btn btn-primary btn-nav call-trigger">Hear It Answer</button>
     </div>
   </nav>
 
   <!-- MOBILE BOTTOM CTA -->
   <div class="mobile-bottom-cta">
-    <button class="btn call-trigger">Call the AI Receptionist</button>
+    <button class="btn call-trigger">Hear It Answer — No Phone Needed</button>
   </div>
 
   <!-- ============================================
@@ -1681,10 +1701,16 @@
        ============================================ -->
   <section class="hero" id="hero">
     <div class="hero-content">
+      <!-- Málaga, from the Spanish page's marbete. A prospect on the coast
+           reading an English page needs to know it is local before they
+           read anything else. -->
+      <p class="hero-eyebrow">For businesses in Málaga</p>
       <h1>Your Phone Rang 200 Times Last Month. You Answered 76 of Them.</h1>
-      <p class="hero-sub">62% of calls to small businesses go unanswered. Every one of them was someone ready to book — who is now calling the practice down the road. Prime AI answers all of them, 24/7, and books straight into your calendar.</p>
+      <!-- "when you can't pick up" is the whole positioning, in five words.
+           It answers alongside you, not instead of anyone. -->
+      <p class="hero-sub">62% of calls to small businesses go unanswered. Every one of them was someone ready to book — who is now calling the practice down the road. Prime AI answers your phone when you can't pick it up, in English or Spanish, and puts the appointment straight into your calendar.</p>
       <button class="btn btn-primary call-trigger">Call It Right Now — No Phone Needed</button>
-      <small class="micro-copy">Don't take our word for it. Talk to the receptionist yourself, right on this page, and book a fake appointment. Takes 60 seconds.</small>
+      <small class="micro-copy">Don't take our word for it. Hear it answer yourself, right on this page, and book a fake appointment. Takes 60 seconds.</small>
       <p style="margin-top:var(--space-3);"><button class="btn btn-secondary cta-trigger">Or see what your missed calls cost</button></p>
     </div>
   </section>
@@ -1706,19 +1732,22 @@
           <div class="stat-source">Source: Harvard Business Review</div>
         </div>
         <div class="stat-card">
-          <!-- Spain, not the Netherlands: this page sells to businesses in
-               Málaga. The old €2,791 was Indeed NL and roughly a third too
-               high here. Figures from docs/es-localisation-figures.md row 1.
-               The all-in employer cost, not the gross salary, because that is
-               the number an owner actually compares against a subscription —
-               and the source line shows both so it is checkable. -->
-          <div class="stat-number" data-target="2118" data-prefix="€" data-suffix="/mo" data-format="currency">€0/mo</div>
-          <div class="stat-label">what a receptionist in Spain really costs you</div>
-          <div class="stat-source">Source: Indeed España, Mar 2026 — €1,603 gross plus 32.15% employer contributions</div>
+          <!-- This card used to carry a receptionist's salary. It is the exact
+               argument this page must not make: a prospect who is doing salary
+               arithmetic is picturing a firing, not the calls they are losing.
+               So the fourth stat is now the cost of the MISSED CALLS.
+               It is an illustration, not a market statistic, and the source
+               line says so plainly — the €2,500 job value behind it is the one
+               figure docs/es-localisation-figures.md still lists as unsourced
+               (row 2, blocked on the vertical decision), so it must not be
+               dressed up as research. The calculator below shows the sum. -->
+          <div class="stat-number" data-target="13125" data-prefix="€" data-suffix="/mo" data-format="currency">€0/mo</div>
+          <div class="stat-label">walking out of a phone that rings 200 times and misses 30%</div>
+          <div class="stat-source">Not a statistic. Our own arithmetic, at a €2,500 job — run your numbers below.</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" data-target="168" data-suffix=" hrs">0 hrs</div>
-          <div class="stat-label">a week your phone is covered — versus 40 with a receptionist</div>
+          <div class="stat-label">a week your phone gets answered — evenings, Sundays, and your lunch break</div>
           <div class="stat-source">Not a statistic. Just a calendar.</div>
         </div>
       </div>
@@ -1758,12 +1787,19 @@
             <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.3"/>
           </svg>
-          <span>Your receptionist is excellent — and costs €2,118/month all-in, takes holidays, and sleeps at night</span>
+          <!-- Dan's second cause, and the one that has to be handled most
+               carefully: calls the receptionist missed. Named as a fact about
+               the phone (it rings anyway), with no cost, no comparison and no
+               suggestion that the person is the problem. -->
+          <span>Your receptionist is on the other line, at lunch, or gone at six — and the phone rings anyway</span>
         </li>
       </ul>
       <div class="section-cta">
         <button class="btn btn-primary cta-trigger">See How Many Calls You're Missing</button>
-        <small class="micro-copy">Free audit. No commitment required.</small>
+        <!-- The "we map your calls first" promise used to be step 1 of the
+             solution section, which now leads with the nothing-changes message
+             instead. It belongs next to the audit CTA anyway. -->
+        <small class="micro-copy">Free audit — we map when your phone rings, when it goes unanswered, and what those callers wanted, before you spend a cent. No commitment required.</small>
       </div>
     </div>
   </section>
@@ -1773,23 +1809,27 @@
        ============================================ -->
   <section class="solution reveal" id="solution">
     <div class="container">
-      <h2 class="section-headline">The AI Receptionist</h2>
+      <!-- The Spanish page's three steps, in its order. Step 1 is the most
+           important sentence on the page: "no cambias de línea ni de teléfono"
+           — nothing on your side changes, so there is nothing to replace. It
+           leads for that reason, ahead of anything about the AI itself. -->
+      <h2 class="section-headline">How It Works</h2>
       <div class="steps-grid">
         <div class="steps-connector"></div>
         <div class="step">
           <div class="step-number">1</div>
-          <h3 class="step-title">We Map Your Calls</h3>
-          <p class="step-desc">We look at when your phone rings, when it goes unanswered, and what those callers wanted — so you see exactly what you're missing before you spend a cent.</p>
+          <h3 class="step-title">Nothing Changes On Your Side</h3>
+          <p class="step-desc">Your same number rings, on the same phone. No new line, no new handset, nobody's job touched. It sits behind what you already have and picks up what you can't get to — and you or your receptionist answer exactly as many calls as you do today.</p>
         </div>
         <div class="step">
           <div class="step-number">2</div>
-          <h3 class="step-title">We Build Your Receptionist</h3>
-          <p class="step-desc">Trained on your services, your prices, your opening hours, and your rules for what counts as an emergency. It answers, qualifies, books into your calendar, and puts real emergencies straight through to you.</p>
+          <h3 class="step-title">It Picks Up In Two Rings</h3>
+          <p class="step-desc">Trained on your services, your prices, your opening hours, and your rules for what counts as an emergency. It talks like a person, in English or Spanish, and puts real emergencies straight through to you instead of booking them.</p>
         </div>
         <div class="step">
           <div class="step-number">3</div>
-          <h3 class="step-title">We Run It For You</h3>
-          <p class="step-desc">You do the work you're trained for. We monitor every call, tune the system weekly, and send you the transcripts — no software to learn, no dashboard to babysit.</p>
+          <h3 class="step-title">The Booking Is In Your Calendar</h3>
+          <p class="step-desc">The appointment is already in there when you next look, with a note on who called and what they wanted. We monitor every call and tune it weekly — no software to learn, no dashboard to babysit.</p>
         </div>
       </div>
     </div>
@@ -1801,10 +1841,10 @@
   <section class="bonus reveal" id="bonus">
     <div class="container">
       <div class="bonus-card">
-        <h2>What You Get With The AI Receptionist</h2>
+        <h2>What You Get</h2>
         <div class="bonus-item">
           <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>AI receptionist trained on your services, prices and hours <span class="bonus-value">— Core System</span></span>
+          <span>A line that answers every call, trained on your services, prices and hours <span class="bonus-value">— Core System</span></span>
         </div>
         <div class="bonus-item">
           <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1818,7 +1858,10 @@
           <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span>After-hours cover + emergency escalation rules <span class="bonus-value">— €800 value</span></span>
         </div>
-        <div class="bonus-bottom">All included. It costs less than the receptionist you'd hire to cover a third of the hours.</div>
+        <!-- This line used to price the system against a receptionist's salary.
+             Priced against the missed calls instead — that is the comparison
+             the prospect should be making, and the only one this page makes. -->
+        <div class="bonus-bottom">All included, and priced against the calls you're currently losing — not against anybody's salary.</div>
       </div>
     </div>
   </section>
@@ -1965,7 +2008,7 @@
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="faq-answer">
-            <div class="faq-answer-inner">Most won't, and we don't think you should hide it. The receptionist introduces itself by your business name, speaks naturally, handles interruptions, and doesn't do the robotic call-menu thing. If a caller asks directly whether they're speaking to a person, it tells them the truth — that it's the practice's automated assistant and it can put them through to a human. Pretending otherwise is the fastest way to lose someone's trust, and in some contexts it's legally risky. Being upfront costs you almost nothing: callers care that their question got answered and their appointment got booked.</div>
+            <div class="faq-answer-inner">Most won't, and we don't think you should hide it. It introduces itself by your business name, speaks naturally, handles interruptions, and doesn't do the robotic call-menu thing. If a caller asks directly whether they're speaking to a person, it tells them the truth — that it's the practice's automated assistant and it can put them through to a human. Pretending otherwise is the fastest way to lose someone's trust, and in some contexts it's legally risky. Being upfront costs you almost nothing: callers care that their question got answered and their appointment got booked.</div>
           </div>
         </div>
 
@@ -1975,7 +2018,7 @@
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="faq-answer">
-            <div class="faq-answer-inner">It says so, takes a message, and escalates — it does not guess. This is the single most important design rule in the system, because a receptionist that invents a price or a treatment claim is worse than no receptionist at all. We build explicit boundaries during setup: what it can quote, what it must never quote, and which topics go straight to a human. Anything outside those boundaries becomes a callback request with full context attached, so whoever picks it up already knows what the caller wanted.</div>
+            <div class="faq-answer-inner">It says so, takes a message, and escalates — it does not guess. This is the single most important design rule in the system, because a line that invents a price or a treatment claim is worse than a phone that rings out. We build explicit boundaries during setup: what it can quote, what it must never quote, and which topics go straight to a human. Anything outside those boundaries becomes a callback request with full context attached, so whoever picks it up already knows what the caller wanted.</div>
           </div>
         </div>
 
@@ -1985,7 +2028,7 @@
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="faq-answer">
-            <div class="faq-answer-inner">It books. We integrate directly with your practice management system or calendar, so the receptionist sees real availability and writes a real appointment — including the right appointment length for the treatment type, buffer time, and the right practitioner. Callers get a confirmation by SMS or email. Taking messages is the fallback for cases it can't complete, not the main mode.</div>
+            <div class="faq-answer-inner">It books. We integrate directly with your practice management system or calendar, so it sees real availability and writes a real appointment — including the right appointment length for the treatment type, buffer time, and the right practitioner. Callers get a confirmation by SMS or email. Taking messages is the fallback for cases it can't complete, not the main mode.</div>
           </div>
         </div>
 
@@ -2005,7 +2048,7 @@
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="faq-answer">
-            <div class="faq-answer-inner">You define what counts as an emergency in your field, in your words, during setup — and those calls break the normal flow immediately. The receptionist recognises them, skips the booking script, and either transfers live to your on-call number or triggers whatever escalation you specify. This is usually the part clinics and trades test hardest before going live, and it's the part we tune first.</div>
+            <div class="faq-answer-inner">You define what counts as an emergency in your field, in your words, during setup — and those calls break the normal flow immediately. It recognises them, skips the booking script, and either transfers live to your on-call number or triggers whatever escalation you specify. This is usually the part clinics and trades test hardest before going live, and it's the part we tune first.</div>
           </div>
         </div>
 
@@ -2015,7 +2058,21 @@
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="faq-answer">
-            <div class="faq-answer-inner">They ask, and it transfers — no loops, no insisting, no pressing 4 to return to the main menu. The receptionist exists to catch the 62% of calls that currently reach nobody at all, not to put a wall between you and your customers. In practice it handles the routine bookings and questions, and hands you the calls that genuinely need you, with the context already gathered.</div>
+            <div class="faq-answer-inner">They ask, and it transfers — no loops, no insisting, no pressing 4 to return to the main menu. It exists to catch the 62% of calls that currently reach nobody at all, not to put a wall between you and your customers. In practice it handles the routine bookings and questions, and hands you the calls that genuinely need you, with the context already gathered.</div>
+          </div>
+        </div>
+
+        <!-- The answering-service comparison used to live inside the
+             "can't I just hire a receptionist" answer. That question is gone,
+             but this objection is real and has nothing to do with staffing, so
+             it gets its own item rather than disappearing with it. -->
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            <span>How is this different from an answering service?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">An answering service covers the hours, but it usually takes a message rather than booking. It doesn't know your treatment types, your prices or your availability, so what you get back is a callback list to work through in the morning. This books the appointment while the caller is still on the phone, which is the entire point — a callback list is just a slower way of losing the ones who already phoned someone else.</div>
           </div>
         </div>
 
@@ -2025,7 +2082,7 @@
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="faq-answer">
-            <div class="faq-answer-inner">Yes, and it detects which one the caller is speaking rather than making them choose. On the coast, where a lot of your patients are expats and a lot are Spanish, this is usually one of the more immediately noticeable improvements over a human receptionist who is fluent in one and awkward in the other. Additional languages are possible depending on your patient mix — worth raising on the call.</div>
+            <div class="faq-answer-inner">Yes, and it detects which one the caller is speaking rather than making them choose. On the coast, where a lot of your patients are expats and a lot are Spanish, this is usually one of the more immediately noticeable improvements over a line that can only really handle one of them. Additional languages are possible depending on your patient mix — worth raising on the call.</div>
           </div>
         </div>
 
@@ -2041,11 +2098,11 @@
 
         <div class="faq-item">
           <button class="faq-question" aria-expanded="false">
-            <span>Can't I just hire a receptionist, or use an answering service?</span>
+            <span>I already have a receptionist. What does this do?</span>
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="faq-answer">
-            <div class="faq-answer-inner"><p style="margin-bottom:12px;">You can, and for some practices that's the right answer. A receptionist in Spain averages around €1,603 a month gross, which is €2,118 once employer social security is added — and that is before holiday cover and sick days, for roughly 40 of the 168 hours in a week. The evenings, weekends, and lunch breaks are precisely when the calls you're losing come in.</p>An answering service covers more hours but usually takes a message rather than booking, doesn't know your treatment types, and hands you a callback list to work through. Our system books the appointment while the caller is still on the phone, which is the entire point — a callback list is just a slower way of losing the ones who already phoned someone else.</div>
+            <div class="faq-answer-inner"><p style="margin-bottom:12px;">It catches the calls they can't get to, and that is all it does. Your receptionist is one person with one phone: while they're on a call, the second caller hears a ring tone. While they're at lunch, or on holiday, or gone at six, so is your phone. None of that is a criticism of them — it's arithmetic. This picks up exactly those calls and hands the rest straight to them.</p>Practices usually find it takes the pressure off rather than the work: the routine "are you open Saturday" and "what does a cleaning cost" calls stop interrupting, and the caller who genuinely needs a person gets one faster, with the context already gathered. If you've been thinking about a second pair of hands for the phone, this is the cheap version of that — not a replacement for the first pair.</div>
           </div>
         </div>
 
@@ -2055,7 +2112,7 @@
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="faq-answer">
-            <div class="faq-answer-inner"><p style="margin-bottom:12px;">It depends on your call volume and how complex your booking rules are, so we quote it after we understand your setup rather than putting a number on a web page that's wrong for half the people reading it.</p>The useful comparison: a practice taking 200 calls a month and missing 30% of them is losing somewhere around €13,000 a month in work that goes to a competitor. Our pricing sits well below the cost of the receptionist you'd hire to cover a third of those hours. If the audit shows the numbers don't work for your practice, we'll tell you that instead of selling you something.</div>
+            <div class="faq-answer-inner"><p style="margin-bottom:12px;">It depends on your call volume and how complex your booking rules are, so we quote it after we understand your setup rather than putting a number on a web page that's wrong for half the people reading it.</p>The useful comparison: a practice taking 200 calls a month and missing 30% of them is losing somewhere around €13,000 a month in work that goes to a competitor. Our pricing sits well below that, which is the only comparison that matters — we price against the calls you're losing, not against a salary. If the audit shows the numbers don't work for your practice, we'll tell you that instead of selling you something.</div>
           </div>
         </div>
 
@@ -2082,7 +2139,7 @@
       <!-- TODO: keep this month current, or delete the line. It read "June" for months. -->
       <p class="scarcity-line">We onboard 5 businesses per month to guarantee hands-on setup. <span class="scarcity-count">3 spots remaining for August.</span></p>
 
-      <button class="btn btn-primary call-trigger" style="font-size:18px; padding:18px 40px;">Call the AI Receptionist — Right Here, No Phone Needed</button>
+      <button class="btn btn-primary call-trigger" style="font-size:18px; padding:18px 40px;">Hear It Answer — Right Here, No Phone Needed</button>
       <small class="micro-copy">Or <button class="btn-link cta-trigger">book your free call audit</button> — no commitment required.</small>
       <p class="unity-line">Built for practices that refuse to let the phone ring out.</p>
     </div>
@@ -2110,7 +2167,7 @@
 
   <!-- ============================================
        CALL PANEL — the demo call happens on THIS page
-       Every "call the receptionist" button opens this instead of
+       Every "hear it answer" button opens this instead of
        navigating to /voice. /voice still runs (it is the Spanish
        cold-outreach page, and it serves /voice/token and
        /voice/retell.js to this panel from the same origin) but an
@@ -2123,7 +2180,7 @@
        ============================================ -->
   <dialog class="call-dialog" id="callDialog" aria-labelledby="callTitle">
     <button class="call-close" id="callClose" aria-label="Close">&times;</button>
-    <h3 id="callTitle">Talk to the receptionist</h3>
+    <h3 id="callTitle">Hear it answer</h3>
     <p class="call-notice">It's an AI, not a person — the same one that would answer your business's phone. The call is recorded, so we can make it better.</p>
     <button class="btn btn-primary call-start" id="callStart">Talk to the AI (recorded)</button>
     <p class="call-status" id="callStatus" role="status" aria-live="polite"></p>

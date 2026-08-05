@@ -165,33 +165,44 @@ for (const phrase of ['not a person', 'recorded', 'Daniel Kooij']) {
 }
 if (!/Talk to the AI \(recorded\)/.test(src)) fail.push('the start button label no longer carries the recording fact');
 
-// ---- market figures --------------------------------------------------
-// This page sells to businesses in Málaga, but it was written with Dutch
-// figures and shipped that way. €2,791/mo was Indeed NL — about a third too
-// high for Spain — and the language FAQ offered Dutch. Both are now Spanish,
-// from docs/es-localisation-figures.md, and both are pinned here because a
-// wrong market figure is invisible on the page and expensive in the room.
-for (const residue of ['Netherlands', 'Dutch', 'Indeed NL', '2,791']) {
-  // The comments in receptionist.html explaining the switch name the old
-  // values, so only count occurrences outside an HTML comment.
-  const visible = src.replace(/<!--[\s\S]*?-->/g, '');
-  if (visible.includes(residue)) fail.push(`Dutch-market residue "${residue}" is visible to a Spanish prospect`);
+// ---- the frame -------------------------------------------------------
+// Everything below this line guards the POSITIONING, which is the easiest
+// thing on the page to lose and the hardest to notice losing. Dan,
+// 2026-08-05: the pitch is the missed call, never the receptionist. A page
+// that argues about a salary makes the owner picture a firing, and they stop
+// thinking about the calls that are the reason to buy. Ported from the
+// Spanish page at /voice, which was already framed this way.
+//
+// Comments in receptionist.html explain what was removed and therefore name
+// the banned phrases, so everything here reads the page as a visitor does:
+// HTML comments stripped out first.
+const visible = src.replace(/<!--[\s\S]*?-->/g, '');
+
+const FRAME_BANS = [
+  [/AI receptionist/i,                    'the product is called an "AI receptionist": it is a phone line, not a person'],
+  [/replaces? (your|a|the|any) receptionist/i, 'a replace-the-receptionist claim'],
+  [/costs less than the receptionist/i,   'pricing the system against a salary'],
+  [/versus \d+ with a receptionist/i,     'an hours-versus-a-human comparison'],
+  [/€\s?(2,118|1,603|2,791)/,            'a receptionist salary figure — this page does not argue salary'],
+  [/employer social security|gross,? which is/i, 'salary arithmetic'],
+  // Wrong market. This page sells in Málaga; it was written with Indeed NL
+  // figures and a "Can it handle Dutch?" FAQ, and shipped that way.
+  [/Netherlands|Dutch|Indeed NL/,        'Dutch-market residue'],
+];
+for (const [re, label] of FRAME_BANS) {
+  if (re.test(visible)) fail.push(`${label} (matched ${re})`);
 }
 
-// The two figures must agree: the headline number is the gross salary plus
-// Spanish employer social security, so bumping one and not the other puts a
-// self-contradicting claim on the page.
-const GROSS = 1603;          // Indeed España, 29 Mar 2026 (19.235 €/año ÷ 12)
-const EMPLOYER_RATE = 0.3215;  // cotización empresarial
-const allIn = Math.round(GROSS * (1 + EMPLOYER_RATE));
-if (!src.includes(`data-target="${allIn}"`)) {
-  fail.push(`the cost stat should be €${allIn}/mo (€${GROSS} gross + ${EMPLOYER_RATE * 100}% employer contributions), and the page does not say so`);
+// The frame is not only an absence. These three carry it, and a rewrite that
+// drops them leaves a page with nothing positive in the position.
+const FRAME_MUST = [
+  [/when you can'?t pick it up/i,       'the hero does not say it answers WHEN YOU CAN\'T — the whole positioning'],
+  [/No new line, no new handset/i,      'the "nothing changes on your side" promise is gone from the steps'],
+  [/the phone rings anyway/i,           'the pain list no longer names the call the receptionist could not get to'],
+];
+for (const [re, label] of FRAME_MUST) {
+  if (!re.test(visible)) fail.push(label);
 }
-if (!src.includes(`€${GROSS.toLocaleString('en-US')}`)) {
-  fail.push(`the €${allIn} figure is unsourced: the gross €${GROSS.toLocaleString('en-US')} it derives from is not on the page`);
-}
-const allInMentions = (src.match(new RegExp(`€${allIn.toLocaleString('en-US')}`, 'g')) || []).length;
-if (allInMentions < 2) fail.push(`€${allIn} appears ${allInMentions}× — the stat card and the copy that quotes it should agree`);
 
 // ---- report ----------------------------------------------------------
 if (fail.length) { console.error('FAIL\n' + fail.map(f => '  - ' + f).join('\n')); process.exit(1); }
