@@ -1,8 +1,20 @@
-// Palette + banned-pattern guard for receptionist.html.
+// Palette + banned-pattern + claim guard for BOTH landing pages.
 // No deps, same convention as test-roi.js. Run: node test-palette.js
+//
+// One guard for two pages rather than a second copy of it: receptionist.html
+// (English, clinics, deploys to /en/) and es.html (Spanish, trades, deploys to
+// /es/) share the palette verbatim, so the colour and banned-CSS checks are
+// identical and only the copy rules differ. PAGE below picks which page the
+// shared block is currently reading; the per-page rules live at the bottom.
 const fs = require('fs');
-const src = fs.readFileSync(__dirname + '/receptionist.html', 'utf8');
+const read = f => fs.readFileSync(`${__dirname}/${f}`, 'utf8');
+const PAGES = { en: read('receptionist.html'), es: read('es.html') };
 const fail = [];
+let PAGE = 'en';
+let src = PAGES.en;
+// Prefix every shared-block failure with the page it came from, or a palette
+// error on one page reads as an error on the other.
+const flag = m => fail.push(PAGE === 'en' ? m : `[${PAGE}] ${m}`);
 
 // ---- WCAG contrast -------------------------------------------------
 const lin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
@@ -11,121 +23,138 @@ const lum = h => { const [r, g, b] = [1, 3, 5].map(i => parseInt(h.slice(i, i + 
 const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
   return (x + 0.05) / (y + 0.05); };
 
-// ---- read :root tokens ---------------------------------------------
-const root = src.match(/:root\s*\{([\s\S]*?)\n\s*\}/);
-if (!root) fail.push('no :root block found');
-const tok = {};
-// Capture the declaration AND the rest of its line. oklch() tokens carry their
-// hex in a trailing comment that sits after the semicolon, so a pattern ending
-// at the semicolon would never see it and every contrast check would report a
-// missing hex regardless of the palette being correct.
-for (const m of (root ? root[1] : '').matchAll(/(--[\w-]+)\s*:\s*([^;]+);([^\n]*)/g)) {
-  tok[m[1]] = { value: m[2].trim(), comment: (m[3] || '').trim() };
-}
-
-// Hex value per token, read from the value itself or from its trailing comment.
-const hexOf = name => {
-  const t = tok[name];
-  if (!t) return null;
-  const direct = (t.value + ' ' + t.comment).match(/#[0-9A-Fa-f]{6}/);
-  return direct ? direct[0].toUpperCase() : null;
-};
-
-// ---- oklch vs hex-comment agreement ---------------------------------
-// The browser renders the oklch value; every check below measures the hex
-// comment. If the two disagree, this script grades a colour the page never
-// shows, and it does so silently, which is the one way a guard can be worse
-// than no guard. Convert each oklch back to sRGB and require agreement.
-const l2s = c => { const v = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
-  return Math.max(0, Math.min(255, Math.round(v * 255))); };
-const oklch2hex = (L, C, H) => {
-  const A = C * Math.cos(H * Math.PI / 180), B = C * Math.sin(H * Math.PI / 180);
-  const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3;
-  const m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3;
-  const s = (L - 0.0894841775 * A - 1.2914855480 * B) ** 3;
-  const r =  4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
-  const g = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
-  const b = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
-  return '#' + [r, g, b].map(v => l2s(v).toString(16).padStart(2, '0').toUpperCase()).join('');
-};
-const TOLERANCE = 2;  // per channel, for rounding only
-for (const [name, t] of Object.entries(tok)) {
-  const ok = t.value.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)\s*$/);
-  const hx = t.comment.match(/#[0-9A-Fa-f]{6}/);
-  if (!ok || !hx) continue;  // alpha variants and plain hex tokens are exempt
-  const got = oklch2hex(+ok[1], +ok[2], +ok[3]);
-  const want = hx[0].toUpperCase();
-  const diff = Math.max(...[1, 3, 5].map(i =>
-    Math.abs(parseInt(got.slice(i, i + 2), 16) - parseInt(want.slice(i, i + 2), 16))));
-  if (diff > TOLERANCE) {
-    fail.push(`${name}: oklch renders ${got} but its comment claims ${want} (off by ${diff} per channel). The page and this guard disagree.`);
+// ---- shared: palette, contrast, banned CSS -------------------------
+// Runs once per page. Everything in here is identical for both because both
+// inline the same :root block; a divergence in the palette IS a finding, which
+// is why this is one function over two pages rather than two hand-kept copies.
+const seen = {};
+function sharedChecks() {
+  // ---- read :root tokens ---------------------------------------------
+  const root = src.match(/:root\s*\{([\s\S]*?)\n\s*\}/);
+  if (!root) flag('no :root block found');
+  const tok = {};
+  // Capture the declaration AND the rest of its line. oklch() tokens carry their
+  // hex in a trailing comment that sits after the semicolon, so a pattern ending
+  // at the semicolon would never see it and every contrast check would report a
+  // missing hex regardless of the palette being correct.
+  for (const m of (root ? root[1] : '').matchAll(/(--[\w-]+)\s*:\s*([^;]+);([^\n]*)/g)) {
+    tok[m[1]] = { value: m[2].trim(), comment: (m[3] || '').trim() };
   }
-}
 
-const PAIRS = [
-  ['--text-primary',   '--paper',    4.5],
-  ['--text-primary',   '--shell',    4.5],
-  ['--text-primary',   '--sand',     4.5],
-  ['--text-secondary', '--paper',    4.5],
-  ['--text-secondary', '--shell',    4.5],
-  ['--text-secondary', '--sand',     4.5],
-  ['--accent',         '--paper',    4.5],
-  ['--paper',          '--ink',      4.5],
-  ['--paper',          '--ink-deep', 4.5],
-  ['--text-on-ink',    '--ink',      4.5],
-  ['--amber',          '--ink',      4.5],
-  ['--amber',          '--paper',    3.0],  // large text only
-];
+  // Hex value per token, read from the value itself or from its trailing comment.
+  const hexOf = name => {
+    const t = tok[name];
+    if (!t) return null;
+    const direct = (t.value + ' ' + t.comment).match(/#[0-9A-Fa-f]{6}/);
+    return direct ? direct[0].toUpperCase() : null;
+  };
 
-for (const [fg, bg, min] of PAIRS) {
-  const a = hexOf(fg), b = hexOf(bg);
-  if (!a || !b) { fail.push(`missing token or hex comment: ${fg} / ${bg}`); continue; }
-  const r = ratio(a, b);
-  if (r < min) fail.push(`contrast ${fg} on ${bg} = ${r.toFixed(2)}:1, need ${min}:1`);
-}
-
-// Amber must NOT be usable as body text on sand. Assert the constraint is real,
-// so a future palette tweak that silently makes it passable gets flagged.
-// Never fall back to a passing value when a hex is missing: a check that skips
-// itself silently is worse than no check at all.
-{
-  const a = hexOf('--amber'), s = hexOf('--sand');
-  if (!a || !s) {
-    fail.push('cannot check the --amber on --sand constraint: missing hex for --amber or --sand');
-  } else {
-    const r = ratio(a, s);
-    if (r >= 3.0) fail.push(`--amber on --sand is now ${r.toFixed(2)}:1; the spec assumes it is unusable as type. Update the spec before relaxing this.`);
+  // ---- oklch vs hex-comment agreement ---------------------------------
+  // The browser renders the oklch value; every check below measures the hex
+  // comment. If the two disagree, this script grades a colour the page never
+  // shows, and it does so silently, which is the one way a guard can be worse
+  // than no guard. Convert each oklch back to sRGB and require agreement.
+  const l2s = c => { const v = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+    return Math.max(0, Math.min(255, Math.round(v * 255))); };
+  const oklch2hex = (L, C, H) => {
+    const A = C * Math.cos(H * Math.PI / 180), B = C * Math.sin(H * Math.PI / 180);
+    const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+    const m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+    const s = (L - 0.0894841775 * A - 1.2914855480 * B) ** 3;
+    const r =  4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+    const g = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+    const b = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+    return '#' + [r, g, b].map(v => l2s(v).toString(16).padStart(2, '0').toUpperCase()).join('');
+  };
+  const TOLERANCE = 2;  // per channel, for rounding only
+  for (const [name, t] of Object.entries(tok)) {
+    const ok = t.value.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)\s*$/);
+    const hx = t.comment.match(/#[0-9A-Fa-f]{6}/);
+    if (!ok || !hx) continue;  // alpha variants and plain hex tokens are exempt
+    const got = oklch2hex(+ok[1], +ok[2], +ok[3]);
+    const want = hx[0].toUpperCase();
+    const diff = Math.max(...[1, 3, 5].map(i =>
+      Math.abs(parseInt(got.slice(i, i + 2), 16) - parseInt(want.slice(i, i + 2), 16))));
+    if (diff > TOLERANCE) {
+      flag(`${name}: oklch renders ${got} but its comment claims ${want} (off by ${diff} per channel). The page and this guard disagree.`);
+    }
   }
+
+  const PAIRS = [
+    ['--text-primary',   '--paper',    4.5],
+    ['--text-primary',   '--shell',    4.5],
+    ['--text-primary',   '--sand',     4.5],
+    ['--text-secondary', '--paper',    4.5],
+    ['--text-secondary', '--shell',    4.5],
+    ['--text-secondary', '--sand',     4.5],
+    ['--accent',         '--paper',    4.5],
+    ['--paper',          '--ink',      4.5],
+    ['--paper',          '--ink-deep', 4.5],
+    ['--text-on-ink',    '--ink',      4.5],
+    ['--amber',          '--ink',      4.5],
+    ['--amber',          '--paper',    3.0],  // large text only
+  ];
+
+  for (const [fg, bg, min] of PAIRS) {
+    const a = hexOf(fg), b = hexOf(bg);
+    if (!a || !b) { flag(`missing token or hex comment: ${fg} / ${bg}`); continue; }
+    const r = ratio(a, b);
+    if (r < min) flag(`contrast ${fg} on ${bg} = ${r.toFixed(2)}:1, need ${min}:1`);
+  }
+
+  // Amber must NOT be usable as body text on sand. Assert the constraint is real,
+  // so a future palette tweak that silently makes it passable gets flagged.
+  // Never fall back to a passing value when a hex is missing: a check that skips
+  // itself silently is worse than no check at all.
+  {
+    const a = hexOf('--amber'), s = hexOf('--sand');
+    if (!a || !s) {
+      flag('cannot check the --amber on --sand constraint: missing hex for --amber or --sand');
+    } else {
+      const r = ratio(a, s);
+      if (r >= 3.0) flag(`--amber on --sand is now ${r.toFixed(2)}:1; the spec assumes it is unusable as type. Update the spec before relaxing this.`);
+    }
+  }
+
+  // ---- dead tokens ----------------------------------------------------
+  for (const name of Object.keys(tok)) {
+    const uses = (src.match(new RegExp(`var\\(${name}\\b`, 'g')) || []).length;
+    if (uses === 0) flag(`token ${name} declared but never referenced`);
+  }
+
+  // ---- banned patterns ------------------------------------------------
+  const css = src.slice(src.indexOf('<style>'), src.indexOf('</style>'));
+  const BANS = [
+    [/backdrop-filter/g,                 'backdrop-filter (dead over opaque bg)'],
+    [/border-left:\s*[2-9]px/g,          'side-stripe border-left'],
+    [/border-right:\s*[2-9]px/g,         'side-stripe border-right'],
+    [/rgba\(\s*0\s*,\s*0\s*,\s*0/g,      'rgba(0,0,0,x): use a tinted ink'],
+    [/rgba\(\s*255\s*,\s*255\s*,\s*255/g,'rgba(255,255,255,x): use a tinted paper'],
+    [/rgba\(\s*37,\s*99,\s*235/g,        'hardcoded accent rgba: use a token'],
+    [/rgba\(\s*15,\s*23,\s*42/g,         'cool slate shadow: retint warm'],
+    [/background-clip:\s*text/g,         'gradient text'],
+  ];
+  for (const [re, label] of BANS) {
+    const n = (css.match(re) || []).length;
+    if (n) flag(`${n} × ${label}`);
+  }
+
+  // Colour literals in CSS, excluding :root. The logo SVG is exempt but lives in
+  // the body, not the stylesheet, so it is out of this slice already.
+  const cssNoRoot = css.replace(/:root\s*\{[\s\S]*?\n\s*\}/, '');
+  const literals = cssNoRoot.match(/#[0-9A-Fa-f]{6}/g) || [];
+  if (literals.length) flag(`${literals.length} hex literal(s) in CSS outside :root: ${[...new Set(literals)].join(', ')}`);
+
+  seen[PAGE] = { pairs: PAIRS.length, bans: BANS.length, tokens: Object.keys(tok).length };
 }
 
-// ---- dead tokens ----------------------------------------------------
-for (const name of Object.keys(tok)) {
-  const uses = (src.match(new RegExp(`var\\(${name}\\b`, 'g')) || []).length;
-  if (uses === 0) fail.push(`token ${name} declared but never referenced`);
+for (const [name, text] of Object.entries(PAGES)) {
+  PAGE = name;
+  src = text;
+  sharedChecks();
 }
-
-// ---- banned patterns ------------------------------------------------
-const css = src.slice(src.indexOf('<style>'), src.indexOf('</style>'));
-const BANS = [
-  [/backdrop-filter/g,                 'backdrop-filter (dead over opaque bg)'],
-  [/border-left:\s*[2-9]px/g,          'side-stripe border-left'],
-  [/border-right:\s*[2-9]px/g,         'side-stripe border-right'],
-  [/rgba\(\s*0\s*,\s*0\s*,\s*0/g,      'rgba(0,0,0,x): use a tinted ink'],
-  [/rgba\(\s*255\s*,\s*255\s*,\s*255/g,'rgba(255,255,255,x): use a tinted paper'],
-  [/rgba\(\s*37,\s*99,\s*235/g,        'hardcoded accent rgba: use a token'],
-  [/rgba\(\s*15,\s*23,\s*42/g,         'cool slate shadow: retint warm'],
-  [/background-clip:\s*text/g,         'gradient text'],
-];
-for (const [re, label] of BANS) {
-  const n = (css.match(re) || []).length;
-  if (n) fail.push(`${n} × ${label}`);
-}
-
-// Colour literals in CSS, excluding :root. The logo SVG is exempt but lives in
-// the body, not the stylesheet, so it is out of this slice already.
-const cssNoRoot = css.replace(/:root\s*\{[\s\S]*?\n\s*\}/, '');
-const literals = cssNoRoot.match(/#[0-9A-Fa-f]{6}/g) || [];
-if (literals.length) fail.push(`${literals.length} hex literal(s) in CSS outside :root: ${[...new Set(literals)].join(', ')}`);
+PAGE = 'en';
+src = PAGES.en;
 
 // ---- launch guard ----------------------------------------------------
 // The demo CTA is not a phone number and no longer a link either: the call
@@ -247,6 +276,77 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   }
 }
 
+// ---- es.html ---------------------------------------------------------
+// The Spanish page is held to the rule the old /voice page was held to by
+// build.test.ts, and it is stricter than the English page's: no euro sign, no
+// percentage and no guarantee in the body copy at all. It has no calculator and
+// no stats bar precisely because both would output figures it may not assert.
+//
+// BODY copy only. The stylesheet is full of legitimate percentages (width:100%)
+// and the favicon data URI is full of escaped ones, so <head>, <style>, <script>
+// and HTML comments all come out before anything is counted. build.test.ts bans
+// '%' from demoPageHtml()'s CSS too; that is a stricter rule than this file
+// needs, because that page's CSS is hand-written to avoid them and this one's is
+// shared with the English page.
+{
+  const es = PAGES.es;
+  const body = es
+    .slice(es.indexOf('<body'))
+    .replace(/<style[\s\S]*?<\/style>/g, '')
+    .replace(/<script[\s\S]*?<\/script>/g, '')
+    .replace(/<!--[\s\S]*?-->/g, '');
+
+  const ES_BANS = [
+    [/€/,                       'a euro sign: the agent may not quote a price, so this page may not either'],
+    [/%/,                       'a percentage: the agent may not promise or cite one'],
+    [/garantiz/i,               'a guarantee ("garantiz…")'],
+    [/gratis|sin coste/i,       'a free-of-charge claim, which is a price claim'],
+    // The English page's vertical. Catching it here is the cheap way to notice
+    // someone has translated the wrong page into this one.
+    [/paciente|cl[íi]nica|tratamiento/i, 'clinic vocabulary on the trades page — es.html is fontaneros/reformas, /en/ is clinics'],
+  ];
+  for (const [re, label] of ES_BANS) {
+    if (re.test(body)) fail.push(`[es] ${label} (matched ${re})`);
+  }
+
+  // Art. 50 + art. 13 rest on this page alone once a visitor presses the
+  // button: the agent does not speak the notice (demo.ts:246) and the press IS
+  // the consent, so the recording fact cannot be disclosed after it.
+  const avisoAt = body.indexOf('class="aviso"');
+  const irAt = body.indexOf('id="ir"');
+  if (avisoAt === -1) fail.push('[es] no AI/recording disclosure in the call panel');
+  else if (irAt === -1 || avisoAt > irAt) fail.push('[es] the disclosure sits below the start button: pressing it is the consent');
+  for (const phrase of ['Es una IA, no una persona', 'La llamada se graba', 'Daniel Kooij', '/voice/privacidad']) {
+    if (!body.includes(phrase)) fail.push(`[es] the disclosure no longer carries "${phrase}"`);
+  }
+  if (!/Hablar con la IA \(se graba\)/.test(body)) {
+    fail.push('[es] the start button label no longer says the call is recorded');
+  }
+
+  // The frame, positively. Same three load-bearing ideas as the English page.
+  const ES_MUST = [
+    [/cuando no puedes cogerlo/i,          'the hero does not say it answers WHEN YOU CANNOT — the whole positioning'],
+    [/Ni l[íi]nea nueva, ni aparato nuevo/i, 'the "nothing changes on your side" promise is gone from the steps'],
+    [/el tel[ée]fono suena igual/i,        'the page no longer names the call the person on the phone could not get to'],
+    [/no lo sustituye/i,                   'the "it does not replace anyone" section is gone'],
+  ];
+  for (const [re, label] of ES_MUST) {
+    if (!re.test(body)) fail.push(`[es] ${label}`);
+  }
+
+  // The panel is the only conversion path on this page besides the cal link, so
+  // these have to exist for any of its buttons to do anything.
+  for (const need of ['id="panel"', 'id="ir"', "'/voice/token'", "'/voice/retell.js'"]) {
+    if (!es.includes(need)) fail.push(`[es] call panel is missing ${need}`);
+  }
+  const disparadores = (es.match(/class="[^"]*llamar/g) || []).length;
+  if (disparadores < 3) fail.push(`[es] only ${disparadores} buttons open the call panel; expected at least 3 (nav, hero, cierre)`);
+  if (!/lang="es"/.test(es)) fail.push('[es] the page does not declare lang="es"');
+}
+
 // ---- report ----------------------------------------------------------
 if (fail.length) { console.error('FAIL\n' + fail.map(f => '  - ' + f).join('\n')); process.exit(1); }
-console.log(`OK: ${PAIRS.length} contrast pairs, ${BANS.length} ban rules, ${Object.keys(tok).length} tokens checked`);
+const summary = Object.entries(seen)
+  .map(([p, c]) => `${p}: ${c.pairs} contrast pairs, ${c.bans} ban rules, ${c.tokens} tokens`)
+  .join('  |  ');
+console.log(`OK  ${summary}`);
