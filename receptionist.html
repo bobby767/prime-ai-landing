@@ -34,6 +34,10 @@
          at >=24px or >=18.66px bold; never as type on sand (2.95:1). */
       --amber:     oklch(0.6266 0.1229 50.7);  /* #C2703D */
 
+      /* Logo wordmark only. An exempt brand mark, not part of the palette.
+         Declared as a token so the guard sees no bare hex outside :root. */
+      --logo-cyan: #0891B2;
+
       /* Blue is buttons, links, and form affordances. Not decoration. */
       --accent:       #2563EB;
       --accent-hover: #1D4ED8;
@@ -165,7 +169,7 @@
     }
 
     .nav-logo .logo-ai {
-      color: #0891B2;
+      color: var(--logo-cyan);
     }
 
     .btn {
@@ -321,7 +325,8 @@
        ============================================ */
     .stats {
       padding: var(--space-10) 0;
-      background: var(--paper);
+      background: var(--ink);
+      color: var(--paper);
     }
 
     .stats-grid {
@@ -330,12 +335,14 @@
       gap: var(--space-3);
     }
 
+    /* Lifted off the ink band rather than paper: a paper card on an ink
+       section reads as a hole punched in it. */
     .stat-card {
-      background: var(--paper);
+      background: var(--tint-on-ink);
       box-shadow: var(--shadow-sm);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--border-subtle);
+      border: 1px solid oklch(0.9798 0.0045 78.3 / 0.14);
       border-radius: var(--radius);
       padding: var(--space-4);
       text-align: center;
@@ -379,6 +386,7 @@
        ============================================ */
     .problem {
       padding: var(--space-12) 0;
+      background: var(--shell);
     }
 
     .section-headline {
@@ -495,6 +503,7 @@
        ============================================ */
     .bonus {
       padding: var(--space-12) 0;
+      background: var(--sand);
     }
 
     .bonus-card {
@@ -551,14 +560,16 @@
        ============================================ */
     .roi {
       padding: var(--space-12) 0;
+      background: var(--ink);
+      color: var(--paper);
     }
 
     .roi-card {
-      background: var(--paper);
+      background: var(--tint-on-ink);
       box-shadow: var(--shadow-sm);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 2px solid var(--accent);
+      border: 2px solid oklch(0.9798 0.0045 78.3 / 0.14);
       border-radius: var(--radius);
       padding: var(--space-6);
       max-width: 800px;
@@ -740,6 +751,7 @@
        ============================================ */
     .video {
       padding: var(--space-12) 0;
+      background: var(--shell);
     }
 
     .video-card {
@@ -832,6 +844,7 @@
        ============================================ */
     .faq {
       padding: var(--space-12) 0;
+      background: var(--shell);
     }
 
     .faq .section-headline {
@@ -921,6 +934,8 @@
     .final-cta {
       padding: var(--space-12) 0;
       text-align: center;
+      background: var(--ink);
+      color: var(--paper);
     }
 
     .final-cta h2 {
@@ -944,7 +959,7 @@
       padding: var(--space-2) var(--space-3);
       margin-bottom: var(--space-4);
       font-size: var(--font-sm);
-      color: var(--text-primary);
+      color: var(--paper);
       max-width: 600px;
       text-align: left;
     }
@@ -960,7 +975,7 @@
     }
 
     .scarcity-count {
-      color: var(--accent);
+      color: var(--amber);
       font-weight: 700;
     }
 
@@ -978,8 +993,9 @@
       padding: var(--space-6) 0 var(--space-10);
       text-align: center;
       font-size: var(--font-sm);
-      color: var(--text-secondary);
-      border-top: 1px solid var(--border-subtle);
+      color: var(--text-on-ink);
+      background: var(--ink-deep);
+      border-top: none;
     }
 
     .footer-contact {
@@ -992,7 +1008,7 @@
     }
 
     .footer-contact a {
-      color: var(--text-secondary);
+      color: var(--text-on-ink);
       text-decoration: none;
       display: inline-flex;
       align-items: center;
@@ -1001,22 +1017,61 @@
     }
 
     .footer-contact a:hover {
-      color: #0891B2;
+      color: var(--paper);
     }
 
     .footer-response {
-      color: var(--text-secondary);
+      color: var(--text-on-ink);
       margin-bottom: var(--space-3);
       font-size: 13px;
     }
 
     .footer a {
-      color: var(--text-secondary);
+      color: var(--text-on-ink);
       text-decoration: none;
     }
 
     .footer a:hover {
-      color: var(--text-primary);
+      color: var(--paper);
+    }
+
+    /* ============================================
+       INVERTED BANDS
+       Overrides for the three ink sections and the footer. Placed last so
+       the single-class rules above lose the tie on equal specificity.
+       ============================================ */
+    .stats .stat-label,
+    .roi .roi-card h2,
+    .final-cta h2 {
+      color: var(--paper);
+    }
+
+    .stats .stat-source,
+    .roi .roi-step-label,
+    .roi .roi-result-label,
+    .roi .micro-copy,
+    .final-cta .scarcity-line,
+    .final-cta .unity-line,
+    .final-cta .micro-copy {
+      color: var(--text-on-ink);
+    }
+
+    /* Blue drops to 3.23:1 on ink. Amber clears AA-normal at 4.51:1 and the
+       underline still carries the affordance. */
+    .final-cta .btn-link {
+      color: var(--amber);
+    }
+
+    /* Amber is AA-normal on ink (4.51:1), so the money figures move to it. */
+    .stats .stat-number,
+    .roi .roi-step-value,
+    .roi .roi-result-number {
+      color: var(--amber);
+    }
+
+    .roi .roi-result {
+      border-top-color: oklch(0.9798 0.0045 78.3 / 0.14);
+      border-bottom-color: oklch(0.9798 0.0045 78.3 / 0.14);
     }
 
     /* ============================================
