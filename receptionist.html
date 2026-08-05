@@ -6,14 +6,16 @@
   <title>The AI Receptionist | Prime AI</title>
   <meta name="description" content="62% of calls to small businesses go unanswered. Prime AI's receptionist answers every call, 24/7, books straight into your calendar — and never takes a holiday.">
   <!-- ============================================
-       Every "call the receptionist" CTA points at /voice, the live
-       Retell web-call demo (Bun app on :3023, same origin). It works
-       today and needs no phone number, which is why the placeholder
-       tel: links were retired rather than filled in.
-       /voice's chrome is Spanish; its AI disclosure is bilingual and
-       the agent is multi-language, so an English visitor is understood
-       but reads a Spanish page. An /en variant of the demo would close
-       that gap.
+       This is the only page. Every "call the receptionist" CTA opens the
+       call panel at the bottom of this file and the Retell web call runs
+       right here — no phone number, and no second page to read first.
+       The CTAs used to link to /voice, whose chrome is Spanish, so an
+       English visitor was sent to a Spanish landing page to reach the
+       demo. That is what this replaced.
+       /voice itself stays up: it is the Spanish cold-outreach page, and
+       it serves POST /voice/token and /voice/retell.js to the panel here.
+       Same origin — nginx maps prime-ai.es/en/ to this file and
+       prime-ai.es/voice to the Bun app on :3023 (pm2 prime-voice).
        ============================================ -->
   <!-- Inline data URI, not a file: this page deploys as a single self-contained
        HTML file, and a /favicon.ico request 404s against the static location. -->
@@ -1338,6 +1340,105 @@
     }
 
     /* ============================================
+       CALL PANEL
+       Native <dialog>: it brings the backdrop, the focus trap and Esc
+       for free, which is why this is not a third hand-rolled overlay
+       next to .form-overlay.
+       ============================================ */
+    .call-dialog {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--text-primary);
+      padding: var(--space-4);
+      width: min(440px, calc(100vw - var(--space-4)));
+      box-shadow: var(--shadow-lift);
+      font-family: inherit;
+      /* Load-bearing. The UA centres dialog[open] with margin:auto, and
+         the `* { margin: 0 }` reset at the top of this sheet wipes it,
+         which pins the panel to the top-left corner. Restated here, not
+         exempted from the reset, because the reset is doing its job
+         everywhere else. Position stays the UA's fixed — that also gives
+         the close button its containing block. */
+      margin: auto;
+    }
+
+    .call-dialog::backdrop {
+      background: oklch(0.1905 0.0089 59.1 / 0.72);
+    }
+
+    .call-dialog h3 {
+      font-size: var(--font-md);
+      margin-bottom: var(--space-2);
+    }
+
+    /* The consent itself, not copy. Sits above the button on purpose. */
+    .call-notice {
+      background: var(--shell);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: var(--space-2);
+      font-size: var(--font-sm);
+      font-weight: 500;
+      margin-bottom: var(--space-3);
+    }
+
+    .call-dialog .call-start {
+      width: 100%;
+    }
+
+    .call-status {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      min-height: 1.6em;
+      margin-top: var(--space-2);
+      text-align: center;
+    }
+
+    /* Pulses only while the call is live, so the panel has one honest
+       signal that audio is flowing besides the words. */
+    .call-dialog.live .call-status {
+      color: var(--accent);
+      font-weight: 600;
+      animation: call-pulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes call-pulse {
+      50% { opacity: 0.45; }
+    }
+
+    .call-fine {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-top: var(--space-3);
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .call-fine a {
+      color: var(--accent);
+    }
+
+    .call-close {
+      position: absolute;
+      top: var(--space-1);
+      right: var(--space-1);
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: var(--font-md);
+      cursor: pointer;
+      border-radius: var(--radius);
+    }
+
+    .call-close:hover {
+      background: var(--surface-hover);
+    }
+
+    /* ============================================
        RESPONSIVE — MOBILE FIRST
        ============================================ */
 
@@ -1561,13 +1662,13 @@
         </svg>
         <span><span class="logo-prime">Prime</span> <span class="logo-ai">AI</span></span>
       </a>
-      <a href="/voice" class="btn btn-primary btn-nav">Hear It Live</a>
+      <button class="btn btn-primary btn-nav call-trigger">Hear It Live</button>
     </div>
   </nav>
 
   <!-- MOBILE BOTTOM CTA -->
   <div class="mobile-bottom-cta">
-    <a href="/voice" class="btn">Call the AI Receptionist</a>
+    <button class="btn call-trigger">Call the AI Receptionist</button>
   </div>
 
   <!-- ============================================
@@ -1577,8 +1678,8 @@
     <div class="hero-content">
       <h1>Your Phone Rang 200 Times Last Month. You Answered 76 of Them.</h1>
       <p class="hero-sub">62% of calls to small businesses go unanswered. Every one of them was someone ready to book — who is now calling the practice down the road. Prime AI answers all of them, 24/7, and books straight into your calendar.</p>
-      <a href="/voice" class="btn btn-primary">Call It Right Now — No Phone Needed</a>
-      <small class="micro-copy">Don't take our word for it. Talk to the receptionist yourself, right in this browser, and book a fake appointment. Takes 60 seconds.</small>
+      <button class="btn btn-primary call-trigger">Call It Right Now — No Phone Needed</button>
+      <small class="micro-copy">Don't take our word for it. Talk to the receptionist yourself, right on this page, and book a fake appointment. Takes 60 seconds.</small>
       <p style="margin-top:var(--space-3);"><button class="btn btn-secondary cta-trigger">Or see what your missed calls cost</button></p>
     </div>
   </section>
@@ -1970,7 +2071,7 @@
       <!-- TODO: keep this month current, or delete the line. It read "June" for months. -->
       <p class="scarcity-line">We onboard 5 businesses per month to guarantee hands-on setup. <span class="scarcity-count">3 spots remaining for August.</span></p>
 
-      <a href="/voice" class="btn btn-primary" style="font-size:18px; padding:18px 40px;">Call the AI Receptionist — Right Here, No Phone Needed</a>
+      <button class="btn btn-primary call-trigger" style="font-size:18px; padding:18px 40px;">Call the AI Receptionist — Right Here, No Phone Needed</button>
       <small class="micro-copy">Or <button class="btn-link cta-trigger">book your free call audit</button> — no commitment required.</small>
       <p class="unity-line">Built for practices that refuse to let the phone ring out.</p>
     </div>
@@ -1995,6 +2096,32 @@
       &copy; Prime AI 2026 &nbsp;|&nbsp; <a href="#">Privacy Policy</a>
     </div>
   </footer>
+
+  <!-- ============================================
+       CALL PANEL — the demo call happens on THIS page
+       Every "call the receptionist" button opens this instead of
+       navigating to /voice. /voice still runs (it is the Spanish
+       cold-outreach page, and it serves /voice/token and
+       /voice/retell.js to this panel from the same origin) but an
+       English visitor is never sent to it any more.
+
+       ⚠ The disclosure ABOVE the button and the recording fact in the
+       button label are the consent — the press is the consent, so it
+       cannot be disclosed after the press. The agent does not speak the
+       notice (Voice_agent/src/demo.ts:246). Do not thin either out.
+       ============================================ -->
+  <dialog class="call-dialog" id="callDialog" aria-labelledby="callTitle">
+    <button class="call-close" id="callClose" aria-label="Close">&times;</button>
+    <h3 id="callTitle">Talk to the receptionist</h3>
+    <p class="call-notice">It's an AI, not a person — the same one that would answer your business's phone. The call is recorded, so we can make it better.</p>
+    <button class="btn btn-primary call-start" id="callStart">Talk to the AI (recorded)</button>
+    <p class="call-status" id="callStatus" role="status" aria-live="polite"></p>
+    <!-- Identity and deletion rights, art. 13. Copied verbatim from the
+         /voice footer so there is one controller record, not two. The
+         privacy page it links to is Spanish-only — that is a real gap
+         for an English visitor, and the only notice that exists. -->
+    <p class="call-fine">Recording held by <strong>Daniel Kooij (Prime AI)</strong>, Fuengirola, Málaga — <a href="mailto:oscarinfo@proton.me">oscarinfo@proton.me</a>. <a href="/voice/privacidad">What happens to it and how to have it deleted</a>. Rather not be recorded? Email instead and we'll talk anyway.</p>
+  </dialog>
 
   <!-- ============================================
        FORM PANEL (SLIDE-IN)
@@ -2478,6 +2605,114 @@
           el.classList.add('visible');
         });
       }
+
+      // --- CALL PANEL ---------------------------------------------------
+      // Ported from Voice_agent/src/demo.ts, which had this working already.
+      // The SDK is a 540 KB ES module, so it is import()ed on the first
+      // press rather than shipped in the page: a visitor who never calls
+      // never downloads it.
+      var callDialog = document.getElementById('callDialog');
+      var callStart = document.getElementById('callStart');
+      var callStatus = document.getElementById('callStatus');
+      var START_LABEL = callStart.textContent;
+      // The ?c= attribution tag rides through from the outreach link, same
+      // as it does on /voice, so a call can be traced back to its business.
+      var callTag = new URLSearchParams(location.search).get('c') || '';
+      var liveCall = null;
+
+      function callSay(t) { callStatus.textContent = t; }
+
+      function callEnd(notice) {
+        liveCall = null;
+        callDialog.classList.remove('live');
+        callStart.disabled = false;
+        callStart.textContent = START_LABEL;
+        callSay(notice);
+      }
+
+      document.querySelectorAll('.call-trigger').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          callSay('');
+          callDialog.showModal();
+          // undefined outright on a non-secure origin, so this also catches
+          // the page being opened over plain http or off the filesystem.
+          if (!navigator.mediaDevices) {
+            callStart.disabled = true;
+            callSay('Open this page in Chrome or Safari to take the call.');
+          }
+        });
+      });
+
+      document.getElementById('callClose').addEventListener('click', function() {
+        callDialog.close();
+      });
+
+      // Covers the close button, Esc and the backdrop alike: closing the
+      // panel mid-call must hang up, or the agent keeps talking and billing
+      // to an empty room.
+      callDialog.addEventListener('close', function() {
+        if (liveCall) liveCall.stopCall();
+      });
+
+      callStart.addEventListener('click', function() {
+        if (liveCall) { liveCall.stopCall(); return; }
+        callStart.disabled = true;
+        callSay('Asking for your microphone…');
+
+        // We ask for the mic OURSELVES, before minting anything. Non-negotiable:
+        // the SDK calls setMicrophoneEnabled(true) without awaiting it, so with
+        // the mic DENIED startCall() still resolves, the agent talks and bills,
+        // and no error event ever arrives. The visitor would sit through a
+        // live-looking demo hearing nothing useful and we would pay for it.
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+          stream.getTracks().forEach(function(track) { track.stop(); });
+          callSay('Connecting…');
+          return fetch('/voice/token', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ c: callTag })
+          });
+        }, function() {
+          throw new Error('mic');
+        }).then(function(res) {
+          if (res.status === 429) throw new Error('busy');
+          if (!res.ok) throw new Error('token');
+          return res.json();
+        }).then(function(body) {
+          return Promise.all([body.access_token, import('/voice/retell.js')]);
+        }).then(function(parts) {
+          var client = new parts[1].RetellWebClient();
+          // Assigned BEFORE startCall: call_ready can land first, and the
+          // button it re-enables is the hang-up button.
+          liveCall = client;
+          // call_ready, NOT call_started: call_started fires before the
+          // agent's audio track is subscribed, so it would say "you're live"
+          // while the visitor is still listening to silence.
+          client.on('call_ready', function() {
+            callStart.disabled = false;
+            callStart.textContent = 'Hang up';
+            callDialog.classList.add('live');
+            callSay('You are live — go ahead, ask it anything.');
+          });
+          client.on('call_ended', function() { callEnd('Call ended.'); });
+          client.on('error', function() { callEnd('The call dropped.'); });
+          addEventListener('pagehide', function() { client.stopCall(); }, { once: true });
+          return client.startCall({ accessToken: parts[0] }).then(function() {
+            // iOS will not play inbound audio without a gesture, and this
+            // handler IS one. Called defensively — never verified on a real
+            // iPhone, and headless Chromium proves nothing about it.
+            return client.startAudioPlayback();
+          });
+        }).catch(function(err) {
+          if (err && err.message === 'mic') {
+            callEnd('I need your microphone — allow it and press again.');
+          } else if (err && err.message === 'busy') {
+            callEnd('The demo line is busy right now. Email us and we will talk anyway.');
+          } else {
+            callEnd('Could not connect. Try again.');
+          }
+        });
+      });
 
     })();
   </script>

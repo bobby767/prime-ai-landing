@@ -128,20 +128,42 @@ const literals = cssNoRoot.match(/#[0-9A-Fa-f]{6}/g) || [];
 if (literals.length) fail.push(`${literals.length} hex literal(s) in CSS outside :root: ${[...new Set(literals)].join(', ')}`);
 
 // ---- launch guard ----------------------------------------------------
-// Supersedes the DEMO-NUMBER count. The demo CTA is no longer a phone number:
-// every "call the receptionist" button points at /voice, the live web-call
-// demo on the same origin. So the thing to guard is that no dead phone link or
-// placeholder number reaches a prospect, and that the CTAs still have a target.
+// The demo CTA is not a phone number and no longer a link either: the call
+// runs on this page, in the #callDialog panel. So the thing to guard is that
+// no dead phone link or placeholder number reaches a prospect, that every
+// CTA still opens the panel, and that nothing sends a visitor off to /voice.
 // Matched on href="tel: rather than tel:, or the comment in receptionist.html
 // explaining this would count as a violation of itself.
 const deadTel = (src.match(/href="tel:/g) || []).length;
-if (deadTel) fail.push(`${deadTel} tel: link(s): the demo CTA should point at /voice`);
+if (deadTel) fail.push(`${deadTel} tel: link(s): the demo CTA should open the call panel`);
 
 const placeholder = (src.match(/XXXX|\+31 ?6 ?X/g) || []).length;
 if (placeholder) fail.push(`${placeholder} placeholder phone number(s) still in the page`);
 
-const voiceCtas = (src.match(/href="\/voice"/g) || []).length;
-if (voiceCtas !== 4) fail.push(`expected 4 CTAs pointing at /voice, found ${voiceCtas}`);
+const offPage = (src.match(/href="\/voice"/g) || []).length;
+if (offPage) fail.push(`${offPage} CTA(s) still navigate to /voice: the call belongs on this page`);
+
+const triggers = (src.match(/class="[^"]*call-trigger/g) || []).length;
+if (triggers !== 4) fail.push(`expected 4 CTAs opening the call panel, found ${triggers}`);
+
+// The panel is where the call is minted from, so these three have to exist for
+// any of those triggers to do anything.
+for (const need of ['id="callDialog"', 'id="callStart"', "'/voice/token'"]) {
+  if (!src.includes(need)) fail.push(`call panel is missing ${need}`);
+}
+
+// AI Act art. 50 + GDPR art. 13 rest on this page alone: the agent does not
+// speak the notice (Voice_agent/src/demo.ts:246) and the press IS the consent,
+// so the AI fact, the recording fact and the controller must be in the panel,
+// and the recording fact must sit ABOVE the button that starts the call.
+const noticeAt = src.indexOf('class="call-notice"');
+const startAt = src.indexOf('id="callStart"');
+if (noticeAt === -1) fail.push('no AI/recording disclosure in the call panel');
+else if (startAt === -1 || noticeAt > startAt) fail.push('the disclosure sits below the start button: the press is the consent');
+for (const phrase of ['not a person', 'recorded', 'Daniel Kooij']) {
+  if (!src.includes(phrase)) fail.push(`disclosure no longer says "${phrase}"`);
+}
+if (!/Talk to the AI \(recorded\)/.test(src)) fail.push('the start button label no longer carries the recording fact');
 
 // ---- report ----------------------------------------------------------
 if (fail.length) { console.error('FAIL\n' + fail.map(f => '  - ' + f).join('\n')); process.exit(1); }
