@@ -165,6 +165,34 @@ for (const phrase of ['not a person', 'recorded', 'Daniel Kooij']) {
 }
 if (!/Talk to the AI \(recorded\)/.test(src)) fail.push('the start button label no longer carries the recording fact');
 
+// ---- market figures --------------------------------------------------
+// This page sells to businesses in Málaga, but it was written with Dutch
+// figures and shipped that way. €2,791/mo was Indeed NL — about a third too
+// high for Spain — and the language FAQ offered Dutch. Both are now Spanish,
+// from docs/es-localisation-figures.md, and both are pinned here because a
+// wrong market figure is invisible on the page and expensive in the room.
+for (const residue of ['Netherlands', 'Dutch', 'Indeed NL', '2,791']) {
+  // The comments in receptionist.html explaining the switch name the old
+  // values, so only count occurrences outside an HTML comment.
+  const visible = src.replace(/<!--[\s\S]*?-->/g, '');
+  if (visible.includes(residue)) fail.push(`Dutch-market residue "${residue}" is visible to a Spanish prospect`);
+}
+
+// The two figures must agree: the headline number is the gross salary plus
+// Spanish employer social security, so bumping one and not the other puts a
+// self-contradicting claim on the page.
+const GROSS = 1603;          // Indeed España, 29 Mar 2026 (19.235 €/año ÷ 12)
+const EMPLOYER_RATE = 0.3215;  // cotización empresarial
+const allIn = Math.round(GROSS * (1 + EMPLOYER_RATE));
+if (!src.includes(`data-target="${allIn}"`)) {
+  fail.push(`the cost stat should be €${allIn}/mo (€${GROSS} gross + ${EMPLOYER_RATE * 100}% employer contributions), and the page does not say so`);
+}
+if (!src.includes(`€${GROSS.toLocaleString('en-US')}`)) {
+  fail.push(`the €${allIn} figure is unsourced: the gross €${GROSS.toLocaleString('en-US')} it derives from is not on the page`);
+}
+const allInMentions = (src.match(new RegExp(`€${allIn.toLocaleString('en-US')}`, 'g')) || []).length;
+if (allInMentions < 2) fail.push(`€${allIn} appears ${allInMentions}× — the stat card and the copy that quotes it should agree`);
+
 // ---- report ----------------------------------------------------------
 if (fail.length) { console.error('FAIL\n' + fail.map(f => '  - ' + f).join('\n')); process.exit(1); }
 console.log(`OK: ${PAIRS.length} contrast pairs, ${BANS.length} ban rules, ${Object.keys(tok).length} tokens checked`);

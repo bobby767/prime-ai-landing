@@ -1,21 +1,31 @@
 # Spanish localisation — every market-specific figure, researched and flagged
 
-_Researched 2026-08-05. **Nothing here is live.** Confirm each row before the
-Spanish page ships._
+_Researched 2026-08-05. Rows 1, 1b and 3 went live on the ENGLISH page
+2026-08-05 (Dan: the salary was Dutch and the page sells in Málaga). Rows 2
+and 4 are still unconfirmed — confirm them before the Spanish page ships._
 
-The English page at `prime-ai.es/en/` carries Dutch-market figures. Transplanting
-them onto a Spanish page would put false numbers in front of Spanish prospects,
-so each one is listed below with what the research actually says.
+The English page at `prime-ai.es/en/` was written with Dutch-market figures even
+though it sells to businesses in Spain, so the corrections below are not only for
+a future Spanish page — the ones marked LIVE are already on the English one.
+`test-palette.js` pins them so the Dutch values cannot come back.
 
 ## Needs replacing
 
 | # | Claim on the English page | Source there | Spanish equivalent found | Source | Confidence |
 |---|---|---|---|---|---|
-| 1 | `€2,791/mo` average receptionist salary | Indeed NL | **1.603 €/mes bruto** (19.235 €/año ÷ 12) | [Indeed ES](https://es.indeed.com/career/recepcionista/salaries), updated 29 Mar 2026 | High |
-| 1b | — | — | **2.118 €/mes true cost to employer** (1.603 € + 32,15% cotización empresarial) | [Grupo Castilla](https://www.grupocastilla.es/coste-trabajador/), [Factorial](https://factorial.es/blog/coste-empresa-trabajador/) | High |
-| 2 | `€2,500` average job value (ROI calculator default) | unsourced | **150–300 €** general dental ticket medio; **400–700 €** depending on specialty | [consultoriadental.com](https://consultoriadental.com/como-optimizar-el-ticket-medio-en-tu-clinica/), [traspasodental.es](https://www.traspasodental.es/estetica-dental-valoracion-traspaso-clinica/) | **Low — see below** |
-| 3 | FAQ "Can it handle Dutch and English?" | — | Should read Spanish and English | — | n/a |
+| 1 | ~~`€2,791/mo` average receptionist salary~~ **LIVE** | Indeed NL | **1.603 €/mes bruto** (19.235 €/año ÷ 12) | [Indeed ES](https://es.indeed.com/career/recepcionista/salaries), updated 29 Mar 2026 | High |
+| 1b | **LIVE** — the headline stat is this one, not the gross | — | **2.118 €/mes true cost to employer** (1.603 € + 32,15% cotización empresarial) | [Grupo Castilla](https://www.grupocastilla.es/coste-trabajador/), [Factorial](https://factorial.es/blog/coste-empresa-trabajador/) | High |
+| 2 | `€2,500` average job value (ROI calculator default) | unsourced | **150–300 €** general dental ticket medio; **400–700 €** depending on specialty | [consultoriadental.com](https://consultoriadental.com/como-optimizar-el-ticket-medio-en-tu-clinica/), [traspasodental.es](https://www.traspasodental.es/estetica-dental-valoracion-traspaso-clinica/) | **Low — still blocked, see below** |
+| 3 | ~~FAQ "Can it handle Dutch and English?"~~ **LIVE** — now Spanish and English | — | Should read Spanish and English | — | n/a |
 | 4 | `+31` phone formatting, NL references | — | Spanish formatting | — | n/a |
+
+**Row 4 status.** No `+31` number survives on the English page — the demo CTA is
+not a phone number at all any more, it opens the in-page call panel. What is left
+under row 4 is only whatever a future Spanish page introduces.
+
+**Which basis row 1 uses.** The page quotes 1.603 €/mes, i.e. the annual figure
+over 12. If you would rather publish the 14-pagas basis (1.374 €/mes), the
+all-in stat and `test-palette.js` both have to move with it.
 
 **Cross-check on #1.** Jobted gives 1.379–1.759 €/mes bruto starting and
 1.449–1.914 €/mes after five years, which brackets the Indeed figure. Two
