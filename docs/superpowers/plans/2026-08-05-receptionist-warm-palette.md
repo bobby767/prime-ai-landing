@@ -20,7 +20,10 @@
   line is what makes the check trustworthy.
 - Amber (`--amber`) as a text colour: permitted on `--ink` / `--ink-deep` at any size; permitted on `--paper` / `--shell` only at ≥24px or ≥18.66px bold; **never** as text on `--sand` (2.95:1, fails AA-large).
 - Blue (`--accent`) is for buttons, links, and form affordances only. It is not a decorative colour.
-- The logo SVG at lines 1471-1480 keeps `#0891B2`. It is an exempt brand mark. Do not tokenise or recolour it.
+- The logo keeps `#0891B2`. It is an exempt brand mark, and it has two parts:
+  the inline SVG mark (10 attributes, near lines 1478-1487) and the CSS rule
+  `.nav-logo .logo-ai` (near line 164) that colours the "AI" in the wordmark.
+  Do not recolour either. Line numbers shift as tasks land; find them by content.
 - The 5 `DEMO-NUMBER` markers must remain exactly 5. This change must not touch them.
 - No em dashes in any copy, code, comment, string literal, or commit message you
   write. Use commas, colons, semicolons, periods, or parentheses.
@@ -304,6 +307,33 @@ with zero var() references. Retints shadows from cool slate to warm."
 **Interfaces:**
 - Consumes: all tokens from Task 2.
 - Produces: `.stats`, `.roi`, `.final-cta` carry `background: var(--ink)`; `.footer` carries `var(--ink-deep)`. Task 5 relies on these three class names when scoping icon colours.
+
+- [ ] **Step 0: Tokenise the logo cyan**
+
+`test-palette.js` fails on any hex literal in CSS outside `:root`. The logo
+wordmark rule `.nav-logo .logo-ai` (near line 164) carries `color: #0891B2` and
+must keep that exact colour, so it cannot be recoloured and cannot stay a literal.
+
+Add one token to `:root`, on its own line, with the other colour tokens:
+
+```css
+      /* Logo wordmark only. An exempt brand mark, not part of the palette.
+         Declared as a token so the guard sees no bare hex outside :root. */
+      --logo-cyan: #0891B2;
+```
+
+Then change `.nav-logo .logo-ai` to use it:
+
+```css
+    .nav-logo .logo-ai {
+      color: var(--logo-cyan);
+    }
+```
+
+The rendered colour must not change. Verify with
+`grep -c '#0891B2' receptionist.html`: it returns 12 before this step and must
+return 12 after, with the count having moved one occurrence from line 164 into
+`:root`. The inline SVG logo attributes are untouched either way.
 
 - [ ] **Step 1: Assign one background per section**
 
