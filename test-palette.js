@@ -204,6 +204,49 @@ for (const [re, label] of FRAME_MUST) {
   if (!re.test(visible)) fail.push(label);
 }
 
+// ---- what the page may claim -----------------------------------------
+// A visitor now presses a button on THIS page and talks to the agent in
+// sales-agent.ts thirty seconds later. That agent's HARD RULES forbid it from
+// quoting a price or a monthly figure, promising a percentage, a revenue figure
+// or a timeline, and inventing any figure about the prospect's business — "no
+// industry averages, no assumed prices", in those words. demo.ts:263 records
+// the consequence for the page: one that promises what the call must then
+// refuse to repeat is worse than a plainer one. The Spanish page at /voice was
+// held to this by build.test.ts from the start; when the call moved onto this
+// page, this page inherited the obligation and nothing was checking it.
+//
+// The line drawn, which is narrower than "no numbers":
+//   ALLOWED  — published stats with their source visible (62%, 21x)
+//   ALLOWED  — a worked example whose assumptions are on screen and editable
+//   ALLOWED  — figures the visitor typed into the calculator themselves
+//   BANNED   — a figure asserted about them, an invented price, any promise
+const CLAIM_BANS = [
+  [/guarantee[ds]?\b/i,               'a guarantee: the agent may not promise an outcome, so the page may not either'],
+  [/we'?ll keep optimising/i,         'an open-ended performance promise'],
+  [/spots? remaining|spots? left/i,   'unverifiable scarcity'],
+  [/€[\d,]+ ?(value|\/mo value)/i,    'an invented price tag on a deliverable'],
+  [/(is|are) losing (somewhere )?around €/i, 'a euro figure asserted about the visitor rather than calculated from their input'],
+  [/at the average, it'?s over €/i,   'an extrapolation stacked on an assumed job value'],
+];
+for (const [re, label] of CLAIM_BANS) {
+  if (re.test(visible)) fail.push(`${label} (matched ${re})`);
+}
+
+// The two euro figures that ARE allowed are the worked example's, and they are
+// only allowed because its assumptions are visible and editable. If that
+// sentence goes, the figures stop being an example and become a claim.
+if (/€13,125/.test(visible) && !/assumptions, shown openly/.test(visible)) {
+  fail.push('the €13,125 worked example lost the line that shows its assumptions — without it the figure reads as a claim');
+}
+
+// Both published stats must keep their citation on screen. An uncited 62% is
+// indistinguishable from an invented one.
+for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business Review']]) {
+  if (visible.includes(stat) && !visible.includes(source)) {
+    fail.push(`${stat} appears without its source (${source}) — an uncited statistic is an invented one`);
+  }
+}
+
 // ---- report ----------------------------------------------------------
 if (fail.length) { console.error('FAIL\n' + fail.map(f => '  - ' + f).join('\n')); process.exit(1); }
 console.log(`OK: ${PAIRS.length} contrast pairs, ${BANS.length} ban rules, ${Object.keys(tok).length} tokens checked`);

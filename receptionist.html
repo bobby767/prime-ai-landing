@@ -986,7 +986,7 @@
       line-height: 1.2;
     }
 
-    .guarantee-badge {
+    .assurance-badge {
       display: inline-flex;
       align-items: center;
       gap: 12px;
@@ -1001,20 +1001,14 @@
       text-align: left;
     }
 
-    .guarantee-badge svg {
+    .assurance-badge svg {
       flex-shrink: 0;
     }
 
-    .scarcity-line {
-      font-size: var(--font-base);
-      color: var(--text-secondary);
-      margin-bottom: var(--space-5);
-    }
-
-    .scarcity-count {
-      color: var(--amber);
-      font-weight: 700;
-    }
+    /* .scarcity-line and .scarcity-count were deleted with the "3 spots
+       remaining" claim they styled. --amber was their only other user of
+       font-weight 700 on ink; it is still referenced elsewhere, so the dead-token
+       check stays quiet either way. */
 
     .unity-line {
       font-size: var(--font-sm);
@@ -1087,7 +1081,6 @@
     .roi .roi-step-label,
     .roi .roi-result-label,
     .roi .micro-copy,
-    .final-cta .scarcity-line,
     .final-cta .unity-line,
     .final-cta .micro-copy {
       color: var(--text-on-ink);
@@ -1732,18 +1725,22 @@
           <div class="stat-source">Source: Harvard Business Review</div>
         </div>
         <div class="stat-card">
-          <!-- This card used to carry a receptionist's salary. It is the exact
-               argument this page must not make: a prospect who is doing salary
-               arithmetic is picturing a firing, not the calls they are losing.
-               So the fourth stat is now the cost of the MISSED CALLS.
-               It is an illustration, not a market statistic, and the source
-               line says so plainly — the €2,500 job value behind it is the one
-               figure docs/es-localisation-figures.md still lists as unsourced
-               (row 2, blocked on the vertical decision), so it must not be
-               dressed up as research. The calculator below shows the sum. -->
-          <div class="stat-number" data-target="13125" data-prefix="€" data-suffix="/mo" data-format="currency">€0/mo</div>
-          <div class="stat-label">walking out of a phone that rings 200 times and misses 30%</div>
-          <div class="stat-source">Not a statistic. Our own arithmetic, at a €2,500 job — run your numbers below.</div>
+          <!-- Third revision of this card, and the reason is worth keeping.
+               It held a receptionist's salary (the firing argument — gone), then
+               €13,125/mo of missed work. That second version was still wrong
+               HERE: a stat card is read as a fact, its assumptions are a scroll
+               away, and sales-agent.ts's HARD RULES forbid the agent from
+               quoting a revenue figure or an industry average on the call the
+               visitor is thirty seconds from having. A page asserting what the
+               agent must refuse to repeat is worse than a plainer one
+               (demo.ts:263). The worked example in the ROI section keeps that
+               arithmetic, WITH its assumptions visible and editable, which is
+               the honest place for it.
+               So this card is now a product fact instead of a claim: verifiable
+               by pressing the button at the top of the page. -->
+          <div class="stat-number" data-target="2" data-suffix=" rings">0 rings</div>
+          <div class="stat-label">and someone has picked up — day, night, or Sunday</div>
+          <div class="stat-source">Not a statistic. Press the button above and count them.</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" data-target="168" data-suffix=" hrs">0 hrs</div>
@@ -1848,15 +1845,19 @@
         </div>
         <div class="bonus-item">
           <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Weekly call transcripts + performance report <span class="bonus-value">— €500/mo value</span></span>
+          <!-- The "— €500/mo value" style price tags are gone from all four
+               items. We invented every one of those numbers, and the agent may
+               not quote a monthly figure or a price at all. What each item does
+               is a fact; what it is "worth" was decoration. -->
+          <span>Weekly call transcripts + performance report <span class="bonus-value">— Included</span></span>
         </div>
         <div class="bonus-item">
           <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Calendar &amp; booking system integration <span class="bonus-value">— €1,200 value</span></span>
+          <span>Calendar &amp; booking system integration <span class="bonus-value">— Included</span></span>
         </div>
         <div class="bonus-item">
           <svg class="check-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>After-hours cover + emergency escalation rules <span class="bonus-value">— €800 value</span></span>
+          <span>After-hours cover + emergency escalation rules <span class="bonus-value">— Included</span></span>
         </div>
         <!-- This line used to price the system against a receptionist's salary.
              Priced against the missed calls instead — that is the comparison
@@ -1895,7 +1896,14 @@
           <div class="roi-result-number">€13,125/month</div>
           <div class="roi-result-label">walking to the business down the road</div>
         </div>
-        <p class="roi-killer">And that assumes you only miss 30% of calls — less than half the 62% industry average. At the average, it's over €27,000 a month.</p>
+        <!-- The second half of this line used to extrapolate to "over €27,000 a
+             month" at the industry miss rate. That is our invented job value
+             stacked on someone else's average and presented as their loss — the
+             most aggressive claim that was on the page, and the agent is
+             forbidden to repeat any of it. The conservative version is the
+             persuasive one precisely because it survives being checked
+             (sales-agent.ts HARD RULES, in those words). -->
+        <p class="roi-killer">And that assumes you only miss 30% of calls — less than half the 62% the study found.</p>
         <p class="micro-copy" style="text-align:center; margin-top:var(--space-2);">Our assumptions, shown openly: roughly a third of inbound calls are new customers rather than existing ones, and a quarter of those would have booked. Change any of them in the calculator below.</p>
         <div class="section-cta">
           <button class="btn btn-primary cta-trigger" style="width:100%;">Calculate What Your Missed Calls Cost</button>
@@ -2112,7 +2120,7 @@
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="faq-answer">
-            <div class="faq-answer-inner"><p style="margin-bottom:12px;">It depends on your call volume and how complex your booking rules are, so we quote it after we understand your setup rather than putting a number on a web page that's wrong for half the people reading it.</p>The useful comparison: a practice taking 200 calls a month and missing 30% of them is losing somewhere around €13,000 a month in work that goes to a competitor. Our pricing sits well below that, which is the only comparison that matters — we price against the calls you're losing, not against a salary. If the audit shows the numbers don't work for your practice, we'll tell you that instead of selling you something.</div>
+            <div class="faq-answer-inner"><p style="margin-bottom:12px;">It depends on your call volume and how complex your booking rules are, so we quote it after we understand your setup rather than putting a number on a web page that's wrong for half the people reading it.</p>The useful comparison isn't a salary, it's the work currently walking out of your phone — and that figure is yours, not ours, which is what the calculator above is for. Put your own call volume and your own average job into it and you'll have the number our pricing has to sit below. If the audit shows it doesn't, we'll tell you that instead of selling you something.</div>
           </div>
         </div>
 
@@ -2127,17 +2135,25 @@
     <div class="container">
       <h2>Stop Losing Customers to the Business That Simply Picked Up the Phone.</h2>
 
-      <div class="guarantee-badge">
+      <div class="assurance-badge">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.2"/>
           <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" stroke-width="1.5"/>
           <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span>If your answered-call rate doesn't improve within 90 days, we'll keep optimising at no cost until it does. And the audit findings are yours to keep either way.</span>
+        <!-- Was a 90-day performance guarantee. Removed, not softened: the agent
+             is forbidden to promise a number, a percentage or a timeline, so a
+             guarantee on the page is a promise the call then walks back.
+             Replaced with the risk reversal that is actually true, and that the
+             "how long until it's live" FAQ already describes — you hear it work
+             before it touches your main line. Nothing to believe on faith. -->
+        <span>It runs in parallel with your current setup first. You listen to real calls it has handled, and nothing goes live on your main line until you've heard it work. The audit findings are yours to keep either way.</span>
       </div>
 
-      <!-- TODO: keep this month current, or delete the line. It read "June" for months. -->
-      <p class="scarcity-line">We onboard 5 businesses per month to guarantee hands-on setup. <span class="scarcity-count">3 spots remaining for August.</span></p>
+      <!-- The scarcity line ("3 spots remaining for August") is gone. It had
+           carried a stale month for months, per its own TODO, and neither the
+           count nor the cap was ever verifiable — which makes it the one kind of
+           claim this page can least afford. -->
 
       <button class="btn btn-primary call-trigger" style="font-size:18px; padding:18px 40px;">Hear It Answer — Right Here, No Phone Needed</button>
       <small class="micro-copy">Or <button class="btn-link cta-trigger">book your free call audit</button> — no commitment required.</small>
