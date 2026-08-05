@@ -128,8 +128,20 @@ const literals = cssNoRoot.match(/#[0-9A-Fa-f]{6}/g) || [];
 if (literals.length) fail.push(`${literals.length} hex literal(s) in CSS outside :root: ${[...new Set(literals)].join(', ')}`);
 
 // ---- launch guard ----------------------------------------------------
-const demo = (src.match(/DEMO-NUMBER/g) || []).length;
-if (demo !== 5) fail.push(`expected 5 DEMO-NUMBER markers, found ${demo}`);
+// Supersedes the DEMO-NUMBER count. The demo CTA is no longer a phone number:
+// every "call the receptionist" button points at /voice, the live web-call
+// demo on the same origin. So the thing to guard is that no dead phone link or
+// placeholder number reaches a prospect, and that the CTAs still have a target.
+// Matched on href="tel: rather than tel:, or the comment in receptionist.html
+// explaining this would count as a violation of itself.
+const deadTel = (src.match(/href="tel:/g) || []).length;
+if (deadTel) fail.push(`${deadTel} tel: link(s): the demo CTA should point at /voice`);
+
+const placeholder = (src.match(/XXXX|\+31 ?6 ?X/g) || []).length;
+if (placeholder) fail.push(`${placeholder} placeholder phone number(s) still in the page`);
+
+const voiceCtas = (src.match(/href="\/voice"/g) || []).length;
+if (voiceCtas !== 4) fail.push(`expected 4 CTAs pointing at /voice, found ${voiceCtas}`);
 
 // ---- report ----------------------------------------------------------
 if (fail.length) { console.error('FAIL\n' + fail.map(f => '  - ' + f).join('\n')); process.exit(1); }

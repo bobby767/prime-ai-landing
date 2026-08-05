@@ -6,10 +6,14 @@
   <title>The AI Receptionist | Prime AI</title>
   <meta name="description" content="62% of calls to small businesses go unanswered. Prime AI's receptionist answers every call, 24/7, books straight into your calendar — and never takes a holiday.">
   <!-- ============================================
-       TODO BEFORE LAUNCH: replace the placeholder demo
-       number (+31 6 XXXX XXXX) everywhere it appears.
-       Search for DEMO-NUMBER to find all instances.
-       A dead demo line costs more trust than no demo line.
+       Every "call the receptionist" CTA points at /voice, the live
+       Retell web-call demo (Bun app on :3023, same origin). It works
+       today and needs no phone number, which is why the placeholder
+       tel: links were retired rather than filled in.
+       /voice's chrome is Spanish; its AI disclosure is bilingual and
+       the agent is multi-language, so an English visitor is understood
+       but reads a Spanish page. An /en variant of the demo would close
+       that gap.
        ============================================ -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1554,15 +1558,13 @@
         </svg>
         <span><span class="logo-prime">Prime</span> <span class="logo-ai">AI</span></span>
       </a>
-      <!-- DEMO-NUMBER -->
-      <a href="tel:+31600000000" class="btn btn-primary btn-nav">Hear It Live</a>
+      <a href="/voice" class="btn btn-primary btn-nav">Hear It Live</a>
     </div>
   </nav>
 
   <!-- MOBILE BOTTOM CTA -->
   <div class="mobile-bottom-cta">
-    <!-- DEMO-NUMBER -->
-    <a href="tel:+31600000000" class="btn">Call the AI Receptionist</a>
+    <a href="/voice" class="btn">Call the AI Receptionist</a>
   </div>
 
   <!-- ============================================
@@ -1572,9 +1574,8 @@
     <div class="hero-content">
       <h1>Your Phone Rang 200 Times Last Month. You Answered 76 of Them.</h1>
       <p class="hero-sub">62% of calls to small businesses go unanswered. Every one of them was someone ready to book — who is now calling the practice down the road. Prime AI answers all of them, 24/7, and books straight into your calendar.</p>
-      <!-- DEMO-NUMBER -->
-      <a href="tel:+31600000000" class="btn btn-primary">Call It Right Now — +31 6 XXXX XXXX</a>
-      <small class="micro-copy">Don't take our word for it. Phone the receptionist yourself and book a fake appointment. Takes 60 seconds.</small>
+      <a href="/voice" class="btn btn-primary">Call It Right Now — No Phone Needed</a>
+      <small class="micro-copy">Don't take our word for it. Talk to the receptionist yourself, right in this browser, and book a fake appointment. Takes 60 seconds.</small>
       <p style="margin-top:var(--space-3);"><button class="btn btn-secondary cta-trigger">Or see what your missed calls cost</button></p>
     </div>
   </section>
@@ -1966,8 +1967,7 @@
       <!-- TODO: keep this month current, or delete the line. It read "June" for months. -->
       <p class="scarcity-line">We onboard 5 businesses per month to guarantee hands-on setup. <span class="scarcity-count">3 spots remaining for August.</span></p>
 
-      <!-- DEMO-NUMBER -->
-      <a href="tel:+31600000000" class="btn btn-primary" style="font-size:18px; padding:18px 40px;">Call the AI Receptionist — +31 6 XXXX XXXX</a>
+      <a href="/voice" class="btn btn-primary" style="font-size:18px; padding:18px 40px;">Call the AI Receptionist — Right Here, No Phone Needed</a>
       <small class="micro-copy">Or <button class="btn-link cta-trigger">book your free call audit</button> — no commitment required.</small>
       <p class="unity-line">Built for practices that refuse to let the phone ring out.</p>
     </div>
