@@ -31,6 +31,37 @@ const hexOf = name => {
   return direct ? direct[0].toUpperCase() : null;
 };
 
+// ---- oklch vs hex-comment agreement ---------------------------------
+// The browser renders the oklch value; every check below measures the hex
+// comment. If the two disagree, this script grades a colour the page never
+// shows, and it does so silently, which is the one way a guard can be worse
+// than no guard. Convert each oklch back to sRGB and require agreement.
+const l2s = c => { const v = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+  return Math.max(0, Math.min(255, Math.round(v * 255))); };
+const oklch2hex = (L, C, H) => {
+  const A = C * Math.cos(H * Math.PI / 180), B = C * Math.sin(H * Math.PI / 180);
+  const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+  const m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+  const s = (L - 0.0894841775 * A - 1.2914855480 * B) ** 3;
+  const r =  4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+  const g = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+  const b = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+  return '#' + [r, g, b].map(v => l2s(v).toString(16).padStart(2, '0').toUpperCase()).join('');
+};
+const TOLERANCE = 2;  // per channel, for rounding only
+for (const [name, t] of Object.entries(tok)) {
+  const ok = t.value.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)\s*$/);
+  const hx = t.comment.match(/#[0-9A-Fa-f]{6}/);
+  if (!ok || !hx) continue;  // alpha variants and plain hex tokens are exempt
+  const got = oklch2hex(+ok[1], +ok[2], +ok[3]);
+  const want = hx[0].toUpperCase();
+  const diff = Math.max(...[1, 3, 5].map(i =>
+    Math.abs(parseInt(got.slice(i, i + 2), 16) - parseInt(want.slice(i, i + 2), 16))));
+  if (diff > TOLERANCE) {
+    fail.push(`${name}: oklch renders ${got} but its comment claims ${want} (off by ${diff} per channel). The page and this guard disagree.`);
+  }
+}
+
 const PAIRS = [
   ['--text-primary',   '--paper',    4.5],
   ['--text-primary',   '--shell',    4.5],
