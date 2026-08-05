@@ -78,6 +78,9 @@ All neutrals tinted toward hue ~50 (warm). No pure white, no pure black.
 | `--ink-deep` | `oklch(0.14 0.012 45)` | `#171310` | footer |
 | `--amber` | `oklch(0.62 0.12 50)` | `#C2703D` | money figures, stat numbers, eyebrows |
 | `--accent` | unchanged | `#2563EB` | buttons and links only |
+| `--text-primary` | `oklch(0.19 0.014 48)` | `#221D19` | body copy on light surfaces |
+| `--text-secondary` | `oklch(0.48 0.02 55)` | `#6B5F54` | muted copy on light surfaces |
+| `--text-on-ink` | `oklch(0.75 0.015 60)` | `#B8ABA0` | muted copy on dark bands |
 
 `--brand-cyan` is deleted. Amber assumes the second-colour role and cyan had
 zero usages, so retaining it would preserve a variable no rule references.
@@ -86,15 +89,46 @@ zero usages, so retaining it would preserve a variable no rule references.
 
 ### Amber contrast constraint
 
-Amber on paper measures approximately 4.4:1. That satisfies WCAG AA for large
-text (≥24px, or ≥18.66px bold) and fails it for body copy.
+Measured, not estimated. All figures from `test-palette.js`:
 
-**Rule: amber is permitted on stat numbers, ROI figures, and section eyebrows
-only. Never on a paragraph, never on small labels, never on form help text.**
+| Pair | Ratio | AA normal (4.5) | AA large (3.0) |
+|---|---|---|---|
+| amber on `--paper` | 3.49:1 | fail | pass |
+| amber on `--sand` | 2.95:1 | fail | **fail** |
+| amber on `--ink` | 4.51:1 | pass | pass |
 
-If amber is later wanted in body copy it must first be darkened to roughly
-`oklch(0.52 0.13 50)`, which reaches ~7:1 at the cost of some warmth. This is a
-deliberate deferral, not an oversight.
+Amber is therefore **most** usable on the dark bands, not least. That is
+convenient: the money figures live in the stats and ROI sections, which are the
+two inverted anchors.
+
+**Rules:**
+
+1. On `--paper` and `--shell`, amber is permitted on large text only — stat
+   numbers, ROI figures, section eyebrows at ≥24px, or ≥18.66px bold. Never on a
+   paragraph, small label, or form help text.
+2. On `--sand`, amber is not permitted as a text colour at any size. 2.95:1
+   fails even the large-text floor. Amber on sand is allowed as a border or
+   fill, never as type.
+3. On `--ink` and `--ink-deep`, amber is unrestricted.
+
+If amber is later wanted in body copy on light surfaces it must first be
+darkened to roughly `oklch(0.52 0.13 50)`. This is a deliberate deferral.
+
+### Other measured pairs
+
+| Pair | Ratio |
+|---|---|
+| `--text-primary` (`#221D19`) on `--paper` | 15.75:1 |
+| `--text-secondary` (`#6B5F54`) on `--paper` | 5.84:1 |
+| `--text-secondary` on `--shell` | 5.50:1 |
+| `--text-secondary` on `--sand` | 4.95:1 |
+| `--accent` on `--paper` | 4.88:1 |
+| `--paper` on `--ink` | 15.75:1 |
+| `--text-on-ink` (`#B8ABA0`) on `--ink` | 7.45:1 |
+| `--paper` on `--ink-deep` | 17.42:1 |
+
+`--text-secondary` clears AA on all three light tones, including the darkest
+(`--sand`, 4.95:1), so it needs no per-surface variant.
 
 Shadows are retinted from `rgba(15, 23, 42, x)` to a warm equivalent derived
 from `--ink`.
