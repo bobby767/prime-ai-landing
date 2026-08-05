@@ -204,9 +204,28 @@ Replace lines 20-35 (from `--bg-primary:` through `--shadow-md:`) with:
 
 Delete `--bg-primary`, `--bg-card`, `--bg-subtle`, and `--brand-cyan`. They are replaced by the scale above; `--brand-cyan` had zero `var()` references.
 
-- [ ] **Step 2: Repoint the two global background references**
+- [ ] **Step 2: Repoint every reference to the deleted tokens**
 
-`body` (line ~79) and `.nav` (line ~106) both use `var(--bg-primary)`. Change both to `var(--paper)`.
+The tokens deleted in Step 1 must not leave dangling `var()` references, or this
+task's commit ships a visibly broken page. Repoint all of them here, in the same
+commit:
+
+- `body` (~79) and `.nav` (~106): `var(--bg-primary)` → `var(--paper)`
+- `.stats` (~313): `var(--bg-primary)` → leave for Task 3, which assigns `--ink`
+- All 9 `var(--bg-card)` references → `var(--paper)`. Task 3 then overrides the
+  two that sit inside ink bands.
+
+Run `grep -c 'var(--bg-primary)\|var(--bg-card)\|var(--bg-subtle)\|var(--brand-cyan)' receptionist.html`
+and confirm it returns `0` before committing.
+
+- [ ] **Step 2b: Delete the dead `.glass-card` rule**
+
+`.glass-card` is declared at ~300 and applied to zero elements — confirmed with
+`grep -n 'glass-card' receptionist.html`, which returns only the CSS rule itself.
+Delete the entire rule and its `GLASSMORPHISM` comment banner (~297-306).
+
+This removes two of the eight `backdrop-filter` declarations that Task 4 would
+otherwise have to strip.
 
 - [ ] **Step 3: Run the ROI regression guard**
 
@@ -257,21 +276,19 @@ Apply exactly this map. Sections not listed inherit `--paper` from `body` and ne
 
 `.hero`, `.solution`, `.proof`, `.qualify` stay on `--paper` — do not add rules for them.
 
-- [ ] **Step 2: Replace every card surface**
+- [ ] **Step 2: Lift the cards that sit inside ink bands**
 
-Nine rules use `var(--bg-card)`. On light sections it becomes `var(--paper)`; inside the three ink bands the card must lift off the band instead:
+Task 2 already repointed all `var(--bg-card)` references to `var(--paper)`. Only
+the two card types inside inverted bands need overriding — a paper card on an ink
+band would read as a hole punched in the section:
 
 ```css
-    .glass-card,
-    .bonus-card,
-    .video-card,
-    .form-panel,
-    .case-study-card   { background: var(--paper); }
-
     .stats .stat-card,
     .roi .roi-card     { background: oklch(0.98 0.006 70 / 0.05);
                          border-color: oklch(0.98 0.006 70 / 0.14); }
 ```
+
+Do not add a `.glass-card` rule. Task 2 Step 2b deleted it as dead code.
 
 - [ ] **Step 3: Invert type inside the ink bands**
 
@@ -345,11 +362,17 @@ At line ~112, `.nav.scrolled` sets `box-shadow` twice — the light value is ove
     }
 ```
 
-- [ ] **Step 2: Strip the four dead `backdrop-filter` rules**
+- [ ] **Step 2: Strip the remaining dead `backdrop-filter` rules**
 
-Delete both the `backdrop-filter: blur(12px);` and `-webkit-backdrop-filter: blur(12px);` lines from `.glass-card` (~303), `.stat-card` (~325), the rule at ~492, and `.roi-card` (~548). All four sit on opaque backgrounds where blur renders nothing while forcing a GPU compositing layer.
+Task 2 Step 2b already removed `.glass-card` and its two declarations. Delete both
+the `backdrop-filter: blur(12px);` and `-webkit-backdrop-filter: blur(12px);`
+lines from the three rules that remain: `.stat-card`, the rule at ~492, and
+`.roi-card`.
 
-Then delete the now-pointless `GLASSMORPHISM` comment banner at ~297-299 and fold `.glass-card` into the rule above it if it becomes a duplicate of `.bonus-card`.
+All sit on opaque backgrounds where blur renders nothing while still forcing a GPU
+compositing layer.
+
+Confirm with `grep -c backdrop-filter receptionist.html`, which must return `0`.
 
 - [ ] **Step 3: Replace the four black hover shadows**
 
