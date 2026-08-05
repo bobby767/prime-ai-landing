@@ -16,8 +16,11 @@
 - Blue (`--accent`) is for buttons, links, and form affordances only. It is not a decorative colour.
 - The logo SVG at lines 1471-1480 keeps `#0891B2`. It is an exempt brand mark. Do not tokenise or recolour it.
 - The 5 `DEMO-NUMBER` markers must remain exactly 5. This change must not touch them.
-- No em dashes in any copy added or edited.
+- No em dashes in any copy, code, comment, string literal, or commit message you
+  write. Use commas, colons, semicolons, periods, or parentheses.
 - `node test-roi.js` must return `OK — 64 combinations checked` after every task.
+  That string contains an em dash and is exempt: `test-roi.js` is pre-existing and
+  is not modified by this plan. The rule above governs text you author.
 
 ---
 
@@ -55,14 +58,19 @@ const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
 const root = src.match(/:root\s*\{([\s\S]*?)\n\s*\}/);
 if (!root) fail.push('no :root block found');
 const tok = {};
-for (const m of (root ? root[1] : '').matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) tok[m[1]] = m[2].trim();
+// Capture the declaration AND the rest of its line. oklch() tokens carry their
+// hex in a trailing comment that sits after the semicolon, so a pattern ending
+// at the semicolon would never see it and every contrast check would report a
+// missing hex regardless of the palette being correct.
+for (const m of (root ? root[1] : '').matchAll(/(--[\w-]+)\s*:\s*([^;]+);([^\n]*)/g)) {
+  tok[m[1]] = { value: m[2].trim(), comment: (m[3] || '').trim() };
+}
 
-// Hex value per token. oklch() values carry a trailing /* #RRGGBB */ comment
-// so this script can check them without a colour-space library.
+// Hex value per token, read from the value itself or from its trailing comment.
 const hexOf = name => {
-  const v = tok[name];
-  if (!v) return null;
-  const direct = v.match(/#[0-9A-Fa-f]{6}/);
+  const t = tok[name];
+  if (!t) return null;
+  const direct = (t.value + ' ' + t.comment).match(/#[0-9A-Fa-f]{6}/);
   return direct ? direct[0].toUpperCase() : null;
 };
 
@@ -88,10 +96,19 @@ for (const [fg, bg, min] of PAIRS) {
   if (r < min) fail.push(`contrast ${fg} on ${bg} = ${r.toFixed(2)}:1, need ${min}:1`);
 }
 
-// Amber must NOT be usable as body text on sand — assert the constraint is real,
-// so a future palette tweak that silently makes it passable gets flagged for review.
-const amberSand = (hexOf('--amber') && hexOf('--sand')) ? ratio(hexOf('--amber'), hexOf('--sand')) : 0;
-if (amberSand >= 3.0) fail.push(`--amber on --sand is now ${amberSand.toFixed(2)}:1; spec assumes it is unusable as type. Update the spec before relaxing this.`);
+// Amber must NOT be usable as body text on sand. Assert the constraint is real,
+// so a future palette tweak that silently makes it passable gets flagged.
+// Never fall back to a passing value when a hex is missing: a check that skips
+// itself silently is worse than no check at all.
+{
+  const a = hexOf('--amber'), s = hexOf('--sand');
+  if (!a || !s) {
+    fail.push('cannot check the --amber on --sand constraint: missing hex for --amber or --sand');
+  } else {
+    const r = ratio(a, s);
+    if (r >= 3.0) fail.push(`--amber on --sand is now ${r.toFixed(2)}:1; the spec assumes it is unusable as type. Update the spec before relaxing this.`);
+  }
+}
 
 // ---- dead tokens ----------------------------------------------------
 for (const name of Object.keys(tok)) {
@@ -105,10 +122,10 @@ const BANS = [
   [/backdrop-filter/g,                 'backdrop-filter (dead over opaque bg)'],
   [/border-left:\s*[2-9]px/g,          'side-stripe border-left'],
   [/border-right:\s*[2-9]px/g,         'side-stripe border-right'],
-  [/rgba\(\s*0\s*,\s*0\s*,\s*0/g,      'rgba(0,0,0,x) — use a tinted ink'],
-  [/rgba\(\s*255\s*,\s*255\s*,\s*255/g,'rgba(255,255,255,x) — use a tinted paper'],
-  [/rgba\(\s*37,\s*99,\s*235/g,        'hardcoded accent rgba — use a token'],
-  [/rgba\(\s*15,\s*23,\s*42/g,         'cool slate shadow — retint warm'],
+  [/rgba\(\s*0\s*,\s*0\s*,\s*0/g,      'rgba(0,0,0,x): use a tinted ink'],
+  [/rgba\(\s*255\s*,\s*255\s*,\s*255/g,'rgba(255,255,255,x): use a tinted paper'],
+  [/rgba\(\s*37,\s*99,\s*235/g,        'hardcoded accent rgba: use a token'],
+  [/rgba\(\s*15,\s*23,\s*42/g,         'cool slate shadow: retint warm'],
   [/background-clip:\s*text/g,         'gradient text'],
 ];
 for (const [re, label] of BANS) {
@@ -128,7 +145,7 @@ if (demo !== 5) fail.push(`expected 5 DEMO-NUMBER markers, found ${demo}`);
 
 // ---- report ----------------------------------------------------------
 if (fail.length) { console.error('FAIL\n' + fail.map(f => '  - ' + f).join('\n')); process.exit(1); }
-console.log(`OK — ${PAIRS.length} contrast pairs, ${BANS.length} ban rules, ${Object.keys(tok).length} tokens checked`);
+console.log(`OK: ${PAIRS.length} contrast pairs, ${BANS.length} ban rules, ${Object.keys(tok).length} tokens checked`);
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -539,7 +556,41 @@ Expected: `200`. If not, restart with:
 
 - [ ] **Step 2: Screenshot desktop and mobile**
 
-Use the Playwright MCP browser tools. Navigate to `http://127.0.0.1:9876/receptionist.html`, screenshot full-page at 1440px wide, then resize to 390px and screenshot again.
+Use the Playwright MCP browser tools. Navigate to
+`http://127.0.0.1:9876/receptionist.html`.
+
+**A plain `fullPage: true` screenshot of this page renders blank below the hero.**
+All ten `<section>` elements below the hero carry a `reveal` class that starts at
+`opacity: 0` and is set to `1` by an IntersectionObserver on scroll. A full-page
+capture never scrolls, so the observer never fires and every section stays
+invisible. This was confirmed against the pre-change page: the reveal works
+correctly for a real user, but the screenshot is a false negative.
+
+Before every screenshot, inject this override and confirm it took:
+
+```js
+() => {
+  const st = document.createElement('style');
+  st.id = 'screenshot-override';
+  st.textContent = '.reveal, section.reveal { opacity: 1 !important; transform: none !important; transition: none !important; }';
+  document.head.appendChild(st);
+  window.scrollTo(0, 0);
+  return [...document.querySelectorAll('section.reveal')]
+    .filter(s => getComputedStyle(s).opacity !== '1').length;  // must be 0
+}
+```
+
+If that returns anything other than `0`, stop and report — the screenshots would
+be worthless and any visual verdict from them would be false.
+
+Then screenshot full-page at 1440x900, resize to 390x844, and screenshot again.
+
+Baselines for comparison are already captured at
+`.superpowers/sdd/2026-08-05-receptionist-warm-palette/before-desktop.jpeg` and
+`before-mobile.jpeg`.
+
+Do not commit the override. It is injected at runtime only and must never reach
+`receptionist.html`; the reveal animation is a wanted feature.
 
 - [ ] **Step 3: Check the rhythm reads correctly**
 
