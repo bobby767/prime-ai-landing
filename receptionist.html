@@ -53,12 +53,14 @@
       --border-strong: oklch(0.8016 0.0266 73.1);   /* #C9BCAC */
       --surface-hover: oklch(0.2351 0.0108 60.9 / 0.04);
 
-      /* Tints, replacing 14 hardcoded rgba(37,99,235,x) sites. */
+      /* Tints, replacing 14 hardcoded blue-alpha sites. Written without the
+         literal rgba pattern: test-palette.js bans it and would count this
+         comment as a violation of itself. */
       --tint-amber:   oklch(0.6266 0.1229 50.7 / 0.10);
       --tint-accent:  oklch(0.55 0.22 264 / 0.08);
       --tint-on-ink:  oklch(0.9798 0.0045 78.3 / 0.07);
 
-      /* Warm shadows. The old values were rgba(15,23,42,x) cool slate. */
+      /* Warm shadows. The old values were cool slate-alpha. */
       --shadow-sm:   0 1px 2px oklch(0.2351 0.0108 60.9 / 0.05), 0 1px 3px oklch(0.2351 0.0108 60.9 / 0.07);
       --shadow-md:   0 4px 12px oklch(0.2351 0.0108 60.9 / 0.07), 0 2px 4px oklch(0.2351 0.0108 60.9 / 0.05);
       --shadow-lift: 0 12px 32px oklch(0.2351 0.0108 60.9 / 0.12);
@@ -135,8 +137,7 @@
     }
 
     .nav.scrolled {
-      box-shadow: var(--shadow-sm);
-      box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+      box-shadow: var(--shadow-md);
     }
 
     .nav-inner {
@@ -340,8 +341,6 @@
     .stat-card {
       background: var(--tint-on-ink);
       box-shadow: var(--shadow-sm);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border: 1px solid oklch(0.9798 0.0045 78.3 / 0.14);
       border-radius: var(--radius);
       padding: var(--space-4);
@@ -352,7 +351,7 @@
 
     .stat-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow-lift);
       border-color: rgba(37, 99, 235, 0.3);
     }
 
@@ -509,10 +508,7 @@
     .bonus-card {
       background: var(--paper);
       box-shadow: var(--shadow-sm);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border-subtle);
-      border-left: 4px solid var(--accent);
       border-radius: var(--radius);
       padding: var(--space-6);
       max-width: 720px;
@@ -522,9 +518,8 @@
 
     .bonus-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow-lift);
       border-color: rgba(37, 99, 235, 0.3);
-      border-left-color: var(--accent);
     }
 
     .bonus-card h2 {
@@ -567,8 +562,6 @@
     .roi-card {
       background: var(--tint-on-ink);
       box-shadow: var(--shadow-sm);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border: 2px solid oklch(0.9798 0.0045 78.3 / 0.14);
       border-radius: var(--radius);
       padding: var(--space-6);
@@ -692,8 +685,8 @@
     }
 
     .case-study-card {
-      background: var(--paper);
-      border-left: 4px solid var(--accent);
+      background: var(--sand);
+      border: 1px solid var(--clay);
       border-radius: var(--radius);
       padding: var(--space-4);
       transition: all 0.3s ease;
@@ -701,9 +694,8 @@
 
     .case-study-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow-lift);
       border-color: rgba(37, 99, 235, 0.3);
-      border-left-color: var(--accent);
     }
 
     .case-study-card h3 {
@@ -865,17 +857,17 @@
       border-radius: var(--radius);
       overflow: hidden;
       transition: all 0.3s ease;
-      border-left: 3px solid transparent;
+      border: 1px solid var(--clay);
     }
 
     .faq-item:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow-lift);
       border-color: rgba(37, 99, 235, 0.3);
     }
 
     .faq-item.open {
-      border-left: 3px solid #2563EB;
+      border-color: var(--accent);
     }
 
     .faq-question {
@@ -1080,7 +1072,7 @@
     .form-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: oklch(0.1905 0.0089 59.1 / 0.72);
       z-index: 1999;
       opacity: 0;
       visibility: hidden;
@@ -1466,7 +1458,7 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, transparent, #2563EB, transparent);
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
       z-index: 10000;
     }
 
