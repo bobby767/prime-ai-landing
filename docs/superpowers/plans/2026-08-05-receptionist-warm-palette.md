@@ -218,6 +218,29 @@ commit:
 Run `grep -c 'var(--bg-primary)\|var(--bg-card)\|var(--bg-subtle)\|var(--brand-cyan)' receptionist.html`
 and confirm it returns `0` before committing.
 
+- [ ] **Step 2a: Delete three dead non-colour tokens**
+
+`test-palette.js` asserts that no declared token is unreferenced, and it found
+six dead tokens rather than the two this plan originally assumed. Two
+(`--bg-subtle`, `--brand-cyan`) are removed by Step 1. `--shadow-md` becomes
+referenced in Task 4 Step 1, so it needs no action here.
+
+The remaining three are genuinely dead and unrelated to colour. Delete their
+declarations from `:root`:
+
+```
+      --font-4xl: 61px;
+      --font-5xl: 77px;
+      --space-7: 56px;
+```
+
+Verify first with `grep -c 'var(--font-4xl)' receptionist.html` and the same for
+the other two; each must return `0` before you delete it. If any returns non-zero,
+stop and report — the token is in use and this plan is wrong about it.
+
+Do not delete any other `--font-*` or `--space-*` token. `--font-hero` (2 uses)
+and `--space-12` (11 uses) are live; the scale is not dead in general.
+
 - [ ] **Step 2b: Delete the dead `.glass-card` rule**
 
 `.glass-card` is declared at ~300 and applied to zero elements — confirmed with
