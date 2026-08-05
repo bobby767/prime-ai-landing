@@ -83,6 +83,37 @@ const hexOf = name => {
   return direct ? direct[0].toUpperCase() : null;
 };
 
+// ---- oklch vs hex-comment agreement ---------------------------------
+// The browser renders the oklch value; every check below measures the hex
+// comment. If the two disagree, this script grades a colour the page never
+// shows, and it does so silently, which is the one way a guard can be worse
+// than no guard. Convert each oklch back to sRGB and require agreement.
+const l2s = c => { const v = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+  return Math.max(0, Math.min(255, Math.round(v * 255))); };
+const oklch2hex = (L, C, H) => {
+  const A = C * Math.cos(H * Math.PI / 180), B = C * Math.sin(H * Math.PI / 180);
+  const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+  const m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+  const s = (L - 0.0894841775 * A - 1.2914855480 * B) ** 3;
+  const r =  4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+  const g = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+  const b = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+  return '#' + [r, g, b].map(v => l2s(v).toString(16).padStart(2, '0').toUpperCase()).join('');
+};
+const TOLERANCE = 2;  // per channel, for rounding only
+for (const [name, t] of Object.entries(tok)) {
+  const ok = t.value.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)\s*$/);
+  const hx = t.comment.match(/#[0-9A-Fa-f]{6}/);
+  if (!ok || !hx) continue;  // alpha variants and plain hex tokens are exempt
+  const got = oklch2hex(+ok[1], +ok[2], +ok[3]);
+  const want = hx[0].toUpperCase();
+  const diff = Math.max(...[1, 3, 5].map(i =>
+    Math.abs(parseInt(got.slice(i, i + 2), 16) - parseInt(want.slice(i, i + 2), 16))));
+  if (diff > TOLERANCE) {
+    fail.push(`${name}: oklch renders ${got} but its comment claims ${want} (off by ${diff} per channel). The page and this guard disagree.`);
+  }
+}
+
 const PAIRS = [
   ['--text-primary',   '--paper',    4.5],
   ['--text-primary',   '--shell',    4.5],
@@ -190,17 +221,21 @@ Replace lines 20-35 (from `--bg-primary:` through `--shadow-md:`) with:
 
 ```css
       /* Warm neutral scale. Every value carries its hex in a comment because
-         test-palette.js checks contrast without an oklch conversion library. */
-      --paper:     oklch(0.98 0.006 70);  /* #FAF8F5 */
-      --shell:     oklch(0.96 0.008 70);  /* #F5F1EA */
-      --sand:      oklch(0.93 0.012 68);  /* #EBE5DC */
-      --clay:      oklch(0.87 0.016 65);  /* #DED6CA */
-      --ink:       oklch(0.19 0.014 48);  /* #221D19 */
-      --ink-deep:  oklch(0.14 0.012 45);  /* #171310 */
+         test-palette.js checks contrast without an oklch conversion library.
+         Each oklch below round-trips to its stated hex exactly. Do not edit one
+         without the other: the browser renders the oklch, the guard measures the
+         comment, and a mismatch means the guard is grading a colour the page
+         never shows. test-palette.js enforces this agreement. */
+      --paper:     oklch(0.9798 0.0045 78.3);  /* #FAF8F5 */
+      --shell:     oklch(0.9593 0.0103 81.8);  /* #F5F1EA */
+      --sand:      oklch(0.9241 0.0137 78.3);  /* #EBE5DC */
+      --clay:      oklch(0.8792 0.0185 78.2);  /* #DED6CA */
+      --ink:       oklch(0.2351 0.0108 60.9);  /* #221D19 */
+      --ink-deep:  oklch(0.1905 0.0089 59.1);  /* #171310 */
 
       /* Amber carries money. Text-safe on ink at any size; on paper/shell only
          at >=24px or >=18.66px bold; never as type on sand (2.95:1). */
-      --amber:     oklch(0.62 0.12 50);   /* #C2703D */
+      --amber:     oklch(0.6266 0.1229 50.7);  /* #C2703D */
 
       /* Blue is buttons, links, and form affordances. Not decoration. */
       --accent:       #2563EB;
@@ -209,23 +244,23 @@ Replace lines 20-35 (from `--bg-primary:` through `--shadow-md:`) with:
          or blue buttons end up with dark text when the theme is light. */
       --text-on-accent: var(--paper);
 
-      --text-primary:   oklch(0.19 0.014 48);  /* #221D19 */
-      --text-secondary: oklch(0.48 0.02 55);   /* #6B5F54 */
-      --text-on-ink:    oklch(0.75 0.015 60);  /* #B8ABA0 */
+      --text-primary:   oklch(0.2351 0.0108 60.9);  /* #221D19 */
+      --text-secondary: oklch(0.4937 0.0231 64.8);  /* #6B5F54 */
+      --text-on-ink:    oklch(0.7491 0.0216 62.8);  /* #B8ABA0 */
 
       --border-subtle: var(--clay);
-      --border-strong: oklch(0.80 0.02 62);    /* #C9BCAC */
-      --surface-hover: oklch(0.19 0.014 48 / 0.04);
+      --border-strong: oklch(0.8016 0.0266 73.1);   /* #C9BCAC */
+      --surface-hover: oklch(0.2351 0.0108 60.9 / 0.04);
 
       /* Tints, replacing 14 hardcoded rgba(37,99,235,x) sites. */
-      --tint-amber:   oklch(0.62 0.12 50 / 0.10);
+      --tint-amber:   oklch(0.6266 0.1229 50.7 / 0.10);
       --tint-accent:  oklch(0.55 0.22 264 / 0.08);
-      --tint-on-ink:  oklch(0.98 0.006 70 / 0.07);
+      --tint-on-ink:  oklch(0.9798 0.0045 78.3 / 0.07);
 
       /* Warm shadows. The old values were rgba(15,23,42,x) cool slate. */
-      --shadow-sm:   0 1px 2px oklch(0.19 0.014 48 / 0.05), 0 1px 3px oklch(0.19 0.014 48 / 0.07);
-      --shadow-md:   0 4px 12px oklch(0.19 0.014 48 / 0.07), 0 2px 4px oklch(0.19 0.014 48 / 0.05);
-      --shadow-lift: 0 12px 32px oklch(0.19 0.014 48 / 0.12);
+      --shadow-sm:   0 1px 2px oklch(0.2351 0.0108 60.9 / 0.05), 0 1px 3px oklch(0.2351 0.0108 60.9 / 0.07);
+      --shadow-md:   0 4px 12px oklch(0.2351 0.0108 60.9 / 0.07), 0 2px 4px oklch(0.2351 0.0108 60.9 / 0.05);
+      --shadow-lift: 0 12px 32px oklch(0.2351 0.0108 60.9 / 0.12);
 ```
 
 Delete `--bg-primary`, `--bg-card`, `--bg-subtle`, and `--brand-cyan`. They are replaced by the scale above; `--brand-cyan` had zero `var()` references.
@@ -360,8 +395,8 @@ band would read as a hole punched in the section:
 
 ```css
     .stats .stat-card,
-    .roi .roi-card     { background: oklch(0.98 0.006 70 / 0.05);
-                         border-color: oklch(0.98 0.006 70 / 0.14); }
+    .roi .roi-card     { background: oklch(0.9798 0.0045 78.3 / 0.05);
+                         border-color: oklch(0.9798 0.0045 78.3 / 0.14); }
 ```
 
 Do not add a `.glass-card` rule. Task 2 Step 2b deleted it as dead code.
@@ -385,8 +420,8 @@ Do not add a `.glass-card` rule. Task 2 Step 2b deleted it as dead code.
     .roi .roi-step-value,
     .roi .roi-result-number  { color: var(--amber); }
 
-    .roi .roi-result         { border-top-color: oklch(0.98 0.006 70 / 0.14);
-                               border-bottom-color: oklch(0.98 0.006 70 / 0.14); }
+    .roi .roi-result         { border-top-color: oklch(0.9798 0.0045 78.3 / 0.14);
+                               border-bottom-color: oklch(0.9798 0.0045 78.3 / 0.14); }
 
     .footer, .footer a, .footer-contact a, .footer-response {
                                color: var(--text-on-ink); }
@@ -474,7 +509,7 @@ At ~842 replace `border-left: 3px solid transparent;` with `border: 1px solid va
 At ~1017, `.form-overlay` uses `background: rgba(0, 0, 0, 0.7);`. Replace:
 
 ```css
-      background: oklch(0.14 0.012 45 / 0.72);
+      background: oklch(0.1905 0.0089 59.1 / 0.72);
 ```
 
 - [ ] **Step 6: Tokenise the scroll-progress gradient**
@@ -520,8 +555,8 @@ Apply exactly this table. The rule is: keep blue where the element is interactiv
 | Line | Selector | Current | Replace with |
 |---|---|---|---|
 | 178 | `.btn-primary:hover` | `0 8px 32px rgba(37,99,235,.4)` | `0 8px 24px oklch(0.55 0.22 264 / 0.32)` |
-| 253 | `.hero::before` | `rgba(37,99,235,.15)` radial | `oklch(0.62 0.12 50 / 0.13)` |
-| 338 | `.stat-card:hover` | `border-color: rgba(37,99,235,.3)` | `border-color: oklch(0.98 0.006 70 / 0.28)` |
+| 253 | `.hero::before` | `rgba(37,99,235,.15)` radial | `oklch(0.6266 0.1229 50.7 / 0.13)` |
+| 338 | `.stat-card:hover` | `border-color: rgba(37,99,235,.3)` | `border-color: oklch(0.9798 0.0045 78.3 / 0.28)` |
 | 477 | `.steps-connector` | `rgba(37,99,235,.3)` | `var(--clay)` |
 | 506 | `.bonus-card:hover` | `border-color: rgba(37,99,235,.3)` | `border-color: var(--amber)` |
 | 575 | `.roi-step` | `rgba(37,99,235,.08)` | `var(--tint-on-ink)` |
@@ -530,7 +565,7 @@ Apply exactly this table. The rule is: keep blue where the element is interactiv
 | 708 | `.country-tag` | `rgba(37,99,235,.12)` | `var(--tint-amber)` |
 | 850 | `.faq-item:hover` | `border-color: rgba(37,99,235,.3)` | `border-color: var(--border-strong)` |
 | 930 | `.guarantee-badge` | `rgba(37,99,235,.1)` | `var(--tint-on-ink)` |
-| 931 | `.guarantee-badge` | `border 1px rgba(37,99,235,.25)` | `1px solid oklch(0.98 0.006 70 / 0.18)` |
+| 931 | `.guarantee-badge` | `border 1px rgba(37,99,235,.25)` | `1px solid oklch(0.9798 0.0045 78.3 / 0.18)` |
 | 1133 | `.radio-card:hover` | `rgba(37,99,235,.06)` | `var(--tint-accent)` |
 | 1254 | `.results-followup` | `rgba(37,99,235,.08)` | `var(--tint-amber)` |
 
