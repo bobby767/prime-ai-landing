@@ -12,6 +12,12 @@
 
 - Target file is `receptionist.html` only. Do not modify `variant-a-dark-closer.html`, `variant-b-proof-machine.html`, `variant-c-speed-killer.html`, or `index.html`.
 - Never write `#000`, `#fff`, `rgba(0,0,0,x)`, or `rgba(255,255,255,x)`. Every neutral is tinted toward hue ~50.
+- **Exactly one custom-property declaration per line inside `:root`.** Never put
+  two `--token: value;` pairs on the same physical line. `test-palette.js` reads
+  each token's hex from the rest of its line; two declarations sharing a line
+  make the first token absorb the second's hex and the second disappear from the
+  token map entirely, so the guard would pass with wrong colours. Keeping one per
+  line is what makes the check trustworthy.
 - Amber (`--amber`) as a text colour: permitted on `--ink` / `--ink-deep` at any size; permitted on `--paper` / `--shell` only at ≥24px or ≥18.66px bold; **never** as text on `--sand` (2.95:1, fails AA-large).
 - Blue (`--accent`) is for buttons, links, and form affordances only. It is not a decorative colour.
 - The logo SVG at lines 1471-1480 keeps `#0891B2`. It is an exempt brand mark. Do not tokenise or recolour it.
