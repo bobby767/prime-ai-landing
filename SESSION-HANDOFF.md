@@ -1,123 +1,141 @@
-# Session Handoff — Warm palette redesign of receptionist.html, paused mid-execution
+# Session Handoff — Spanish-default bilingual landing page, then money/guarantee/contrast pass
 
-_Last updated: 2026-08-05_
+_Last updated: 2026-08-06_
 
 ## Where it started
-User asked for the live URL, then said `receptionist.html` was "too bright, too
-white" and wanted more colour variation and polish, explicitly naming the
-`impeccable` skill and asking to brainstorm. Scope became: diagnose the flatness,
-design a warm palette, and execute it via subagent-driven development. Earlier in
-the session the 4 pending commits from the prior session were pushed to master,
-which fixed the wrong-founder-name bug on the live variant pages.
+User asked for the landing page to default to Spanish with a toggle to English.
+Investigation found `es.html` (trades, Málaga) and `receptionist.html` (clinics,
+English) are explicitly **not** translations — the ES file's own header forbids
+treating them as such. User chose a true in-place toggle (one page, both
+languages) over linking the two pages. A second request followed: add a
+money-saved section, a 30-day money-back guarantee, a "more clients" outcome,
+and more colour contrast.
+
+The governing constraint throughout: a visitor presses "Talk to the AI" on this
+page and reaches `sales-agent.ts` ~30 seconds later, so the page may not claim
+what the call must then refuse to repeat.
 
 ## Decisions locked + what shipped
-- **Pushed `4fc76a0..bc8c6d3` to origin/master** — live variant pages now show
-  "Dan", verified against the served HTML (`chase: 0`, `Dan` present). GitHub
-  Pages is `build_type: legacy`, source `master:/`, so master commits deploy
-  automatically. There is no workflow file; config lives only at
-  `gh api repos/bobby767/prime-ai-landing/pages`.
-- **Diagnosis: 11 sections shared 2 background tones** 2% apart, and
-  `--bg-subtle` + `--brand-cyan` were declared with zero `var()` references. The
-  page was monochrome by construction, which is why it resisted looking colourful.
-- **Direction: light with dark anchors**, not a dark reversion. High-ticket
-  medical and legal buyers read dark marketing pages as agency or crypto work.
-- **Palette: warm ink + amber, blue demoted to buttons and links only.** Blue and
-  cyan on white is the first-order category reflex for clinics and law firms.
-- **Amber contrast is measured, not estimated**: 3.49:1 on paper (large text
-  only), **2.95:1 on sand, so barred as type entirely**, 4.51:1 on ink (clears AA
-  normal). Amber is most usable on the dark bands, which is where the money
-  figures live.
-- **Logo stays cyan.** `#0891B2` is an exempt brand mark in two places: the inline
-  SVG and the `.nav-logo .logo-ai` rule. Task 3 tokenises it as `--logo-cyan` so
-  the guard sees no bare hex, without changing a rendered pixel.
-- **Work happens on branch `warm-palette`**, never master, because master
-  auto-deploys and SDD commits after every task.
-- Created `/home/ubuntu/Prime_AI/Landingpage/PRODUCT.md` — the impeccable skill
-  requires it and the repo had none.
+- **Bilingual in place, Spanish in markup / English in `data-en`** —
+  `/home/ubuntu/Prime_AI/Landingpage/es.html`, commit `fb9947e`. The direction is
+  load-bearing: nginx sends the apex here, so Spanish must render with zero JS
+  executed. Switcher swaps via `innerHTML`, captures ES into `data-es` lazily on
+  first swap (safe only because the first swap is always ES→EN).
+- **nginx root needed no change** — `location = / { return 302 /es/; }` already
+  existed in `/etc/nginx/sites-available/prime-ai-demo.conf` from 2026-08-05.
+  Verified live. No nginx edit made, no reload.
+- **Deployed the bilingual page only** — `es.html` at `fb9947e` copied to
+  `/var/www/prime-ai/es/index.html`. Live and verified. Backup at
+  `/var/www/prime-ai-backups/es-index.html.bak-20260806-021026`. Backup was
+  deliberately moved out of the web root, where it was publicly fetchable.
+- **The sum mirrors the agent's arithmetic, not the EN page's** — missed
+  calls/day × 20 working days → a third of those → at the cheapest thing a
+  customer books. Taken from `sales-agent.ts` PITCH_STATE so the page and the
+  call cannot produce different figures from the same two answers. No option
+  ships preselected; rounding only ever goes down.
+- **Framing is "what's walking past you", never "what you save"** — the agent is
+  banned from implying Prime AI recovers that money. The guard fails on eight
+  phrasings of the banned version.
+- **Guarantee split from performance guarantee** — a money-back *term* is a fixed
+  commercial fact and is now confirmable by the agent; a *performance* guarantee
+  stays banned. Edit in
+  `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/sales-agent.ts`,
+  **uncommitted**.
+- **Three dark anchor bands + amber for money** — applied the approved
+  2026-08-05 spec, which had never been implemented on this page. Amber on ink
+  is the only surface where it clears AA at normal size (4.51:1 measured).
+- **Commits `8e01166` + `c9f7434` are NOT deployed.** Live `/es/` currently has
+  the bilingual toggle only.
 
 ## Key files for next session
-- `/home/ubuntu/Prime_AI/Landingpage/docs/superpowers/plans/2026-08-05-receptionist-warm-palette.md`
-  — **read first.** The 6-task plan, current as of commit `a85c55f`, carries every
-  correction made this session.
-- `/home/ubuntu/Prime_AI/Landingpage/.superpowers/sdd/2026-08-05-receptionist-warm-palette/progress.md`
-  — the SDD ledger. Each task's exact status, the single open decision, and 2
-  deferred minors. Gitignored, so it exists only on this machine.
-- `/home/ubuntu/Prime_AI/Landingpage/docs/superpowers/specs/2026-08-05-receptionist-warm-palette-design.md`
-  — design rationale and the measured contrast table.
-- `/home/ubuntu/Prime_AI/Landingpage/test-palette.js` — the guard. Checks WCAG
-  pairs, oklch-to-hex agreement, dead tokens, 8 ban patterns, and holds
-  `DEMO-NUMBER` at 5.
-- `/home/ubuntu/Prime_AI/Landingpage/receptionist.html` — the deliverable. Has the
-  new token layer, still the old appearance.
-- `/home/ubuntu/Prime_AI/Landingpage/PRODUCT.md` — brand, audience,
-  anti-references, strategic principles.
-- Task briefs 1 to 6:
-  `/home/ubuntu/Prime_AI/Landingpage/.superpowers/sdd/2026-08-05-receptionist-warm-palette/task-N-brief.md`
-- Baselines:
-  `/home/ubuntu/Prime_AI/Landingpage/.superpowers/sdd/2026-08-05-receptionist-warm-palette/before-desktop.jpeg`
-  and `before-mobile.jpeg` in the same directory.
-- Plan file: named first above.
+- `/home/ubuntu/Prime_AI/Landingpage/es.html` — the deliverable. Read its header
+  comment block first; it documents the bilingual rule, the
+  no-price/no-percentage/no-guarantee rule, and the `/voice/privacidad` gap.
+- `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/sales-agent.ts` — lines
+  ~933-965, "WHAT YOU MAY NEVER PROMISE". Contains the uncommitted guarantee
+  edit **and** pre-existing WIP that is not from this session.
+- `/home/ubuntu/Prime_AI/Landingpage/test-palette.js` — one guard for both pages.
+  Its ES block carries a documented `⚠ KNOWN GAP` about the pricing-model
+  contradiction below.
+- `/home/ubuntu/Prime_AI/Landingpage/test-roi.js` — now covers both the EN model
+  and the ES `loQueSeEscapa` sum, including that rounding may only shrink.
+- `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/build.test.ts` — new test
+  `the money-back guarantee is confirmable, the performance guarantee is not`.
+  Uncommitted. Verified to fail when the rule is removed.
+- `/etc/nginx/sites-available/prime-ai-demo.conf` — routing. Read the comments
+  before touching; they explain why both pages must stay on this host.
+- The previous handoff (paused warm-palette redesign of `receptionist.html`,
+  Tasks 3-6 never started) is in git history at the commit before this one. That
+  work is still paused and was untouched this session.
+- Plan file: none drove this session.
 - Memory files touched: none.
 
 ## Running state
-- Background processes: preview server **PID 305506** —
+- Background processes: **PID 305506** —
   `python3 -m http.server 9876 --bind 0.0.0.0 --directory /home/ubuntu/Prime_AI/Landingpage`.
-  Kill with `kill 305506`. Started detached in a prior session via `setsid`;
-  verified serving 200 this session. **It is publicly reachable** — port 9876 is
-  open in ufw, plain HTTP, no TLS.
-- Dev servers / ports: `http://127.0.0.1:9876/receptionist.html`, also
+  Kill with `kill 305506`. Not started this session; pre-existing and verified
+  serving 200. **It is publicly reachable** — port 9876 open, plain HTTP, no TLS.
+- Dev servers / ports: `http://127.0.0.1:9876/es.html`, also
   `http://srv1233720.hstgr.cloud:9876/`.
-- A Playwright MCP browser session is open with the page loaded and a runtime
-  `#screenshot-override` style injected into that tab only. It never touched disk.
-- Open worktrees / branches: branch **`warm-palette`**, 9 commits ahead of master,
-  nothing pushed. No worktrees.
+- Open worktrees / branches: `Landingpage` on **`warm-palette`**, 12 commits
+  ahead of master, **unpushed**. `Voice_agent` on **`voice-agent-build`** with 3
+  modified files uncommitted (`sales-agent.ts`, `build.test.ts`, `prompt.ts` —
+  only the first two were touched this session).
+- A Playwright MCP browser session is open at
+  `http://127.0.0.1:9876/es.html?lang=en`.
 
 ## Verification — how to confirm things still work
-- `cd /home/ubuntu/Prime_AI/Landingpage && git branch --show-current` — expect
-  `warm-palette`.
-- `node test-roi.js` — expect `OK — 64 combinations checked`.
-- `node test-palette.js` — expect **FAIL, exit 1**, on ban patterns only. Must
-  show no `oklch renders`, no `missing token or hex comment`, and no
-  `contrast ... need ...`. That is the correct state after Task 2, not a
-  regression. Check the exit code directly, not through a pipe: piping into
-  `head` returns head's status and hides the real one.
-- `grep -c DEMO-NUMBER receptionist.html` — expect `5`.
-- `grep -c '#0891B2' receptionist.html` — expect `12`.
-- `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:9876/receptionist.html`
-  — expect `200`.
-- `git log --oneline master..warm-palette | wc -l` — expect `9`.
-- Live site unchanged: `curl -s https://bobby767.github.io/prime-ai-landing/receptionist.html | grep -c 'bg-primary'`
-  — expect `1`, proving the old palette is still what is deployed.
+- `cd /home/ubuntu/Prime_AI/Landingpage && node test-palette.js` — expect `OK`,
+  exit 0.
+- `node test-roi.js` — expect `OK — 64 combinations checked` and
+  `OK — es.html sum: 16 combinations, agrees with sales-agent.ts`.
+- `cd /home/ubuntu/Prime_AI-voiceagent/Voice_agent && bun test` — expect
+  **140 pass, 0 fail**.
+- `curl -sI https://prime-ai.es/ | grep -i location` — expect
+  `https://prime-ai.es/es/`.
+- `curl -s https://prime-ai.es/es/ | grep -c data-idioma` — expect `2`, proving
+  the bilingual toggle is live.
+- `curl -s https://prime-ai.es/es/ | grep -c 'id="cifra"'` — expect `0`, proving
+  the sum and guarantee are **not** live.
+- `curl -s -o /dev/null -w "%{http_code}" https://prime-ai.es/en/` — expect
+  `200`; the clinic page was not touched.
+- Rollback for the live Spanish page:
+  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260806-021026 /var/www/prime-ai/es/index.html`
 
 ## Deferred + open questions
-- **Open: Task 2 is not formally closed.** Its scoped re-review was dispatched and
-  then stopped by the user before returning a verdict. The only unverified thing:
-  nobody independently converted the 10 corrected oklch values using colour maths
-  separate from the project's own `oklch2hex`, and nobody tested the complementary
-  corruption direction (altering the *value* rather than the *comment*). Either
-  re-dispatch using
-  `.superpowers/sdd/2026-08-05-receptionist-warm-palette/review-08ea402..ec21535.diff`,
-  or accept Task 2 on the controller spot-check, which was clean.
-- **Open: the real demo phone number.** User selected "I'll paste it now" and never
-  pasted. 5 `DEMO-NUMBER` markers still in place. `receptionist.html` is live and
-  publicly reachable with dead `tel:+31600000000` buttons; nothing links to it
-  from the index, so organic traffic will not hit it.
-- Deferred: Tasks 3, 4, 5, 6 not started. `receptionist.html` has the new tokens
-  but no section rhythm, no inverted bands, and all ban patterns intact. A valid
-  intermediate state, not a broken one, but not worth screenshotting yet.
-- Deferred minor 1: `test-palette.js` token parser uses a greedy trailing-text
-  capture, so two custom-property declarations on one physical line would make the
-  first absorb the second's hex and the second vanish from the token map. Inert
-  today, mitigated by a Global Constraint requiring one declaration per line. The
-  final review should decide whether to also anchor the comment group to `/*`.
-- Deferred minor 2: two plan-mandated code comments in `receptionist.html` contain
-  the literal strings `rgba(37,99,235,x)` and `rgba(15,23,42,x)`, which match their
-  own ban regexes and inflate those counts by 1 each. Cosmetic only.
-- Deferred: variants A/B/C keep the old palette; different offer, live, waiting on
-  conversion data. Spacing rhythm and card-grid rework explicitly out of scope for
-  this pass. Form backend still client-side only.
+- **Open: deploy order is a hard constraint.** Publish the agent *before* the
+  page. Deploying `8e01166` alone creates a window where the page promises 30
+  days money back and the agent still defers to Dan — the bait-and-switch the
+  guarantee exists to remove.
+- **Open: the FAQ states a banned pricing model.** The answer to
+  `¿Cuánto cuesta?` opens `Depende de cuántas llamadas te entran`, which is word
+  for word the example `sales-agent.ts:942` bans as a pricing model ("not a
+  number, not a range, not a shape"). Pre-existing, inherited by the English
+  translation. Copy change is Dan's call, so the guard deliberately does not
+  fail on it.
+- **Open: `Voice_agent` has mixed uncommitted work.** The guarantee edit sits in
+  the same two files as pre-existing WIP, so nothing was committed there rather
+  than sweeping someone else's work into a commit. Dan to separate.
+- **Open: the qualification-gate risk.** `sales-agent.ts` calls a guarantee on a
+  low-inbound business "a loaded gun: the machine has nothing to eat, so it
+  cannot deliver and the client churns angry". Mitigated on-page by "this is not
+  for you if you get two or three calls a week", and `test-palette.js` fails if
+  that line is ever removed — but offering it is a business decision Dan has now
+  confirmed twice.
+- Deferred: `/voice/privacidad` is Spanish-only. The English consent link is
+  labelled "(in Spanish)". The page lives in the Bun app, not this repo.
+- Deferred: the English consent wording has no counterpart in `demo.ts`, so the
+  two can drift. The Spanish is still copied verbatim from `demoPageHtml()`.
+- Deferred: SEO — English exists only in attributes, so crawlers will not index
+  it as English content. A real `/en-trades/` page is the fix if that traffic
+  matters.
+- Deferred: `receptionist.html` warm-palette Tasks 3-6, still paused from the
+  prior session and untouched here.
+- Deferred: `warm-palette` is unpushed and has now diverged further from what is
+  deployed.
 
 ## Pick up here
-Decide the Task 2 re-review question above, then dispatch Task 3 (section rhythm
-and inversion) using `task-3-brief.md`, which already includes the `--logo-cyan`
-Step 0 fix.
+Publish the voice agent with the guarantee rule, then deploy `es.html` to
+`/var/www/prime-ai/es/index.html` — in that order — or resolve the
+`¿Cuánto cuesta?` pricing-model wording first if Dan wants that fixed before
+either goes out.
