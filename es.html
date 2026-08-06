@@ -68,8 +68,15 @@
        not an oversight.
        ============================================ -->
   <!-- Inline data URI, not a file: this page deploys as a single self-contained
-       HTML file, and a /favicon.ico request 404s against the static location. -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%230891B2' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230891B2'/%3E%3C/svg%3E">
+       HTML file, and a /favicon.ico request 404s against the static location.
+       A "P" on ink, not the old ring-and-dot: at the 16px a favicon is actually
+       drawn at, a 2px ring around a 5px dot collapses into a smudge, and the
+       cyan it was drawn in no longer exists anywhere on either page.
+       The font-family is a best-effort list on purpose — an SVG favicon does
+       NOT load the page's webfonts, so this renders in whatever the browser
+       has. A bold "P" survives that; anything relying on Space Grotesk's
+       shapes would not. -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23221D19'/%3E%3Ctext x='16' y='23.5' text-anchor='middle' font-family='Space Grotesk,Segoe UI,Helvetica,Arial,sans-serif' font-size='22' font-weight='700' fill='%23FAF8F5'%3EP%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -92,9 +99,14 @@
          >=18.66px bold; never as type on sand (2.95:1). */
       --amber:     oklch(0.6266 0.1229 50.7);  /* #C2703D */
 
-      /* Logo wordmark only. An exempt brand mark, not part of the palette.
-         Declared as a token so the guard sees no bare hex outside :root. */
-      --logo-cyan: #0891B2;
+      /* --logo-cyan (#0891B2) lived here and is GONE, 2026-08-06. It was the
+         only colour on the page carved out of the palette — its own comment
+         called it "an exempt brand mark, not part of the palette" — and it was
+         the only cold hue on a page that is otherwise entirely warm. Nothing
+         else was ever allowed to use it, which is what made it read as a
+         leftover rather than a brand. The wordmark now carries itself on ink
+         and weight. Do not reintroduce a colour here without giving it a job
+         somewhere else too; a hue used exactly once is an accident. */
 
       /* Blue is buttons and links. Not decoration. */
       --accent:       #2563EB;
@@ -250,12 +262,22 @@
       /* El conmutador ES/EN dejó al logo con 92px a 360px de ancho, y
          "Prime AI" se partía en dos líneas, que subía la barra a 88px.
          Con nowrap el flex reparte el recorte por otro lado y no hay
-         desbordamiento horizontal. */
+         desbordamiento horizontal. Sigue haciendo falta sin el icono:
+         el ancho que sobra es menor, pero el punto de ruptura es el mismo. */
       white-space: nowrap;
+      /* Igual que h1/h2/h3. El logo llevaba el mismo tipo que los titulares
+         pero no su tracking, así que a 20px se veía más suelto que todo lo
+         demás en Space Grotesk. */
+      letter-spacing: -0.02em;
     }
 
+    /* "AI" retrocede por PESO, no por color. En cian partía el nombre en dos
+       mitades sin relación y ponía el énfasis en la mitad menos distintiva:
+       todos son "algo AI", la palabra propia es Prime. Peso, no color,
+       también significa que sigue siendo una sola tinta sobre crema y sobre
+       ink, sin segunda variante que mantener. */
     .logo-ai {
-      color: var(--logo-cyan);
+      font-weight: 500;
     }
 
     .btn-nav {
@@ -1062,10 +1084,6 @@
   <nav class="nav">
     <div class="nav-inner">
       <a href="#" class="nav-logo">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <circle cx="16" cy="16" r="14" stroke="var(--logo-cyan)" stroke-width="2"/>
-          <circle cx="16" cy="16" r="5" fill="var(--logo-cyan)"/>
-        </svg>
         <span>Prime <span class="logo-ai">AI</span></span>
       </a>
       <div class="idioma" role="group" aria-label="Idioma / Language">

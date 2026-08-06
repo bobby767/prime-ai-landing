@@ -30,7 +30,7 @@
        ============================================ -->
   <!-- Inline data URI, not a file: this page deploys as a single self-contained
        HTML file, and a /favicon.ico request 404s against the static location. -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%230891B2' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%230891B2'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23221D19'/%3E%3Ctext x='16' y='23.5' text-anchor='middle' font-family='Space Grotesk,Segoe UI,Helvetica,Arial,sans-serif' font-size='22' font-weight='700' fill='%23FAF8F5'%3EP%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap">
@@ -54,9 +54,12 @@
          at >=24px or >=18.66px bold; never as type on sand (2.95:1). */
       --amber:     oklch(0.6266 0.1229 50.7);  /* #C2703D */
 
-      /* Logo wordmark only. An exempt brand mark, not part of the palette.
-         Declared as a token so the guard sees no bare hex outside :root. */
-      --logo-cyan: #0891B2;
+      /* --logo-cyan (#0891B2) lived here and is GONE, 2026-08-06 — removed on
+         both pages in the same change. Its own comment called it "an exempt
+         brand mark, not part of the palette", which is the tell: it was the
+         single colour carved out of the system, and the only cold hue on a
+         warm page. The wordmark now carries itself on ink and weight.
+         Do not reintroduce a colour here without giving it a job elsewhere. */
 
       /* Blue is buttons, links, and form affordances. Not decoration. */
       --accent:       #2563EB;
@@ -181,16 +184,16 @@
       letter-spacing: -0.02em;
     }
 
-    .nav-logo svg {
-      flex-shrink: 0;
-    }
-
     .nav-logo .logo-prime {
       color: var(--text-primary);
     }
 
+    /* "AI" retreats by WEIGHT, not colour. The cyan split the name into two
+       unrelated halves and put the emphasis on the least distinctive one —
+       everyone is "something AI"; the ownable word is Prime. Kept identical
+       to es.html so the two pages cannot drift into different wordmarks. */
     .nav-logo .logo-ai {
-      color: var(--logo-cyan);
+      font-weight: 500;
     }
 
     .btn {
@@ -1666,18 +1669,6 @@
   <nav class="nav" id="nav">
     <div class="nav-inner">
       <a href="#" class="nav-logo">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="16" cy="16" r="14" stroke="#0891B2" stroke-width="1.5"/>
-          <circle cx="16" cy="16" r="4" fill="#0891B2"/>
-          <line x1="16" y1="2" x2="16" y2="10" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="16" y1="22" x2="16" y2="30" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="2" y1="16" x2="10" y2="16" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="22" y1="16" x2="30" y2="16" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="5.86" y1="5.86" x2="11.17" y2="11.17" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="20.83" y1="20.83" x2="26.14" y2="26.14" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="26.14" y1="5.86" x2="20.83" y2="11.17" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="11.17" y1="20.83" x2="5.86" y2="26.14" stroke="#0891B2" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-        </svg>
         <span><span class="logo-prime">Prime</span> <span class="logo-ai">AI</span></span>
       </a>
       <button class="btn btn-primary btn-nav call-trigger">Hear It Answer</button>
