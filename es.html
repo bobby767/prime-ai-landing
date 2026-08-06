@@ -1678,10 +1678,19 @@
         navigator.mediaDevices.getUserMedia({ audio: true }).then(function (flujo) {
           flujo.getTracks().forEach(function (pista) { pista.stop(); });
           di(T[idioma].conectando);
+          // `lang` lo lee demo.ts para elegir el saludo inicial en español.
+          // Estaba SÓLO en el fichero desplegado, no aquí: se editó a mano
+          // sobre /var/www el 2026-08-06 y nunca volvió al repo, así que
+          // cualquier despliegue de este fichero lo habría borrado. Se trae
+          // al repo para que el origen vuelva a ser un superconjunto de lo
+          // que hay en producción.
+          //
+          // El servidor que no conozca la clave la ignora — sólo lee `c` —
+          // así que las dos mitades se pueden desplegar en cualquier orden.
           return fetch('/voice/token', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ c: etiqueta })
+            body: JSON.stringify({ c: etiqueta, lang: idioma })
           });
         }, function () {
           throw new Error('micro');

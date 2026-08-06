@@ -2148,6 +2148,7 @@
 
       <button class="btn btn-primary call-trigger" style="font-size:18px; padding:18px 40px;">Hear It Answer — Right Here, No Phone Needed</button>
       <small class="micro-copy">Or <button class="btn-link cta-trigger">book your free call audit</button> — no commitment required.</small>
+      <p style="margin-top:var(--space-3);"><a class="btn btn-secondary" href="https://cal.eu/prime.ai/intro-wa">Book a call with me</a></p>
       <p class="unity-line">Built for practices that refuse to let the phone ring out.</p>
     </div>
   </section>
@@ -2191,6 +2192,11 @@
     <p class="call-notice">It's an AI, not a person — the same one that would answer your business's phone. The call is recorded, so we can make it better.</p>
     <button class="btn btn-primary call-start" id="callStart">Talk to the AI (recorded)</button>
     <p class="call-status" id="callStatus" role="status" aria-live="polite"></p>
+    <!-- The agent is prompted (Voice_agent/src/sales-agent.ts, WEB_CLOSE) to close by
+         pointing at "the button on the page". This dialog has a backdrop, so a button
+         in the page behind it is not on the page as far as the caller is concerned.
+         This anchor is what makes that instruction true on /en/. Same href as /es/. -->
+    <p class="call-fine"><a class="btn btn-secondary" href="https://cal.eu/prime.ai/intro-wa">Book a call with me</a></p>
     <!-- Identity and deletion rights, art. 13. Copied verbatim from the
          /voice footer so there is one controller record, not two. The
          privacy page it links to is Spanish-only — that is a real gap
