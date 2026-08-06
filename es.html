@@ -1497,6 +1497,22 @@
     <p class="aviso" data-en="This is an AI, not a person — the same one that would answer your business's phone. The call is recorded, to improve it.">Es una IA, no una persona — la misma que contestaría el teléfono de tu negocio. La llamada se graba, para mejorarla.</p>
     <button class="btn btn-primary" id="ir" data-en="Talk to the AI (recorded)">Hablar con la IA (se graba)</button>
     <p class="estado" id="estado" role="status" aria-live="polite"></p>
+    <!-- El agente cierra apuntando a "el botón de la página" (Voice_agent/src/
+         sales-agent.ts, WEB_CLOSE). Este <dialog> trae fondo oscuro, así que el
+         botón de la página de abajo NO se ve mientras se habla — y cerrar el
+         panel corta la llamada. Éste es el que hace verdad esa instrucción.
+         Mismo href que el de la página.
+
+         El data-en va en el <p>, no en el <a> de dentro, y esto NO es un
+         detalle de estilo. traducir() recorre querySelectorAll('[data-en]')
+         y sustituye innerHTML: al cambiar el del <p>, el <a> original queda
+         desconectado del documento, así que su propio data-en no se llegaría
+         a usar nunca. La versión que se subió a mano a /var/www lo lleva en
+         el <a> — funciona de casualidad, porque el <a> se procesa antes que
+         su padre, y falla en cuanto cambie el orden del recorrido.
+         Así queda igual que el .panel-chica de abajo, que ya guardaba su
+         marcado inglés completo y escapado en el atributo. -->
+    <p class="panel-chica" data-en="&lt;a class=&quot;btn btn-outline&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Book a call with me&lt;/a&gt;"><a class="btn btn-outline" href="https://cal.eu/prime.ai/intro-wa">Reservar una llamada conmigo</a></p>
     <p class="panel-chica" data-en="Responsible for the recording: &lt;strong&gt;Daniel Kooij (Prime AI)&lt;/strong&gt;, Fuengirola, Málaga — &lt;a href=&quot;mailto:oscarinfo@proton.me&quot;&gt;oscarinfo@proton.me&lt;/a&gt;. &lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with it and how to ask me to delete it (in Spanish)&lt;/a&gt;.">Responsable de la grabación: <strong>Daniel Kooij (Prime AI)</strong>, Fuengirola, Málaga — <a href="mailto:oscarinfo@proton.me">oscarinfo@proton.me</a>. <a href="/voice/privacidad">Qué hago con ella y cómo pedir que la borre</a>.</p>
   </dialog>
 
