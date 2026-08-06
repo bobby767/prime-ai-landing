@@ -112,11 +112,11 @@ seconds later, so the page may not claim what the call must refuse to repeat.
   (and `en-index.html.bak-20260806-032801` → `/var/www/prime-ai/en/index.html`).
 
 ## Deferred + open questions
-- **Open: the meta description still says "fontaneros, reformas" / "plumbers,
-  builders and trades".** This is the only place the page narrows to a niche —
-  visible body copy has zero trade words. User raised it, I offered the fix, no
-  answer given. 3 strings in `es.html`: the initial `<meta name="description">`
-  plus the two `descripcion:` values the language toggle swaps.
+- ~~Open: the meta description still says "fontaneros, reformas"~~ — **DONE
+  2026-08-06, `81fa5b3`, deployed.** All three strings now end "Para negocios de
+  Málaga" / "For businesses in Málaga", verbatim the marbete at line 1106. The
+  header comment gained a block telling the next editor not to put the keyword
+  back. `/en/` needed nothing: it is clinic-framed and names no trade.
 - **Open: `warm-palette` is unpushed**, 30 commits ahead of master, and now
   further diverged.
 - Deferred: `receptionist.html` warm-palette Tasks 3-6, paused from an earlier
@@ -133,7 +133,12 @@ seconds later, so the page may not claim what the call must refuse to repeat.
   source if ever". Nothing built.
 
 ## Pick up here
-Broaden the three meta-description strings in
-`/home/ubuntu/Prime_AI/Landingpage/es.html` so the page stops narrowing to
-plumbers in search results, then redeploy `/es/` — re-diffing against the live
-file first, because a concurrent session has been hand-editing `/var/www`.
+The meta-description job above is **done and live** (`81fa5b3`). Next, in order
+of what actually costs something:
+
+1. **Push `warm-palette`.** 32 commits ahead of master and unpushed — every
+   session adds to it. Nothing else here is at risk while it sits, but the
+   window where a disk loses uncommitted-to-remote work keeps widening.
+2. Deferred, unchanged: `receptionist.html` warm-palette Tasks 3-6; the phone
+   twin still has its bans scoped to the pitch state and is attached to no
+   number; `/en-trades/` if English organic traffic ever matters.
