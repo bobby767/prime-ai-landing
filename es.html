@@ -588,6 +588,69 @@
     }
 
     /* ============================================
+       PRUEBA
+       Casi todo esto ya existía: la tarjeta es .paso
+       y el círculo con la inicial es .paso-num, los
+       dos del apartado "Cómo funciona". Aquí sólo se
+       añade lo que no había — la cita, la firma y los
+       países — para no mantener dos tarjetas que se
+       parecen. Va sobre arena, no sobre concha, para
+       que no se junte con la banda clara de encima:
+       dos claras seguidas se leen como una sola, que
+       es justo lo que dice el comentario de .banda-oscura.
+       ============================================ */
+    .prueba {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .prueba p {
+      color: var(--text-secondary);
+      font-size: var(--font-base);
+      line-height: 1.75;
+    }
+
+    .prueba p + p {
+      margin-top: var(--space-3);
+    }
+
+    /* La cita sube a texto primario: es lo único aquí que
+       se lee como dicho en voz alta y no como contado.
+       Va como "p.prueba-cita" y no como ".prueba-cita" a
+       secas porque ".prueba p" de arriba lleva clase +
+       etiqueta y le gana en especificidad; escrito sin la
+       p la regla no se aplica nunca y la cita se queda del
+       mismo gris que el resto. */
+    p.prueba-cita {
+      color: var(--text-primary);
+    }
+
+    .prueba-firma {
+      font-size: var(--font-sm);
+    }
+
+    .prueba .paso {
+      margin-top: var(--space-8);
+      text-align: left;
+    }
+
+    .prueba-paises {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+    }
+
+    .prueba-paises span {
+      padding: 4px 12px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+
+    /* ============================================
        ENCAJE
        ============================================ */
     .encaje {
@@ -1298,6 +1361,49 @@
         <h2 class="rotulo" data-en="It is not here to take anyone's place">No viene a quitarle el sitio a nadie</h2>
         <p data-en="If someone already answers the phone in your business, this does not replace them: it picks up what that person cannot. While they are on with one caller, the second one hears ringing. While they are at lunch, on a day off, away on holiday, the phone rings just the same. That is arithmetic, not a criticism.">Si ya hay alguien cogiendo el teléfono en tu negocio, esto no lo sustituye: coge lo que esa persona no puede coger. Mientras habla con uno, el segundo oye tonos. Mientras come, mientras libra, mientras está de vacaciones, el teléfono suena igual. Eso es aritmética, no una crítica.</p>
         <p data-en="What usually happens is that it takes pressure off, not work away: the same calls as always — “are you open on Saturday?”, “what do you charge to come and look?” — stop interrupting, and anyone who genuinely needs a person gets one sooner, with what they have already explained written down.">Lo que suele pasar es que quita presión, no trabajo: las llamadas de siempre — «¿abrís el sábado?», «¿cuánto cuesta que lo miréis?» — dejan de interrumpir, y quien de verdad necesita hablar con una persona la tiene antes, con lo que ha contado ya recogido.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PRUEBA
+       Portada de /en/ (#proof) el 2026-08-06. La página española pedía
+       media hora de teléfono sin haber dicho nunca quién hay detrás,
+       que es mucho pedir a alguien que no te conoce de nada.
+
+       Tres cosas cambiaron al traerla, y ninguna es de estilo:
+
+       — "clinics and trades" se cae. La página dejó de nombrar oficios
+         hoy mismo; volver a meterlos aquí sería deshacerlo en la sección
+         de al lado. Ahora es "negocios de aquí".
+       — El "Clinic and trade results coming soon" de /en/ no se trae.
+         Un resultado prometido para más adelante no prueba nada, y roza
+         la promesa que test-palette.js prohíbe.
+       — Las cifras que quedan (dos años, cinco países) son sobre mí, no
+         sobre quien lee. Ésa es la línea del guard: prohibida la cifra
+         afirmada SOBRE EL VISITANTE, no la cifra a secas. Sin euros y
+         sin porcentajes, que es lo que el agente tampoco puede repetir.
+       ============================================ -->
+  <section class="banda banda-arena aparece" id="prueba">
+    <div class="container">
+      <div class="prueba">
+        <h2 class="rotulo" data-en="Built by someone who has done this before">Esto lo ha montado alguien que ya lo ha hecho antes</h2>
+        <div class="paso-num" aria-hidden="true">D</div>
+        <p data-en="I spent two years building AI systems for a football academy that operates across five countries: qualifying leads, instant response, automated follow-up, call scoring. I watched it fill intake after intake. Then I started phoning businesses around here to ask how they handled their phone, and most of the time &lt;em&gt;nobody picked up.&lt;/em&gt; That was the whole business case. I built Prime AI so that call gets answered.">Me he pasado dos años montando sistemas de IA para una academia de fútbol que trabaja en cinco países: calificar contactos, responder al momento, seguimiento automático, puntuar llamadas. Los vi llenar convocatoria tras convocatoria. Después me puse a llamar a negocios de aquí para preguntarles cómo llevaban el teléfono, y la mayoría de las veces <em>no me lo cogió nadie.</em> Ése fue todo el estudio de mercado. Monté Prime AI para que esa llamada se coja.</p>
+        <p class="prueba-cita" data-en="&lt;em&gt;“You and I are both tired of ‘AI solutions’ that turn out to be a chatbot with a nice dashboard. This one answers the phone, and we run it for you.”&lt;/em&gt;"><em>«Tú y yo estamos igual de hartos de las “soluciones con IA” que acaban siendo un chatbot con un panel bonito. Ésta coge el teléfono, y te la llevamos nosotros.»</em></p>
+        <p class="prueba-firma" data-en="Dan — Full-stack AI engineer. Cybersecurity background. Production systems running in five countries.">Dan — Ingeniero de IA full-stack. Vengo de ciberseguridad. Sistemas en producción en cinco países.</p>
+
+        <div class="paso">
+          <h3 data-en="The same system, already proven at scale">El mismo sistema, ya probado en grande</h3>
+          <p data-en="I built a whole AI lead pipeline — qualification, WhatsApp follow-up, booked calls, call scoring — running across five countries. Same architecture. Now pointed at your phone.">Monté un sistema entero de captación con IA — calificación, seguimiento por WhatsApp, llamadas reservadas, puntuación de llamadas — funcionando en cinco países. La misma arquitectura. Ahora apuntando a tu teléfono.</p>
+          <div class="prueba-paises">
+            <span data-en="Mexico">México</span>
+            <span data-en="UAE">Emiratos Árabes Unidos</span>
+            <span data-en="Saudi Arabia">Arabia Saudí</span>
+            <span data-en="Canada">Canadá</span>
+            <span data-en="France">Francia</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
