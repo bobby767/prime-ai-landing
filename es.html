@@ -8,29 +8,48 @@
   <!-- ============================================
        LA PÁGINA ESPAÑOLA. Read this before editing.
 
-       WHO IT IS FOR — trades (fontaneros, reformas), not clinics. Dan,
-       2026-08-05. That is a different vertical from the English page at
-       /en/, which is clinic-framed, so these two are NOT translations of
-       each other and must not be edited as if they were. "cliente" and
-       "aviso" here; "patient" and "practice" there.
+       WHO IT IS FOR — any Málaga business that lives off its phone. Dan,
+       2026-08-06, widened from "trades (fontaneros, reformas)" of 08-05.
+       Still NOT clinics: /en/ is clinic-framed, so that page and this one
+       are different verticals and NOT translations of each other. Say
+       "cliente" here and "patient" there.
 
-       BUT THE META DESCRIPTION NAMES NO TRADE. Dan, 2026-08-06. It used
-       to end "Para fontaneros, reformas y negocios de Málaga" and that
-       was the ONLY narrowing anywhere in the file — every visible string
-       is already trade-free, so the search snippet promised a plumber
-       page the visitor never arrives at. It now ends "Para negocios de
-       Málaga", which is verbatim the marbete already on the page, so the
-       snippet and the first thing under the fold say the same words. Do
-       not put the trades back in to chase the keyword: the vertical is
-       set by the copy, not by the one string nobody on the page reads.
-       Three strings move together — the static meta above (what a
-       no-JavaScript visitor gets) and T.es/T.en.descripcion below.
+       NO OCCUPATION IS NAMED ANYWHERE. That is now a rule, not an
+       accident, and it took two passes to make true. The meta description
+       used to end "Para fontaneros, reformas y negocios de Málaga"; it now
+       ends "Para negocios de Málaga", verbatim the marbete in the ALTO
+       section, so the search snippet and the first thing under the fold
+       say the same words. Three description strings move together — the
+       static meta above (what a no-JavaScript visitor gets) and
+       T.es/T.en.descripcion below.
+
+       Then Dan found the rest, which the first pass had missed: the
+       "llamadas que hoy se pierden" list opened with hands inside "una
+       avería" / "a leak", the next line drove to the "siguiente aviso",
+       and the emergency FAQ said "en tu oficio" / "in your trade". Those
+       are now "un trabajo que no puedes dejar a medias" / "a job you
+       can't walk away from", "siguiente trabajo", and "en tu negocio" /
+       "in your business".
+
+       Two things to keep in mind before writing a new line here:
+
+       — The vividness lives in the MOMENT, not the occupation. "Hands
+         deep in a job you can't walk away from" is interrupted, committed
+         and unable to stop, and none of that needed a plumber. Write the
+         moment; if a trade name is doing the work, the line is weaker
+         than it looks.
+
+       — English translations narrow without anyone deciding to. "Avería"
+         covers electricians, aircon, appliance repair, mechanics and pool
+         maintenance; "a leak" covers plumbers. The Spanish was broader
+         than its own English for months. When you add a data-en, check it
+         has not quietly picked a trade the Spanish left open.
 
        TWO LANGUAGES, ONE VERTICAL. Dan, 2026-08-06: this page carries its
        own English, in data-en attributes, and the ES/EN switch in the nav
-       swaps them in place. That English is the TRADES pitch in English —
-       for the English-speaking builder or plumber on this coast — and it
-       is still not /en/, which sells to clinics. Two different things are
+       swaps them in place. That English is THIS page's pitch in English —
+       for the English-speaking owner on this coast — and it is still not
+       /en/, which sells to clinics. Two different things are
        now called "the English page", so be exact about which: /en/ is a
        different vertical, this toggle is a different language.
 
@@ -1139,7 +1158,7 @@
       <ul class="lista">
         <li>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span data-en="It rings while your hands are inside a leak and you can't stop.">Suena mientras tienes las manos metidas en una avería y no puedes parar.</span>
+          <span data-en="It rings while your hands are deep in a job you can't walk away from.">Suena mientras tienes las manos metidas en un trabajo que no puedes dejar a medias.</span>
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -1151,7 +1170,7 @@
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span data-en="It rings while you're driving to the next job, and by the time you've parked you can't remember who it was.">Suena mientras conduces al siguiente aviso, y cuando aparcas ya no te acuerdas de quién era.</span>
+          <span data-en="It rings while you're driving to the next job, and by the time you've parked you can't remember who it was.">Suena mientras conduces al siguiente trabajo, y cuando aparcas ya no te acuerdas de quién era.</span>
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -1369,7 +1388,7 @@
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="respuesta">
-            <div class="respuesta-txt" data-en="You decide what counts as an emergency in your trade, in your own words, when we set it up. Those calls break out of the script immediately: it recognises them, does not book them in, and either puts them through to you live or alerts you however you want. It is the part that gets tested hardest before anything goes live, and the first thing we tune.">Tú decides qué es una urgencia en tu oficio, con tus palabras, cuando lo montamos. Esas llamadas se salen del guion inmediatamente: las reconoce, no da cita, y te las pasa en directo o avisa como tú digas. Es la parte que más se prueba antes de ponerlo en marcha, y la primera que afinamos.</div>
+            <div class="respuesta-txt" data-en="You decide what counts as an emergency in your business, in your own words, when we set it up. Those calls break out of the script immediately: it recognises them, does not book them in, and either puts them through to you live or alerts you however you want. It is the part that gets tested hardest before anything goes live, and the first thing we tune.">Tú decides qué es una urgencia en tu negocio, con tus palabras, cuando lo montamos. Esas llamadas se salen del guion inmediatamente: las reconoce, no da cita, y te las pasa en directo o avisa como tú digas. Es la parte que más se prueba antes de ponerlo en marcha, y la primera que afinamos.</div>
           </div>
         </div>
 
