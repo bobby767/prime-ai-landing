@@ -328,6 +328,16 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
                                 'a named fee for the service'],
     // The pricing MODEL ban, which is the one that is easy to break by
     // accident because it reads like helpful honesty rather than a price.
+    // ⚠ KNOWN GAP, left deliberately and NOT silently. The FAQ answer to
+    // "¿Cuánto cuesta?" opens "Depende de cuántas llamadas te entran", which
+    // is word for word the example sales-agent.ts:942 names as a banned
+    // pricing MODEL — "not a number, not a range, not a shape". The page has
+    // said it since it was written and the English translation inherited it,
+    // so the agent is currently forbidden from repeating an answer the page
+    // gives. This rule only catches the tighter case where a price word sits
+    // in the same sentence; widening it to catch the FAQ would turn the
+    // build red on copy that is Dan's call to change, not this file's.
+    // Raised with Dan 2026-08-06 and awaiting his decision on the wording.
     [/\b(depende de cu[áa]ntas llamadas|depends on how many calls)\b[^.]*\b(cuesta|precio|cost|price|pay)\b/i,
                                 'a pricing model ("it depends on how many calls you get") — banned exactly like a figure'],
     [/gratis|sin coste/i,       'a free-of-charge claim, which is a price claim'],
