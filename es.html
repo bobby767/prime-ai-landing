@@ -390,6 +390,47 @@
       background: var(--shell);
     }
 
+    .banda-arena {
+      background: var(--sand);
+    }
+
+    /* ============================================
+       BANDAS OSCURAS (anclas)
+       El diagnóstico del 2026-08-05 sobre la página inglesa valía igual
+       aquí: once secciones repartidas entre dos tonos separados por un 2%
+       de luminosidad no se leen como secciones, se leen como una sola
+       sábana clara. Lo que faltaba era profundidad, no color.
+       El ritmo aprobado es claro con anclas oscuras, y esta página tenía
+       las anclas sólo al final (.cierre y .pie), así que todo el medio
+       iba plano. Ahora hay tres: las llamadas que se pierden, la cuenta,
+       y el cierre.
+       ============================================ */
+    .banda-oscura {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    /* El ámbar es lo que lleva el dinero, y sobre tinta va a 4.51:1, que
+       pasa AA en texto normal. Sobre papel se queda en 3.49:1 (sólo texto
+       grande) y sobre arena en 2.95:1, donde no vale ni para texto grande.
+       Por eso las cifras viven en las bandas oscuras y no en las claras:
+       no es una preferencia, es dónde el ámbar es legible. */
+    .banda-oscura .rotulo {
+      color: var(--paper);
+    }
+
+    .banda-oscura .lista li {
+      background: var(--tint-on-ink);
+      border-color: oklch(0.9798 0.0045 78.3 / 0.18);
+      box-shadow: none;
+      color: var(--paper);
+    }
+
+    /* Azul sobre tinta cae a 3.23:1 y falla AA, igual que en el pie. */
+    .banda-oscura a:not(.btn) {
+      color: var(--amber);
+    }
+
     .rotulo {
       font-size: var(--font-2xl);
       font-weight: 700;
@@ -620,6 +661,134 @@
     }
 
     /* ============================================
+       EL RESULTADO
+       El agente tiene una regla que se llama "siempre el resultado, nunca
+       el mecanismo". Esta sección es esa regla en la página: lo que se
+       compra no es una IA que coge el teléfono, son clientes que hoy
+       llaman y se van a otro. Sin número: prometer una cantidad de citas
+       es exactamente lo que el agente no puede repetir.
+       ============================================ */
+    .resultado {
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .resultado-grande {
+      font-family: var(--font-heading);
+      font-size: var(--font-2xl);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-3);
+    }
+
+    .resultado p {
+      color: var(--text-secondary);
+      font-size: var(--font-md);
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       LA CUENTA
+       Misma aritmética que hace el agente en voz alta (sales-agent.ts,
+       PITCH_STATE): llamadas perdidas al día × 20 días, luego UN TERCIO
+       de ésas, al precio de lo MÁS BARATO que reserva un cliente. Si la
+       página sacara un número más gordo que el que saca la llamada treinta
+       segundos después, el prospecto pilla la contradicción y con razón.
+       Los tres datos los pone él. La página no afirma ni una cifra sobre
+       su negocio: multiplica las suyas.
+       ============================================ */
+    .calc {
+      max-width: 620px;
+      margin: 0 auto;
+      background: var(--tint-on-ink);
+      border: 1px solid oklch(0.9798 0.0045 78.3 / 0.18);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+
+    .calc-campo {
+      margin-bottom: var(--space-3);
+    }
+
+    .calc-campo label {
+      display: block;
+      font-size: var(--font-sm);
+      color: var(--text-on-ink);
+      margin-bottom: 10px;
+    }
+
+    .calc-ops {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Botones de radio de verdad debajo: el navegador trae el grupo, las
+       flechas del teclado y el foco sin que haya que reimplementarlos. */
+    .calc-ops input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .calc-ops label {
+      margin: 0;
+      cursor: pointer;
+      font-size: var(--font-sm);
+      font-weight: 600;
+      color: var(--paper);
+      padding: 10px 16px;
+      border: 1px solid oklch(0.9798 0.0045 78.3 / 0.28);
+      border-radius: 999px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .calc-ops label:hover {
+      background: oklch(0.9798 0.0045 78.3 / 0.1);
+    }
+
+    .calc-ops input:checked + label {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: var(--ink);
+    }
+
+    /* El anillo del navegador se pierde en un input de 0px, así que el
+       foco se pinta sobre la etiqueta, que es lo que se ve. */
+    .calc-ops input:focus-visible + label {
+      outline: 2px solid var(--paper);
+      outline-offset: 2px;
+    }
+
+    .calc-salida {
+      margin-top: var(--space-4);
+      padding-top: var(--space-3);
+      border-top: 1px solid oklch(0.9798 0.0045 78.3 / 0.18);
+      text-align: center;
+    }
+
+    .calc-cifra {
+      font-family: var(--font-heading);
+      font-size: var(--font-hero);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--amber);
+      letter-spacing: -0.02em;
+    }
+
+    .calc-pie {
+      font-size: var(--font-sm);
+      color: var(--text-on-ink);
+      line-height: 1.6;
+      margin-top: 10px;
+      max-width: 460px;
+      margin-inline: auto;
+    }
+
+    /* ============================================
        CIERRE + PIE (bandas oscuras)
        ============================================ */
     .cierre,
@@ -656,6 +825,37 @@
     .aval svg {
       flex-shrink: 0;
       margin-top: 2px;
+    }
+
+    /* ============================================
+       GARANTÍA
+       Sobre tinta, que es donde el ámbar pasa AA en texto normal (4.51:1).
+       En una banda clara este bloque tendría que ser todo texto grande o
+       cambiar de color, así que vive aquí y no en otro sitio.
+       ============================================ */
+    .garantia {
+      max-width: 620px;
+      margin: 0 auto var(--space-4);
+      border: 1px solid var(--amber);
+      border-radius: var(--radius);
+      padding: var(--space-3);
+      text-align: center;
+    }
+
+    /* Anidado a propósito: es un <p>, así que .garantia p lo pisaba y el
+       título salía blanco. Dos clases, no !important. */
+    .garantia .garantia-titulo {
+      font-family: var(--font-heading);
+      font-size: var(--font-md);
+      font-weight: 700;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+
+    .garantia p {
+      color: var(--paper);
+      font-size: var(--font-base);
+      line-height: 1.6;
     }
 
     .cierre .letra-chica,
@@ -903,7 +1103,7 @@
        la que suena mientras hablas con otro cliente, y la que se pierde
        porque quien coge el teléfono no podía cogerla.
        ============================================ -->
-  <section class="banda banda-clara aparece" id="perdidas">
+  <section class="banda banda-oscura aparece" id="perdidas">
     <div class="container">
       <h2 class="rotulo" data-en="The calls you are losing today">Las llamadas que hoy se pierden</h2>
       <ul class="lista">
@@ -961,6 +1161,78 @@
           <h3 data-en="The job is already in the diary">La cita ya está puesta</h3>
           <p data-en="By the time you look at your calendar it is already there, with a note on who rang and what they wanted. We listen to the calls and tune it every week. There is no software for you to learn.">Cuando mires el calendario ya está ahí, con una nota de quién ha llamado y qué quería. Escuchamos las llamadas y la afinamos cada semana. No hay ningún programa que aprender.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       EL RESULTADO
+       "Siempre el resultado, nunca el mecanismo" es una regla del agente
+       (sales-agent.ts), y ésta es esa regla escrita en la página. Sin
+       cifras a propósito: prometer una cantidad de clientes es de las
+       cuatro cosas que el agente tiene prohibido decir, y aquí lo que
+       hace falta es el resultado, no un número.
+       ============================================ -->
+  <section class="banda banda-arena aparece" id="resultado">
+    <div class="container">
+      <div class="resultado">
+        <h2 class="rotulo" data-en="What you actually end up with: more customers">Para qué es todo esto: más clientes</h2>
+        <p class="resultado-grande" data-en="What you are buying is not an AI that answers the phone. It is the customers who ring you today and end up going to somebody else.">Lo que compras no es una IA que coge el teléfono. Son los clientes que hoy te llaman y acaban yéndose a otro.</p>
+        <p data-en="Someone who cannot get hold of you does not try again later. They ring the next name on the list, and that one gets the work. A phone that gets answered is the only thing standing between those two outcomes — and it is the whole reason this is worth paying for.">Quien no consigue hablar contigo no lo vuelve a intentar más tarde. Llama al siguiente de la lista, y ése se queda el trabajo. Un teléfono que se coge es lo único que separa una cosa de la otra — y es la razón entera por la que esto merece la pena.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       LA CUENTA
+       ⚠ La aritmética es la MISMA que hace el agente en voz alta
+       (sales-agent.ts, PITCH_STATE): perdidas al día × 20 días laborables,
+       un TERCIO de ésas, al precio de lo MÁS BARATO que reserva un
+       cliente. No se toca sin tocar la otra: el visitante oye al agente
+       hacer esta cuenta treinta segundos después de leerla, y dos números
+       distintos a partir de los mismos datos es lo peor que puede pasar
+       aquí.
+
+       Las dos cifras las pone él y no hay valores por defecto: hasta que
+       elige, la salida es una raya. La página no afirma NADA sobre su
+       negocio — multiplica lo que él ha dicho. Ésa es justamente la
+       regla del agente ("nunca inventes una cifra que no te han dado").
+
+       Y el marco es "esto es lo que se te está escapando", nunca "esto es
+       lo que te vas a ahorrar": el agente tiene prohibido dar a entender
+       que Prime AI recupera ese dinero. Lo que se puede demostrar con sus
+       propios números es lo que pasa de largo hoy.
+       ============================================ -->
+  <section class="banda banda-oscura aparece" id="cuenta">
+    <div class="container">
+      <h2 class="rotulo" data-en="What is walking past you">Lo que se te está escapando</h2>
+      <div class="calc">
+
+        <div class="calc-campo">
+          <label id="lbl-llamadas" data-en="How many calls do you miss on a normal day?">¿Cuántas llamadas se te escapan en un día normal?</label>
+          <div class="calc-ops" role="radiogroup" aria-labelledby="lbl-llamadas">
+            <input type="radio" name="llamadas" id="ll-1" value="1"><label for="ll-1" data-en="1 a day">1 al día</label>
+            <input type="radio" name="llamadas" id="ll-3" value="3"><label for="ll-3" data-en="3 a day">3 al día</label>
+            <input type="radio" name="llamadas" id="ll-5" value="5"><label for="ll-5" data-en="5 a day">5 al día</label>
+            <input type="radio" name="llamadas" id="ll-10" value="10"><label for="ll-10" data-en="10 or more">10 o más</label>
+          </div>
+        </div>
+
+        <div class="calc-campo">
+          <label id="lbl-precio" data-en="What does the cheapest thing a customer books cost?">¿Cuánto cuesta lo más barato que te reserva un cliente?</label>
+          <div class="calc-ops" role="radiogroup" aria-labelledby="lbl-precio">
+            <input type="radio" name="precio" id="pr-60" value="60"><label for="pr-60" data-en="€60">60 €</label>
+            <input type="radio" name="precio" id="pr-150" value="150"><label for="pr-150" data-en="€150">150 €</label>
+            <input type="radio" name="precio" id="pr-400" value="400"><label for="pr-400" data-en="€400">400 €</label>
+            <input type="radio" name="precio" id="pr-900" value="900"><label for="pr-900" data-en="€900 or more">900 € o más</label>
+          </div>
+        </div>
+
+        <div class="calc-salida">
+          <div class="calc-cifra" id="cifra" role="status" aria-live="polite">—</div>
+          <p class="calc-pie" id="cifra-pie" data-en="Pick your two numbers and the sum is done on them, not on anyone else's.">Elige tus dos cifras y la cuenta se hace con ellas, no con las de nadie más.</p>
+        </div>
+
       </div>
     </div>
   </section>
@@ -1126,9 +1398,32 @@
     <div class="container">
       <h2 class="rotulo" data-en="Stop losing customers to whoever simply answered the phone.">Deja de perder clientes con el que simplemente cogió el teléfono.</h2>
 
-      <!-- La única inversión del riesgo que es verdad. No hay garantía
-           aquí a propósito: el agente no puede prometer un resultado, así
-           que la página tampoco. -->
+      <!-- ⚠ GARANTÍA. Dan, 2026-08-06. Antes aquí ponía que no había
+           garantía a propósito; ahora la hay, y es una decisión comercial
+           suya, no una de esta página.
+
+           Lo que NO cambia: sigue sin poder haber un precio, un
+           porcentaje, ni una cantidad de citas prometida. Una garantía de
+           devolución es una condición comercial, no la promesa de un
+           resultado, y ésa es exactamente la línea por la que pasa.
+
+           Va acompañada del agente: sales-agent.ts la lleva ahora en los
+           hechos que SÍ puede confirmar, porque el visitante le pregunta
+           por ella treinta segundos después de leerla aquí y un "eso te lo
+           cuenta Dan" a estas alturas se lee como un cambiazo.
+
+           Y va deliberadamente junto a "esto no te encaja si te entran dos
+           o tres llamadas a la semana", que es la puerta de cualificación:
+           una garantía a un negocio sin llamadas entrando no la puede
+           cumplir nadie. Si esa línea se cae del encaje, esto hay que
+           volver a mirarlo. -->
+      <div class="garantia">
+        <p class="garantia-titulo" data-en="Thirty days, money back">Garantía de 30 días</p>
+        <p data-en="Thirty days. If it is not doing what I said it would, you get every euro back — no forms, and no awkward conversation about it.">Treinta días. Si no está haciendo lo que te dije que haría, te devuelvo hasta el último euro — sin formularios y sin una conversación incómoda.</p>
+      </div>
+
+      <!-- La otra inversión del riesgo, y la que no depende de que nadie
+           cumpla nada: antes de entrar en su línea, ya lo ha oído funcionar. -->
       <div class="aval">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.2"/>
@@ -1201,6 +1496,11 @@
           descripcion: 'Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario. Para fontaneros, reformas y negocios de Málaga.',
           ir: 'Hablar con la IA (se graba)',
           colgar: 'Colgar',
+          // {n} = llamadas perdidas al mes. El tercio se anuncia como
+          // suposición nuestra porque el agente lo anuncia igual en la
+          // llamada; una cuenta que esconde su propio supuesto es la que
+          // luego no aguanta que la discutan.
+          cuentaPie: 'Unas {n} llamadas perdidas al mes. Contamos sólo un tercio: está claro que no todas habrían reservado, y ese tercio es una suposición nuestra, no una cifra tuya. Al precio de lo más barato que haces. Esto es lo que se te escapa hoy, no lo que te devolvemos nosotros.',
           navegador: 'Abre esta página en Chrome o en Safari para poder hablar.',
           pidiendo: 'Pidiendo el micrófono...',
           conectando: 'Conectando...',
@@ -1216,6 +1516,7 @@
           descripcion: "It answers for you when you can't pick up, speaks English or Spanish, and puts the job straight in your calendar. For plumbers, builders and trades in Málaga.",
           ir: 'Talk to the AI (recorded)',
           colgar: 'Hang up',
+          cuentaPie: 'About {n} missed calls a month. We count only a third of them: obviously not all of them would have booked, and that third is our own assumption, not a figure from you. At the price of the cheapest thing you do. This is what gets past you today, not what we hand back.',
           navegador: 'Open this page in Chrome or Safari to be able to talk.',
           pidiendo: 'Asking for the microphone...',
           conectando: 'Connecting...',
@@ -1257,6 +1558,51 @@
         }, { threshold: 0.1 });
         document.querySelectorAll('.aparece').forEach(function (el) { obs.observe(el); });
       }
+
+      // --- LA CUENTA ----------------------------------------------------
+      // Exportada al objeto global sólo para que test-roi.js la pueda leer
+      // y comprobar; nada de la página la llama desde fuera de aquí.
+      //
+      // Un tercio, veinte días, y el precio MÁS BARATO. Los tres vienen de
+      // sales-agent.ts (PITCH_STATE), no de aquí, y no se tocan por
+      // separado: el visitante oye al agente hacer esta misma cuenta poco
+      // después de leerla.
+      var DIAS_LABORABLES = 20;
+      var PROPORCION_QUE_RESERVA = 1 / 3;
+
+      function loQueSeEscapa(perdidasAlDia, precioMasBarato) {
+        var perdidasAlMes = perdidasAlDia * DIAS_LABORABLES;
+        var habrianReservado = perdidasAlMes * PROPORCION_QUE_RESERVA;
+        // A la cincuentena: una cuenta con dos supuestos dentro no se
+        // presenta al euro, porque esa precisión es la parte que no es
+        // verdad. Redondear siempre hacia abajo mantiene la regla del
+        // agente de que una suposición sólo puede hacer el número MENOR.
+        var euros = Math.floor(habrianReservado * precioMasBarato / 50) * 50;
+        return { perdidasAlMes: perdidasAlMes, euros: euros };
+      }
+      window.loQueSeEscapa = loQueSeEscapa;
+
+      var cifra = document.getElementById('cifra');
+      var cifraPie = document.getElementById('cifra-pie');
+
+      function pintarCuenta() {
+        var lla = document.querySelector('input[name="llamadas"]:checked');
+        var pre = document.querySelector('input[name="precio"]:checked');
+        // Sin las dos no hay cuenta. No hay valores por defecto a propósito:
+        // un número ahí antes de que él diga nada sería una cifra que la
+        // página se ha inventado sobre su negocio.
+        if (!lla || !pre) return;
+
+        var r = loQueSeEscapa(Number(lla.value), Number(pre.value));
+        cifra.textContent = new Intl.NumberFormat(idioma === 'en' ? 'en-IE' : 'es-ES', {
+          style: 'currency', currency: 'EUR', maximumFractionDigits: 0
+        }).format(r.euros);
+        cifraPie.textContent = T[idioma].cuentaPie.replace('{n}', r.perdidasAlMes);
+      }
+
+      document.querySelectorAll('.calc-ops input').forEach(function (radio) {
+        radio.addEventListener('change', pintarCuenta);
+      });
 
       // --- PANEL DE LLAMADA ---------------------------------------------
       // Portado de Voice_agent/src/demo.ts, que ya lo tenía funcionando. El
@@ -1389,6 +1735,12 @@
         // invita a pulsarlo creyendo que aún no ha empezado, y lo que hace
         // es cortarla.
         if (viva) ir.textContent = T[nuevo].colgar;
+
+        // Mismo caso que el botón: el bucle acaba de devolver al pie de la
+        // cuenta su texto de "elige tus dos cifras", que es mentira si ya
+        // hay un número puesto encima. Repintar también cambia el formato
+        // de la moneda, que no es el mismo en los dos idiomas.
+        pintarCuenta();
 
         document.querySelectorAll('.idioma-btn').forEach(function (b) {
           b.setAttribute('aria-pressed', String(b.dataset.idioma === nuevo));

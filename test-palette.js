@@ -296,18 +296,42 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
     .replace(/<script[\s\S]*?<\/script>/g, '')
     .replace(/<!--[\s\S]*?-->/g, '');
 
+  // ⚠ The blanket euro and guarantee bans were narrowed on 2026-08-06, when
+  // Dan added the 30-day money-back guarantee and the missed-call sum. Read
+  // this before widening or deleting either — the original rule was not
+  // squeamishness, it was that the prospect hears sales-agent.ts thirty
+  // seconds after reading this page.
+  //
+  // What actually holds, and what the agent is actually bound by:
+  //   - It may not quote a price, a fee, or HOW THE PRICING WORKS. Not a
+  //     number, not a range, not a shape. "It depends on how many calls you
+  //     get" is a pricing MODEL and is banned exactly like a figure, because
+  //     an agent invented one out loud on call_03a1953f.
+  //   - It may not promise a result, a percentage, a number of bookings or a
+  //     timeline.
+  //   - A money-back guarantee is a commercial TERM, not a promised result,
+  //     which is the line that lets it exist here at all — and the agent now
+  //     carries it in the facts it may confirm.
+  //   - Arithmetic on figures the VISITOR supplied is not an invented figure.
+  //     It is the same sum the agent is instructed to do out loud.
+  // So: euros are permitted where the visitor's own numbers or the guarantee
+  // put them, and a price FOR THE SERVICE is still banned outright.
   const ES_BANS = [
-    [/€/,                       'a euro sign: the agent may not quote a price, so this page may not either'],
     [/%/,                       'a percentage: the agent may not promise or cite one'],
-    [/garantiz/i,               'a guarantee ("garantiz…")'],
-    // The body scanned here includes the data-en attributes, so the English
-    // half of the page is bound by every rule above without a second pass.
-    // These two only exist because the Spanish words above do not catch the
-    // English ones, and the English copy is where a price claim would now
-    // most easily slip in unnoticed.
-    [/guarantee/i,              'an English guarantee — the agent may not promise a result in either language'],
-    [/\bfree of charge\b|\bno cost\b/i, 'an English free-of-charge claim, which is a price claim'],
+    [/€\s*[\d.,]+\s*(al mes|\/\s*mes|mensual|a month|per month|monthly)/i,
+                                'a monthly price for the service — the agent may not quote one'],
+    [/[\d.,]+\s*€\s*(al mes|\/\s*mes|mensual|a month|per month|monthly)/i,
+                                'a monthly price for the service — the agent may not quote one'],
+    [/\b(desde|from)\s+€?\s*[\d]/i,
+                                'a "from €X" price for the service'],
+    [/\b(cuota mensual|setup fee|monthly fee|subscription fee|precio de alta)\b/i,
+                                'a named fee for the service'],
+    // The pricing MODEL ban, which is the one that is easy to break by
+    // accident because it reads like helpful honesty rather than a price.
+    [/\b(depende de cu[áa]ntas llamadas|depends on how many calls)\b[^.]*\b(cuesta|precio|cost|price|pay)\b/i,
+                                'a pricing model ("it depends on how many calls you get") — banned exactly like a figure'],
     [/gratis|sin coste/i,       'a free-of-charge claim, which is a price claim'],
+    [/\bfree of charge\b|\bno cost\b/i, 'an English free-of-charge claim, which is a price claim'],
     // The English page's vertical. Catching it here is the cheap way to notice
     // someone has translated the wrong page into this one.
     [/paciente|cl[íi]nica|tratamiento/i, 'clinic vocabulary on the trades page — es.html is fontaneros/reformas, /en/ is clinics'],
@@ -349,6 +373,62 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   const disparadores = (es.match(/class="[^"]*llamar/g) || []).length;
   if (disparadores < 3) fail.push(`[es] only ${disparadores} buttons open the call panel; expected at least 3 (nav, hero, cierre)`);
   if (!/lang="es"/.test(es)) fail.push('[es] the page does not declare lang="es"');
+
+  // ---- the guarantee, the sum, and the outcome ------------------------
+  // All three were added 2026-08-06 at Dan's request. Each carries a way to
+  // break quietly, so each gets a check.
+
+  // The guarantee is a commercial term the agent now confirms out loud. The
+  // page and the agent must say the SAME term: a page that grows a condition
+  // ("on annual plans") or a different window is a page the call contradicts.
+  for (const phrase of ['Garantía de 30 días', 'Thirty days, money back']) {
+    if (!body.includes(phrase)) fail.push(`[es] the guarantee no longer says "${phrase}"`);
+  }
+  if (!/te devuelvo hasta el último euro/i.test(body) || !/you get every euro back/i.test(body)) {
+    fail.push('[es] the guarantee no longer promises the money back in both languages');
+  }
+  // The qualification gate the guarantee leans on. sales-agent.ts: "a
+  // guarantee on a low-inbound business is a loaded gun — the machine has
+  // nothing to eat, so it cannot deliver and the client churns angry." The
+  // page offsets that by telling low-volume businesses this is not for them.
+  // Delete that line and the guarantee is uncovered, so this fails with it.
+  if (!/dos o tres llamadas a la semana/i.test(body) || !/two or three calls a week/i.test(body)) {
+    fail.push('[es] the "not for you if you get two or three calls a week" qualifier is gone — the 30-day guarantee depends on it (sales-agent.ts: a guarantee on a low-inbound business cannot be delivered)');
+  }
+
+  // The sum must stay the agent's sum. These three constants are the whole
+  // model and they are duplicated from sales-agent.ts PITCH_STATE by
+  // necessity — different repo, no shared module. test-roi.js checks the
+  // arithmetic; this checks nobody quietly made the number bigger.
+  if (!/var DIAS_LABORABLES = 20;/.test(es)) {
+    fail.push('[es] the working-month is no longer 20 days — the agent says 20 out loud');
+  }
+  if (!/var PROPORCION_QUE_RESERVA = 1 \/ 3;/.test(es)) {
+    fail.push('[es] the booking share is no longer a third — the agent announces a third as its own rough assumption');
+  }
+  // No preselected answer. A figure on screen before the visitor has said
+  // anything is the page inventing a number about their business, which is
+  // the one thing the agent may never do.
+  if (/<input[^>]*name="(llamadas|precio)"[^>]*\schecked/i.test(body)) {
+    fail.push('[es] a calculator option ships preselected — the sum must show nothing until the visitor gives both figures');
+  }
+  for (const need of ['name="llamadas"', 'name="precio"', 'id="cifra"']) {
+    if (!body.includes(need)) fail.push(`[es] the missed-call sum is missing ${need}`);
+  }
+  // The framing rule, which is the easiest of all of these to lose in an
+  // edit: what the sum shows is what is being MISSED, never what Prime AI
+  // hands back. sales-agent.ts bans the second reading outright.
+  if (!/no lo que te devolvemos/i.test(es) || !/not what we hand back/i.test(es)) {
+    fail.push('[es] the sum no longer says the figure is what is being missed rather than what Prime AI returns');
+  }
+  for (const claim of [
+    /te ahorras/i, /ahorrar[áa]s/i, /you will save/i, /you'll save/i,
+    /recuperamos/i, /we recover/i, /we will get you/i, /te devolvemos ese dinero/i,
+  ]) {
+    if (claim.test(body)) {
+      fail.push(`[es] the page claims Prime AI recovers or saves the money (${claim}) — provable is "this is what is walking past", not "we get you this"`);
+    }
+  }
 
   // ---- the ES/EN switch ----------------------------------------------
   // One page, two languages: Spanish in the markup, English in data-en. The

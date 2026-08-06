@@ -67,3 +67,79 @@ for (const u of unanswered) {
 console.log(`OK — ${calls.length * unanswered.length * jobvalues.length} combinations checked`);
 console.log(`  headline scenario: ${JSON.stringify(calculateLoss('150-300', 'goes to voicemail', '1500-5000'))}`);
 console.log(`  unknown input falls back to: ${JSON.stringify(fallback)}`);
+
+// ---------------------------------------------------------------------
+// es.html — the missed-call sum on the Spanish/English trades page.
+//
+// A different model from the one above on purpose, and NOT a simplification
+// of it. The trades page's visitor presses a button and is talking to
+// sales-agent.ts moments later, and that agent is instructed to do this exact
+// sum OUT LOUD from the prospect's own figures (PITCH_STATE):
+//
+//     missed calls a day × 20 working days, then roughly A THIRD of those,
+//     at the price of the CHEAPEST thing a customer books.
+//
+// So the page's job is to agree with the call, not to be a better estimator.
+// If these ever diverge, the prospect hears two different numbers built from
+// the same two answers, which is worse than showing no number at all.
+// ---------------------------------------------------------------------
+const esHtml = fs.readFileSync(__dirname + '/es.html', 'utf8');
+
+// Same new Function() reasoning as the top of this file, and the same limits:
+// the only thing interpolated is a slice of our own committed es.html, read by
+// a dev running this locally. Nothing here reads user input, and this file
+// never ships to a browser. Reimplementing the sum in the test instead would
+// make it pass while the real one is broken, which is the failure this exists
+// to catch.
+const esStart = esHtml.indexOf('function loQueSeEscapa');
+assert(esStart > 0, 'loQueSeEscapa not found in es.html — did the function get renamed?');
+const esEnd = esHtml.indexOf('\n      }', esStart) + '\n      }'.length;
+// The constants live outside the function, so they are pulled in with it.
+const loQueSeEscapa = new Function(
+  'var DIAS_LABORABLES = 20, PROPORCION_QUE_RESERVA = 1 / 3;' +
+  esHtml.slice(esStart, esEnd) + '; return loQueSeEscapa;'
+)();
+
+// The constants in the page must be the agent's, not the test's. Reading them
+// from the file rather than trusting the shim above is the point: otherwise
+// this passes while the page quietly uses 30 days and half.
+assert(/var DIAS_LABORABLES = 20;/.test(esHtml),
+  'es.html no longer uses a 20-day working month — the agent says 20 out loud');
+assert(/var PROPORCION_QUE_RESERVA = 1 \/ 3;/.test(esHtml),
+  'es.html no longer takes a third — the agent announces a third as its own rough guess');
+
+const esCalls = [...esHtml.matchAll(/name="llamadas" id="[^"]+" value="(\d+)"/g)].map(m => Number(m[1]));
+const esPrices = [...esHtml.matchAll(/name="precio" id="[^"]+" value="(\d+)"/g)].map(m => Number(m[1]));
+assert.strictEqual(esCalls.length, 4, 'expected 4 missed-call options on es.html');
+assert.strictEqual(esPrices.length, 4, 'expected 4 cheapest-job options on es.html');
+
+// The worked example the agent would give: 3 a day is 60 a month, a third of
+// those is 20, at the cheapest thing being EUR 150 is EUR 3,000.
+const worked = loQueSeEscapa(3, 150);
+assert.strictEqual(worked.perdidasAlMes, 60, 'a 3-a-day miss rate must come to 60 a month');
+assert.strictEqual(worked.euros, 3000, 'the worked example must agree with the agent: 60 -> a third -> x150');
+
+for (const c of esCalls) {
+  for (const p of esPrices) {
+    const r = loQueSeEscapa(c, p);
+    assert(Number.isFinite(r.euros), `NaN for ${c} calls at EUR ${p}`);
+    assert.strictEqual(r.perdidasAlMes, c * 20, `month is not 20 working days for ${c}`);
+    // Rounding may only ever shrink the number. The agent's rule is that a
+    // guess it is allowed to make may only make the figure SMALLER, never
+    // bigger, because the conservative version is the one that survives the
+    // prospect checking it.
+    assert(r.euros <= c * 20 * (1 / 3) * p,
+      `rounding inflated the figure for ${c} calls at EUR ${p} — it may only round down`);
+    assert.strictEqual(r.euros % 50, 0, `EUR ${r.euros} is not rounded to the nearest 50`);
+  }
+}
+
+// Every option must move the number, i.e. no option is inert.
+assert(new Set(esCalls.map(c => loQueSeEscapa(c, esPrices[0]).euros)).size === esCalls.length,
+  'two missed-call options produce the same figure — one of them does nothing');
+assert(new Set(esPrices.map(p => loQueSeEscapa(esCalls[3], p).euros)).size === esPrices.length,
+  'two cheapest-job options produce the same figure — one of them does nothing');
+
+console.log(`OK — es.html sum: ${esCalls.length * esPrices.length} combinations, agrees with sales-agent.ts`);
+console.log(`  worked example (3 a day, cheapest EUR 150): ${JSON.stringify(worked)}`);
+console.log(`  top of range (10 a day, cheapest EUR 900):  ${JSON.stringify(loQueSeEscapa(10, 900))}`);
