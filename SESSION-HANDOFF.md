@@ -1,88 +1,92 @@
-# Session Handoff — Spanish-default bilingual landing page, then money/guarantee/contrast pass
+# Session Handoff — Deployed the guarantee agent + page, then replaced the logo with a wordmark
 
 _Last updated: 2026-08-06_
 
 ## Where it started
-User asked for the landing page to default to Spanish with a toggle to English.
-Investigation found `es.html` (trades, Málaga) and `receptionist.html` (clinics,
-English) are explicitly **not** translations — the ES file's own header forbids
-treating them as such. User chose a true in-place toggle (one page, both
-languages) over linking the two pages. A second request followed: add a
-money-saved section, a 30-day money-back guarantee, a "more clients" outcome,
-and more colour contrast.
-
-The governing constraint throughout: a visitor presses "Talk to the AI" on this
-page and reaches `sales-agent.ts` ~30 seconds later, so the page may not claim
-what the call must then refuse to repeat.
+Picked up the previous handoff's "Pick up here": publish the voice agent with the
+money-back guarantee rule, then deploy `es.html` — in that order, so the page
+never promises 30 days money back while the agent still defers to Dan.
+Mid-session the user asked for logo suggestions ("looks very bad"), then asked a
+strategy question about per-niche landing pages. The governing constraint
+throughout: a visitor presses "Talk to the AI" and reaches `sales-agent.ts` ~30
+seconds later, so the page may not claim what the call must refuse to repeat.
 
 ## Decisions locked + what shipped
-- **Bilingual in place, Spanish in markup / English in `data-en`** —
-  `/home/ubuntu/Prime_AI/Landingpage/es.html`, commit `fb9947e`. The direction is
-  load-bearing: nginx sends the apex here, so Spanish must render with zero JS
-  executed. Switcher swaps via `innerHTML`, captures ES into `data-es` lazily on
-  first swap (safe only because the first swap is always ES→EN).
-- **nginx root needed no change** — `location = / { return 302 /es/; }` already
-  existed in `/etc/nginx/sites-available/prime-ai-demo.conf` from 2026-08-05.
-  Verified live. No nginx edit made, no reload.
-- **Deployed the bilingual page only** — `es.html` at `fb9947e` copied to
-  `/var/www/prime-ai/es/index.html`. Live and verified. Backup at
-  `/var/www/prime-ai-backups/es-index.html.bak-20260806-021026`. Backup was
-  deliberately moved out of the web root, where it was publicly fetchable.
-- **The sum mirrors the agent's arithmetic, not the EN page's** — missed
-  calls/day × 20 working days → a third of those → at the cheapest thing a
-  customer books. Taken from `sales-agent.ts` PITCH_STATE so the page and the
-  call cannot produce different figures from the same two answers. No option
-  ships preselected; rounding only ever goes down.
-- **Framing is "what's walking past you", never "what you save"** — the agent is
-  banned from implying Prime AI recovers that money. The guard fails on eight
-  phrasings of the banned version.
-- **Guarantee split from performance guarantee** — a money-back *term* is a fixed
-  commercial fact and is now confirmable by the agent; a *performance* guarantee
-  stays banned. Edit in
-  `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/sales-agent.ts`,
-  **uncommitted**.
-- **Three dark anchor bands + amber for money** — applied the approved
-  2026-08-05 spec, which had never been implemented on this page. Amber on ink
-  is the only surface where it clears AA at normal size (4.51:1 measured).
-- **Commits `8e01166` + `c9f7434` are NOT deployed.** Live `/es/` currently has
-  the bilingual toggle only.
+- **FAQ pricing wording fixed BEFORE either deploy** — `71f996d`. `¿Cuánto cuesta?`
+  opened "Depende de cuántas llamadas te entran", verbatim the example
+  `sales-agent.ts:942` bans as a pricing MODEL. Survivable while the ban lived in
+  the pitch state; publishing promoted it always-on, so the agent would be
+  hard-forbidden from repeating the page. Both languages now say "depende de lo
+  que necesites" — the one answer the agent may give.
+- **The guard's `⚠ KNOWN GAP` is closed, not narrowed** —
+  `/home/ubuntu/Prime_AI/Landingpage/test-palette.js`. The old rule required a
+  price word in the same sentence; the sentence that shipped the violation had
+  none, so it would have stayed green through the whole failure it was named
+  after. Both shapes now banned outright. Verified to fail on the old wording.
+- **Deployed in the locked order** — Retell PATCH (`agent_365110c5…`, in place,
+  same `agent_id`) → `pm2 restart prime-voice` → `es.html`. All ten prompt probes
+  verified at the Retell API, not assumed.
+- **Voice_agent work committed** — `772d0ba` in `/home/ubuntu/Prime_AI-voiceagent`.
+  The prior handoff recorded `prompt.ts` as unrelated pre-existing WIP; that was
+  wrong — same-day, cites `call_cdbb713e`, and `build.test.ts` spans both it and
+  the guarantee, so no split by file was possible.
+- **Logo: ring-and-dot deleted, wordmark only** — `ca2277c`. Five treatments
+  rendered in the real nav at real size; user picked B. `AI` steps back by weight
+  500 vs 700 (not colour), `letter-spacing: -0.02em` added to match `h1/h2/h3`,
+  favicon now a `P` on ink. `--logo-cyan` deleted from both pages — it was the one
+  colour explicitly exempted from the palette guard, so removing it made the guard
+  stricter for free (tokens 44→43, 39→38).
+- **The repo was BEHIND production on both pages** — `434f569`, `27b04ec`.
+  Deploying either file as it stood would have been a revert: `receptionist.html`
+  had **zero** of the two `cal.eu/prime.ai/intro-wa` booking anchors live `/en/`
+  carries, and `sales-agent.ts:880` tells the agent to close on "the button on the
+  page". Three hand-edits existed only on `/var/www` and had never reached git.
+- **The Spanish dialog anchor was fixed, not copied** — the deployed markup puts
+  `data-en` on the inner `<a>` and leaves `.panel-chica` bare, which fails the
+  repo's own guard. `traducir()` walks `[data-en]` and replaces `innerHTML`, so
+  swapping the `<p>` detaches that `<a>`; it worked only by accident of document
+  order. Deploying fixed what was live.
+- **Deploy gate replaced, not loosened** — line-counting flagged 2+2 false losses
+  (my own rewritten comment, an orphaned `}`). Replaced with a semantic gate:
+  every link and visible text run in live must exist in the repo. Returned 0/0 on
+  both pages.
+- **Per-niche landing pages: answered, nothing built.** `build.test.ts:1154`
+  (`── THE ONE PAGE ──`) records nine per-trade variants killed 2026-08-04 because
+  art. 50 disclosure and recording consent render per-page — a variant dropping
+  one "was not a cosmetic regression, it was an unlawful page."
 
 ## Key files for next session
 - `/home/ubuntu/Prime_AI/Landingpage/es.html` — the deliverable. Read its header
-  comment block first; it documents the bilingual rule, the
-  no-price/no-percentage/no-guarantee rule, and the `/voice/privacidad` gap.
-- `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/sales-agent.ts` — lines
-  ~933-965, "WHAT YOU MAY NEVER PROMISE". Contains the uncommitted guarantee
-  edit **and** pre-existing WIP that is not from this session.
-- `/home/ubuntu/Prime_AI/Landingpage/test-palette.js` — one guard for both pages.
-  Its ES block carries a documented `⚠ KNOWN GAP` about the pricing-model
-  contradiction below.
-- `/home/ubuntu/Prime_AI/Landingpage/test-roi.js` — now covers both the EN model
-  and the ES `loQueSeEscapa` sum, including that rounding may only shrink.
-- `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/build.test.ts` — new test
-  `the money-back guarantee is confirmable, the performance guarantee is not`.
-  Uncommitted. Verified to fail when the rule is removed.
-- `/etc/nginx/sites-available/prime-ai-demo.conf` — routing. Read the comments
-  before touching; they explain why both pages must stay on this host.
-- The previous handoff (paused warm-palette redesign of `receptionist.html`,
-  Tasks 3-6 never started) is in git history at the commit before this one. That
-  work is still paused and was untouched this session.
+  comment block first.
+- `/home/ubuntu/Prime_AI/Landingpage/receptionist.html` — `/en/`. Now carries both
+  booking anchors and the same wordmark.
+- `/home/ubuntu/Prime_AI/Landingpage/test-palette.js` — one guard for both pages;
+  the pricing-model gap is now closed.
+- `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/sales-agent.ts` —
+  `general_prompt` holds the always-on bans, the guarantee and the ordering rule.
+  Also the publish CLI (`import.meta.main`).
+- `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/build.test.ts` — line 1154
+  `── THE ONE PAGE ──` is the record of why per-niche pages were killed.
+- `/home/ubuntu/Prime_AI-voiceagent/SESSION-HANDOFF.md` — a **concurrent**
+  session's handoff (`34c1828`, 03:38). Read it before touching Voice_agent.
 - Plan file: none drove this session.
-- Memory files touched: none.
+- Memory files touched: none. Vault daily note updated at
+  `/home/ubuntu/TheVault/DailyNotes/2026-08-06.md`.
 
 ## Running state
 - Background processes: **PID 305506** —
   `python3 -m http.server 9876 --bind 0.0.0.0 --directory /home/ubuntu/Prime_AI/Landingpage`.
-  Kill with `kill 305506`. Not started this session; pre-existing and verified
-  serving 200. **It is publicly reachable** — port 9876 open, plain HTTP, no TLS.
+  Kill with `kill 305506`. Pre-existing, not started this session.
+  **It is publicly reachable** — port 9876 open, plain HTTP, no TLS.
 - Dev servers / ports: `http://127.0.0.1:9876/es.html`, also
-  `http://srv1233720.hstgr.cloud:9876/`.
-- Open worktrees / branches: `Landingpage` on **`warm-palette`**, 12 commits
-  ahead of master, **unpushed**. `Voice_agent` on **`voice-agent-build`** with 3
-  modified files uncommitted (`sales-agent.ts`, `build.test.ts`, `prompt.ts` —
-  only the first two were touched this session).
-- A Playwright MCP browser session is open at
-  `http://127.0.0.1:9876/es.html?lang=en`.
+  `http://srv1233720.hstgr.cloud:9876/`. PM2 `prime-voice` online on `:3023/voice`.
+- Open worktrees / branches: `Landingpage` on **`warm-palette`**, 30 commits ahead
+  of master, **unpushed**. `Prime_AI-voiceagent` on **`voice-agent-build`**, clean
+  tree.
+- A Playwright MCP browser session is open at `https://prime-ai.es/es/`.
+- **A concurrent Claude session was active in `Prime_AI-voiceagent` and on
+  `/var/www` this session** (commits `e4e6515`, `c4b3660`, `34c1828`). It has since
+  committed. Re-check live files before any deploy.
 
 ## Verification — how to confirm things still work
 - `cd /home/ubuntu/Prime_AI/Landingpage && node test-palette.js` — expect `OK`,
@@ -91,51 +95,45 @@ what the call must then refuse to repeat.
   `OK — es.html sum: 16 combinations, agrees with sales-agent.ts`.
 - `cd /home/ubuntu/Prime_AI-voiceagent/Voice_agent && bun test` — expect
   **140 pass, 0 fail**.
+- `curl -s https://prime-ai.es/es/ | grep -c 'cal.eu/prime.ai/intro-wa'` — expect
+  `2`. Same on `/en/`.
+- `curl -s https://prime-ai.es/es/ | grep -c '%3EP%3C'` — expect `1` (favicon
+  "P"). Same on `/en/`.
+- `curl -s https://prime-ai.es/es/ | grep -c 'Depende de cu'` — expect `0` (banned
+  pricing model gone).
 - `curl -sI https://prime-ai.es/ | grep -i location` — expect
   `https://prime-ai.es/es/`.
-- `curl -s https://prime-ai.es/es/ | grep -c data-idioma` — expect `2`, proving
-  the bilingual toggle is live.
-- `curl -s https://prime-ai.es/es/ | grep -c 'id="cifra"'` — expect `0`, proving
-  the sum and guarantee are **not** live.
-- `curl -s -o /dev/null -w "%{http_code}" https://prime-ai.es/en/` — expect
-  `200`; the clinic page was not touched.
-- Rollback for the live Spanish page:
-  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260806-021026 /var/www/prime-ai/es/index.html`
+- Retell guarantee still published: GET
+  `/get-agent/agent_365110c5e7174c245faa0aa30d` → `response_engine.llm_id` → GET
+  `/get-retell-llm/{id}`, expect `general_prompt` to contain
+  `The ONE guarantee you may confirm is the money-back one`.
+- Rollback:
+  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260806-032801 /var/www/prime-ai/es/index.html`
+  (and `en-index.html.bak-20260806-032801` → `/var/www/prime-ai/en/index.html`).
 
 ## Deferred + open questions
-- **Open: deploy order is a hard constraint.** Publish the agent *before* the
-  page. Deploying `8e01166` alone creates a window where the page promises 30
-  days money back and the agent still defers to Dan — the bait-and-switch the
-  guarantee exists to remove.
-- **Open: the FAQ states a banned pricing model.** The answer to
-  `¿Cuánto cuesta?` opens `Depende de cuántas llamadas te entran`, which is word
-  for word the example `sales-agent.ts:942` bans as a pricing model ("not a
-  number, not a range, not a shape"). Pre-existing, inherited by the English
-  translation. Copy change is Dan's call, so the guard deliberately does not
-  fail on it.
-- **Open: `Voice_agent` has mixed uncommitted work.** The guarantee edit sits in
-  the same two files as pre-existing WIP, so nothing was committed there rather
-  than sweeping someone else's work into a commit. Dan to separate.
-- **Open: the qualification-gate risk.** `sales-agent.ts` calls a guarantee on a
-  low-inbound business "a loaded gun: the machine has nothing to eat, so it
-  cannot deliver and the client churns angry". Mitigated on-page by "this is not
-  for you if you get two or three calls a week", and `test-palette.js` fails if
-  that line is ever removed — but offering it is a business decision Dan has now
-  confirmed twice.
-- Deferred: `/voice/privacidad` is Spanish-only. The English consent link is
-  labelled "(in Spanish)". The page lives in the Bun app, not this repo.
-- Deferred: the English consent wording has no counterpart in `demo.ts`, so the
-  two can drift. The Spanish is still copied verbatim from `demoPageHtml()`.
-- Deferred: SEO — English exists only in attributes, so crawlers will not index
-  it as English content. A real `/en-trades/` page is the fix if that traffic
+- **Open: the meta description still says "fontaneros, reformas" / "plumbers,
+  builders and trades".** This is the only place the page narrows to a niche —
+  visible body copy has zero trade words. User raised it, I offered the fix, no
+  answer given. 3 strings in `es.html`: the initial `<meta name="description">`
+  plus the two `descripcion:` values the language toggle swaps.
+- **Open: `warm-palette` is unpushed**, 30 commits ahead of master, and now
+  further diverged.
+- Deferred: `receptionist.html` warm-palette Tasks 3-6, paused from an earlier
+  session, untouched again.
+- Deferred: the phone twin (`PHONE — Prime AI Receptionist Demo`) was not
+  republished and still has the bans scoped to the pitch state.
+  `list-phone-numbers` is empty — attached to nothing, unreachable.
+- Deferred: SEO — English exists only in `data-en` attributes, so crawlers will
+  not index it as English. A real `/en-trades/` page is the fix if that traffic
   matters.
-- Deferred: `receptionist.html` warm-palette Tasks 3-6, still paused from the
-  prior session and untouched here.
-- Deferred: `warm-palette` is unpushed and has now diverged further from what is
-  deployed.
+- Deferred: `/voice/privacidad` is Spanish-only; the English consent link is
+  labelled "(in Spanish)". Lives in the Bun app, not this repo.
+- Deferred: per-niche landing pages — answered as "not yet, and generate from one
+  source if ever". Nothing built.
 
 ## Pick up here
-Publish the voice agent with the guarantee rule, then deploy `es.html` to
-`/var/www/prime-ai/es/index.html` — in that order — or resolve the
-`¿Cuánto cuesta?` pricing-model wording first if Dan wants that fixed before
-either goes out.
+Broaden the three meta-description strings in
+`/home/ubuntu/Prime_AI/Landingpage/es.html` so the page stops narrowing to
+plumbers in search results, then redeploy `/es/` — re-diffing against the live
+file first, because a concurrent session has been hand-editing `/var/www`.
