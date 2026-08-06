@@ -300,6 +300,13 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
     [/€/,                       'a euro sign: the agent may not quote a price, so this page may not either'],
     [/%/,                       'a percentage: the agent may not promise or cite one'],
     [/garantiz/i,               'a guarantee ("garantiz…")'],
+    // The body scanned here includes the data-en attributes, so the English
+    // half of the page is bound by every rule above without a second pass.
+    // These two only exist because the Spanish words above do not catch the
+    // English ones, and the English copy is where a price claim would now
+    // most easily slip in unnoticed.
+    [/guarantee/i,              'an English guarantee — the agent may not promise a result in either language'],
+    [/\bfree of charge\b|\bno cost\b/i, 'an English free-of-charge claim, which is a price claim'],
     [/gratis|sin coste/i,       'a free-of-charge claim, which is a price claim'],
     // The English page's vertical. Catching it here is the cheap way to notice
     // someone has translated the wrong page into this one.
@@ -342,6 +349,78 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   const disparadores = (es.match(/class="[^"]*llamar/g) || []).length;
   if (disparadores < 3) fail.push(`[es] only ${disparadores} buttons open the call panel; expected at least 3 (nav, hero, cierre)`);
   if (!/lang="es"/.test(es)) fail.push('[es] the page does not declare lang="es"');
+
+  // ---- the ES/EN switch ----------------------------------------------
+  // One page, two languages: Spanish in the markup, English in data-en. The
+  // direction is the rule being enforced here, not a detail. nginx sends the
+  // bare domain to this page, so Spanish has to be what renders with no
+  // JavaScript having run; if English were the markup, the default language
+  // would depend on a script, and the swap would capture English into
+  // data-es on first use and lose the Spanish permanently.
+  const enValues = [...body.matchAll(/data-en="([^"]*)"/g)].map(m => m[1]);
+
+  // Counting data-en attributes cannot catch the failure that actually
+  // happens — a NEW Spanish string added with no English — because the count
+  // simply does not move. So this checks the containers that carry copy: if
+  // an element has one of these classes, it is visible prose by definition
+  // and must have an English half. Adding a section without its data-en now
+  // fails here instead of shipping a Spanish paragraph inside an English page.
+  const TRANSLATABLE = [
+    'rotulo', 'respuesta-txt', 'llamar', 'marbete', 'titular',
+    'entrada', 'letra-chica', 'unidad', 'aviso', 'panel-chica',
+  ];
+  for (const cls of TRANSLATABLE) {
+    const tags = body.match(new RegExp(`<[^>]*class="[^"]*\\b${cls}\\b[^"]*"[^>]*>`, 'g')) || [];
+    if (!tags.length) fail.push(`[es] no .${cls} on the page — the translation check for it is now inert`);
+    for (const tag of tags) {
+      if (!tag.includes('data-en=')) {
+        fail.push(`[es] a .${cls} carries no data-en, so it stays Spanish when the page switches: ${tag.slice(0, 70)}`);
+      }
+    }
+  }
+  if (/\sdata-es="/.test(body)) {
+    fail.push('[es] a data-es is baked into the markup — Spanish belongs in the element itself; data-es is written at runtime and only after the first switch');
+  }
+  for (const [re, label] of [
+    [/data-idioma="es"/, 'the ES button'],
+    [/data-idioma="en"/, 'the EN button'],
+  ]) {
+    if (!re.test(body)) fail.push(`[es] the language switch is missing ${label}`);
+  }
+  if (enValues.some(v => v.trim() === '')) {
+    fail.push('[es] a data-en is empty — switching to English would blank that element');
+  }
+
+  // Spanish left inside an English string. Accents are useless as a signal
+  // (Málaga is in the English copy too), so this looks for punctuation and
+  // function words that no English sentence contains.
+  const SPANISH_IN_EN = /[¿¡ñ]|\b(que|para|los|las|con|una|tus|del)\b/i;
+  for (const v of enValues) {
+    if (SPANISH_IN_EN.test(v)) {
+      fail.push(`[es] untranslated Spanish inside a data-en: "${v.slice(0, 60)}…"`);
+    }
+  }
+
+  // The same four load-bearing ideas as ES_MUST, in the English half. A
+  // translation may be looser than the Spanish anywhere else; not here.
+  const EN_MUST = [
+    [/when you can't pick up/i,     'the English hero does not say it answers WHEN YOU CANNOT — the whole positioning'],
+    [/No new line, no new handset/i, 'the English "nothing changes on your side" promise is gone from the steps'],
+    [/the phone rings just the same|the phone rings anyway/i, 'the English copy no longer names the call the person on the phone could not get to'],
+    [/does not replace them/i,      'the English "it does not replace anyone" section is gone'],
+  ];
+  for (const [re, label] of EN_MUST) {
+    if (!re.test(body)) fail.push(`[es] ${label}`);
+  }
+
+  // Art. 50 + art. 13 again, in English. The press IS the consent, so an
+  // English visitor has to be told the same three things before pressing:
+  // that it is an AI, that the call is recorded, and who holds the recording.
+  for (const phrase of ['This is an AI, not a person', 'The call is recorded', 'Talk to the AI (recorded)']) {
+    if (!body.includes(phrase)) {
+      fail.push(`[es] the English disclosure no longer carries "${phrase}" — pressing the button is the consent in both languages`);
+    }
+  }
 }
 
 // ---- report ----------------------------------------------------------
