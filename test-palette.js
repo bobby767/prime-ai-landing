@@ -351,10 +351,71 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
     [/\bfree of charge\b|\bno cost\b/i, 'an English free-of-charge claim, which is a price claim'],
     // The English page's vertical. Catching it here is the cheap way to notice
     // someone has translated the wrong page into this one.
-    [/paciente|cl[íi]nica|tratamiento/i, 'clinic vocabulary on the trades page — es.html is fontaneros/reformas, /en/ is clinics'],
+    // The English page's vertical. Still banned, but the reason changed on
+    // 2026-08-06: es.html is no longer "the trades page", it sells to any
+    // Málaga business. /en/ is still clinics, so this is still the cheap way
+    // to notice someone has translated the wrong page into this one.
+    [/paciente|cl[íi]nica|tratamiento/i, 'clinic vocabulary on es.html — that is /en/\'s vertical, not this one'],
   ];
   for (const [re, label] of ES_BANS) {
     if (re.test(body)) fail.push(`[es] ${label} (matched ${re})`);
+  }
+
+  // ── NO OCCUPATION IS NAMED, ANYWHERE ─────────────────────────────────
+  // Added 2026-08-06, the same day the page stopped naming trades, because
+  // nothing was keeping it that way: reverting both halves of that change
+  // left this file green and exit 0.
+  //
+  // The page had named plumbers in three places, and they were found in two
+  // separate passes — which is why this bans the vocabulary outright instead
+  // of listing the strings that happened to ship:
+  //   meta description   "Para fontaneros, reformas y negocios de Málaga"
+  //   missed-calls list  "una avería" / "a leak"
+  //   emergency FAQ      "en tu oficio" / "in your trade"
+  //
+  // The first pass fixed the description and reported the body as clean. It
+  // was not; the grep behind that claim looked for trade NAMES (fontanero,
+  // plumber) and the page was narrowed by the trade's WORK. A ban listing
+  // only what shipped would repeat that mistake in a new vocabulary.
+  const OCCUPATION = [
+    [/fontaner[oa]s?/i,                  'fontaneros'],
+    [/\bplumb(er|ers|ing)\b/i,           'plumbers'],
+    [/albañil(es)?/i,                    'albañiles'],
+    [/\breformas\b/i,                    'reformas as a trade'],
+    [/\bbuilders\b/i,                    'builders'],
+    [/\btrades(man|men|people)?\b/i,     'trades'],
+    [/\ben tu oficio\b|\bin your trade\b/i, 'a trade named as the reader\'s own'],
+    [/\buna aver[íi]a\b/i,               '"una avería" — repair-trade framing, narrower than it looks'],
+    [/inside a leak/i,                   '"a leak" — the English that quietly narrowed this page to plumbers'],
+  ];
+
+  // CHECKED TWICE, ON PURPOSE. `body` starts at <body> and strips <script>,
+  // so it can see neither the <meta name="description"> in the head nor the
+  // T.es/T.en.descripcion strings the language switch swaps in. That blind
+  // spot is exactly how "the visible copy names no trade" was true while
+  // every search result still promised a plumber page. The descriptions get
+  // their own pass.
+  const descriptions = [
+    ...[...es.matchAll(/<meta name="description" content="([^"]*)"/g)].map((m) => m[1]),
+    ...[...es.matchAll(/descripcion:\s*(['"])([\s\S]*?)\1/g)].map((m) => m[2]),
+  ];
+  // Never let this check pass by finding nothing. If the markup is reshaped
+  // so the strings stop matching, that is a silent hole, not a green build —
+  // the same rule the --amber/--sand check above follows.
+  if (descriptions.length !== 3) {
+    fail.push(
+      `[es] expected 3 description strings (the static meta, T.es, T.en), found ${descriptions.length} — ` +
+        'the occupation check cannot confirm it covered them, so it is not reporting green',
+    );
+  }
+
+  for (const [re, label] of OCCUPATION) {
+    if (re.test(body)) {
+      fail.push(`[es] ${label} in the page copy — this page sells to "negocios de Málaga" and names no occupation (matched ${re})`);
+    }
+    if (re.test(descriptions.join('   '))) {
+      fail.push(`[es] ${label} in a meta description — the search snippet must not promise a page the visitor does not land on (matched ${re})`);
+    }
   }
 
   // Art. 50 + art. 13 rest on this page alone once a visitor presses the
