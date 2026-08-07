@@ -116,9 +116,18 @@ adjacent to the one being asked. This is the session's through-line:**
 - A Playwright MCP browser is open at `http://127.0.0.1:9876/es.html?lang=en`.
 - **36 untracked screenshots in the repo root** — my debris. Dan has been asked twice
   about delete vs `.gitignore`; no answer.
-- Live `/es/` = **`7a6654d`** (deployed 2026-08-07 06:27, verified byte-identical to the
-  commit; `943fb53` deployed 05:56 was the step before). Live `/en/` = unchanged, **still
-  shows the name**; `190c477` is committed and NOT deployed.
+- Live `/es/` = **`3b76d04`** (deployed 2026-08-07 19:56, verified byte-identical to the
+  commit). Deploy order today: `fac442e` → `44a0187` → `951aded` → `943fb53` → `7a6654d` →
+  `3b76d04`.
+- Live `/en/` = unchanged and **two commits behind**: it still shows the name in its call
+  panel AND still advertises `dan@primeai.agency`, a domain that does not exist. `190c477`
+  and `20a4ec0` are committed and NOT deployed. `/en/` has never been deployed by me — its
+  path and backup convention are unconfirmed.
+- **No page on prime-ai.es identifies the data controller any more.** After `3b76d04` the
+  name, address and email exist only on `/voice/privacidad`, served by the OTHER repo
+  (`Voice_agent/src/demo.ts`, PM2 `prime-voice`). Verified 2026-08-07: 200, all three
+  present. If that page is emptied or moved, art. 13 fails site-wide and every guard here
+  stays green — they cannot see across the repo boundary.
 
 ## Verification — how to confirm things still work
 - `cd /home/ubuntu/Prime_AI/Landingpage && node test-palette.js` — expect `OK`, exit 0,
@@ -150,11 +159,11 @@ adjacent to the one being asked. This is the session's through-line:**
   **≥1**. This is now the only controller disclosure in the call flow; if it reaches 0,
   art. 13 is unsatisfied and `test-palette.js` will still report green. Layered
   disclosure is a live dependency, not a one-off edit.
-- Rollback one step from live (`7a6654d`) to `943fb53`:
-  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260807-062713 /var/www/prime-ai/es/index.html`
-  — that file is **`943fb53`**, verified by diffing against git before use. Further back:
-  `-20260807-055651` is `951aded`, `-20260807-043924` is `44a0187`. Verify any backup by
-  diffing it against git before trusting its filename.
+- Rollback one step from live (`3b76d04`) to `7a6654d`:
+  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260807-195647 /var/www/prime-ai/es/index.html`
+  — that file is **`7a6654d`**, verified by diffing against git before use. Further back:
+  `-20260807-062713` is `943fb53`, `-20260807-055651` is `951aded`, `-20260807-043924` is
+  `44a0187`. Verify any backup by diffing it against git before trusting its filename.
 - **`grep` in this repo is a shell function wrapping ugrep with `-I`**, so it silently
   skips any file that `file` calls binary — exiting 1, which reads exactly like a real
   zero. `test-palette.js` was in that state until `0b298b7` because of one raw NUL byte.
