@@ -1974,6 +1974,7 @@
     <button class="cerrar" id="cerrar" aria-label="Cerrar">&times;</button>
     <h3 id="panel-titulo" data-en="Hear it answer">Escúchala contestar</h3>
     <p class="aviso" data-en="This is an AI, not a person — the same one that would answer your business's phone. The call is recorded, to improve it.">Es una IA, no una persona — la misma que contestaría el teléfono de tu negocio. La llamada se graba, para mejorarla.</p>
+    <p class="panel-chica" data-en="&lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with the recording and how to ask me to delete it (in Spanish)&lt;/a&gt;."><a href="/voice/privacidad">Qué hago con la grabación y cómo pedir que la borre</a>.</p>
     <button class="btn btn-primary" id="ir" data-en="Talk to the AI (recorded)">Hablar con la IA (se graba)</button>
     <p class="estado" id="estado" role="status" aria-live="polite"></p>
     <!-- El agente cierra apuntando a "el botón de la página" (Voice_agent/src/
@@ -1992,7 +1993,26 @@
          Así queda igual que el .panel-chica de abajo, que ya guardaba su
          marcado inglés completo y escapado en el atributo. -->
     <p class="panel-chica" data-en="&lt;a class=&quot;btn btn-outline&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Book a call with me&lt;/a&gt;"><a class="btn btn-outline" href="https://cal.eu/prime.ai/intro-wa">Reservar una llamada conmigo</a></p>
-    <p class="panel-chica" data-en="Responsible for the recording: &lt;strong&gt;Daniel Kooij (Prime AI)&lt;/strong&gt;, Fuengirola, Málaga — &lt;a href=&quot;mailto:oscarinfo@proton.me&quot;&gt;oscarinfo@proton.me&lt;/a&gt;. &lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with it and how to ask me to delete it (in Spanish)&lt;/a&gt;.">Responsable de la grabación: <strong>Daniel Kooij (Prime AI)</strong>, Fuengirola, Málaga — <a href="mailto:oscarinfo@proton.me">oscarinfo@proton.me</a>. <a href="/voice/privacidad">Qué hago con ella y cómo pedir que la borre</a>.</p>
+    <!-- Dan, 2026-08-07: aquí ya no va su nombre. Antes esta línea era
+         "Responsable de la grabación: Daniel Kooij (Prime AI), Fuengirola,
+         Málaga — oscarinfo@proton.me", y presentarse como responsable delante
+         de alguien que sólo quiere oír a la agente sobraba.
+
+         Lo que NO se ha hecho es quitar la identidad del responsable, que es
+         un requisito del art. 13 en el momento del consentimiento, y darle al
+         botón ES el consentimiento. Se ha bajado a la segunda capa:
+         /voice/privacidad lleva el nombre, la dirección y el correo
+         (comprobado en la página en vivo, no supuesto). Divulgación por capas,
+         que es práctica aceptada — pero SÓLO mientras esa página siga cargando
+         esos datos. Si /voice/privacidad se vacía o se cae, esto se queda sin
+         responsable en ninguna parte del flujo. El guardián comprueba que el
+         enlace exista y dónde está; no puede comprobar lo que hay al otro lado.
+
+         El enlace SUBIÓ por encima del botón en esta misma edición, y no es
+         cosmético. Con el nombre puesto aquí abajo daba igual dónde cayera el
+         enlace, porque la identidad ya estaba escrita arriba. Ahora el enlace
+         ES la identidad, y una ruta al responsable que aparece DESPUÉS de
+         pulsar no es una ruta: cuando se pulsa, ya se ha consentido. -->
   </dialog>
 
   <script>

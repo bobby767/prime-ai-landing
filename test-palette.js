@@ -448,8 +448,35 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   const irAt = body.indexOf('id="ir"');
   if (avisoAt === -1) fail.push('[es] no AI/recording disclosure in the call panel');
   else if (irAt === -1 || avisoAt > irAt) fail.push('[es] the disclosure sits below the start button: pressing it is the consent');
-  for (const phrase of ['Es una IA, no una persona', 'La llamada se graba', 'Daniel Kooij', '/voice/privacidad']) {
+  // 'Daniel Kooij' used to be in this list. Dan removed it from the panel on
+  // 2026-08-07: introducing himself as the data controller to someone who only
+  // wants to hear the agent was noise. The controller identity has NOT been
+  // dropped, it has moved to the second layer — /voice/privacidad carries the
+  // name, address and email, verified on the live page rather than assumed.
+  //
+  // So the requirement here changed shape rather than weakening: the link must
+  // exist AND must sit above the button, because the press is the consent and a
+  // route to the controller that appears afterwards is not a route at all. What
+  // this cannot check is what the linked page actually says. If
+  // /voice/privacidad is ever emptied or moved, art. 13 quietly stops being
+  // satisfied anywhere in the flow and this guard will still be green. That is
+  // the known blind spot of layered disclosure; it is a live dependency, not a
+  // one-off edit.
+  for (const phrase of ['Es una IA, no una persona', 'La llamada se graba', '/voice/privacidad']) {
     if (!body.includes(phrase)) fail.push(`[es] the disclosure no longer carries "${phrase}"`);
+  }
+  // Scoped to the <dialog> ON PURPOSE. The first /voice/privacidad in the
+  // document belongs to the FOOTER, which sits above the dialog in the source,
+  // so an unscoped indexOf compares the footer's link against the panel's
+  // button and passes no matter where the panel's own link is. That is exactly
+  // how this check was first written, and it reported green while the panel's
+  // link sat below the button.
+  const dialogAt = body.indexOf('<dialog');
+  const privacidadAt = dialogAt === -1 ? -1 : body.indexOf('/voice/privacidad', dialogAt);
+  if (privacidadAt === -1) {
+    fail.push('[es] the call panel has no route to the data controller — /voice/privacidad is the only place the name and address still live');
+  } else if (irAt !== -1 && privacidadAt > irAt) {
+    fail.push('[es] the route to the data controller (/voice/privacidad) sits below the start button — the press is the consent, so it has to be reachable before it');
   }
   if (!/Hablar con la IA \(se graba\)/.test(body)) {
     fail.push('[es] the start button label no longer says the call is recorded');
