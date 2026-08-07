@@ -37,7 +37,23 @@ function sharedChecks() {
   // hex in a trailing comment that sits after the semicolon, so a pattern ending
   // at the semicolon would never see it and every contrast check would report a
   // missing hex regardless of the palette being correct.
-  for (const m of (root ? root[1] : '').matchAll(/(--[\w-]+)\s*:\s*([^;]+);([^\n]*)/g)) {
+  //
+  // The value class excludes \n on purpose, and that is load-bearing. It used to
+  // be [^;]+, which crosses newlines — so prose inside a :root comment that
+  // happened to read "--clay:" would start a match there and run on to the NEXT
+  // semicolon, swallowing the following real declaration whole. The consequence
+  // was silent in the worst way: the named token got a garbage value, the token
+  // after it was never registered at all, and hexOf() then returned nothing for
+  // both, which the contrast loop treats as "exempt, skip" rather than as an
+  // error. The guard printed OK while checking strictly fewer pairs than it
+  // claimed. This is not hypothetical — it happened to --clay and --terra in
+  // es.html on 2026-08-07, and the only reason it surfaced was the token COUNT
+  // in the summary line not going up when a token was added.
+  //
+  // No real token value spans a newline in either page (verified against both
+  // before tightening this), so nothing legitimate is lost. Keep the count in
+  // the summary line: it is the only thing that makes this class of miss visible.
+  for (const m of (root ? root[1] : '').matchAll(/(--[\w-]+)\s*:\s*([^;\n]+);([^\n]*)/g)) {
     tok[m[1]] = { value: m[2].trim(), comment: (m[3] || '').trim() };
   }
 

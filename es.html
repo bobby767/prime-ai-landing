@@ -123,6 +123,28 @@
       --shell:     oklch(0.9593 0.0103 81.8);  /* #F5F1EA */
       --sand:      oklch(0.9241 0.0137 78.3);  /* #EBE5DC */
       --clay:      oklch(0.8792 0.0185 78.2);  /* #DED6CA */
+
+      /* El suelo del degradado del héroe, y la única ficha por debajo de
+         barro. Existe porque papel, concha, arena y barro viven todas entre
+         0.88 y 0.98 de luminosidad: una rampa de 10 puntos no da profundidad
+         visible por mucho que se reordene. Se midió — el lavado anterior movía
+         el fondo 37 niveles y Dan no lo veía; éste mueve 90.
+
+         Sobre la regla de "un tono usado una sola vez es un accidente", que
+         está escrita más abajo para el cian del logotipo — aquélla era un azul
+         FRÍO de marca sin trabajo en ninguna parte. Ésta continúa la rampa
+         cálida que ya existe hacia abajo y tiene un trabajo estructural. Si
+         aun así sobra, la alternativa probada es terminar el viñeteado en
+         barro — funciona y no necesita ficha nueva, pero se queda en 60
+         niveles en vez de 90.
+
+         NO escribir "--ficha" seguida de dos puntos dentro de un comentario
+         de :root. El lector de fichas corta en el primer punto y coma y no
+         se para en el salto de línea, así que se traga la declaración
+         siguiente entera: la ficha real queda pisada, la siguiente nunca se
+         registra, y sus comprobaciones de contraste se saltan en silencio
+         con el guardián en verde. Pasó aquí con este mismo comentario. */
+      --terra:     oklch(0.8100 0.0330 68.0);  /* #D0BDAB */
       --ink:       oklch(0.2351 0.0108 60.9);  /* #221D19 */
       --ink-deep:  oklch(0.1905 0.0089 59.1);  /* #171310 */
 
@@ -402,23 +424,36 @@
       padding: var(--space-10) var(--space-3) var(--space-8);
       position: relative;
       overflow: hidden;
-      background: linear-gradient(
-        166deg,
-        var(--shell) 0%,
-        var(--paper) 38%,
-        var(--paper) 55%,
-        var(--sand) 100%
-      );
+      /* Viñeteado, no lavado en diagonal: profundo en los BORDES y claro en
+         el centro, que es justo donde se apoya el texto. El orden importa y
+         es el arreglo de un error medido — ver el comentario de ::before. */
+      background:
+        radial-gradient(ellipse 78% 72% at 50% 44%,
+          var(--paper) 0%,
+          var(--paper) 42%,
+          var(--sand) 74%,
+          var(--terra) 100%),
+        linear-gradient(166deg, var(--shell) 0%, var(--sand) 100%);
     }
 
-    /* El lavado solo no se veía: papel, concha y arena viven entre 0.92 y
-       0.98 de luminosidad, así que un degradado entre los tres es casi
-       invisible. Esto es lo que da el calor de verdad — un halo de barro
-       (0.879, la ficha clara más profunda que hay) detrás del titular.
+    /* Este halo ACLARA. Antes oscurecía, y ése era el error.
 
-       Termina en papel, que es el fondo real, así que no hay borde ni
-       halo gris; el desenfoque se come lo que quede. Decorativo y
-       aria-hidden por construcción: es un ::before sin contenido. */
+       La versión anterior ponía barro — la ficha más profunda que había —
+       en el CENTRO, justo detrás del titular, y dejaba claros los bordes.
+       Daba calor y hundía el texto a la vez: medido sobre los píxeles ya
+       pintados, la letra chica quedaba en 4.48:1, por debajo del 4.5 de AA.
+       Nadie lo vio porque PAIRS compara fichas contra fichas, y un degradado
+       con un halo desenfocado encima produce colores compuestos que no son
+       ninguna ficha. El guardián no puede verlos; sólo el píxel pintado.
+
+       Invertido: la profundidad se va a los bordes (el fondo de .alto) y el
+       centro se aclara, así que el texto se apoya siempre en papel/concha.
+       El resultado no sólo deja de romper — mejora lo que ya había:
+       marbete 4.98 -> 5.70, entrada 5.00 -> 5.67, letra chica 4.48 -> 4.69.
+
+       Termina en transparent, no en papel: el fondo de abajo ya no es plano,
+       y rellenar con papel dibujaría un disco claro sobre el viñeteado.
+       Decorativo y aria-hidden por construcción: un ::before sin contenido. */
     .alto::before {
       content: '';
       position: absolute;
@@ -429,8 +464,8 @@
       max-width: 980px;
       max-height: 980px;
       transform: translate(-50%, -50%);
-      background: radial-gradient(circle, var(--clay) 0%, var(--sand) 42%, var(--paper) 72%);
-      opacity: 0.8;
+      background: radial-gradient(circle, var(--paper) 0%, var(--shell) 46%, transparent 74%);
+      opacity: 0.9;
       filter: blur(50px);
       pointer-events: none;
     }
