@@ -12,7 +12,8 @@ seconds later, so the page may not claim what the call must refuse to repeat.
 
 ## Decisions locked + what shipped
 
-Six commits, three of them deployed. **`fac442e` is committed and NOT deployed.**
+Six commits. **`fac442e` was deployed on 2026-08-07** (see "Deployed since" at the
+bottom); everything below is otherwise as written at handoff time.
 
 - **Meta description broadened — `81fa5b3`, DEPLOYED.** All three strings now end
   "Para negocios de Málaga" / "For businesses in Málaga", verbatim the marbete already
@@ -50,7 +51,7 @@ Six commits, three of them deployed. **`fac442e` is committed and NOT deployed.*
 - **`warm-palette` pushed.** Was 36 commits ahead of master with **no upstream at
   all** — this created `origin/warm-palette`, it did not update one. Verified by
   comparing local and remote SHAs, not by trusting the push output.
-- **Hero + half the stats bar — `fac442e`, COMMITTED, NOT DEPLOYED.** Dan: "the hero
+- **Hero + half the stats bar — `fac442e`, DEPLOYED 2026-08-07.** Dan: "the hero
   is completely white, give it some life."
   - `.alto` had no background and stood 92vh, so screen one was an empty sheet. Now a
     diagonal wash plus a blurred `--clay` halo, and 80vh so the sand band clears the
@@ -107,8 +108,9 @@ Six commits, three of them deployed. **`fac442e` is committed and NOT deployed.*
 - **12 untracked screenshots in the repo root** (`hero-*.png`, `prueba-*.png`,
   `cifras.png`, `anchor-check.png`) — my debris, not pushed. Dan was asked about
   deleting vs `.gitignore`; no answer.
-- Live `/es/` = `f8783a5`. Backups: `es-index.html.bak-20260806-034627`,
-  `-20260806-035748`, `-20260806-073111`.
+- Live `/es/` = `fac442e` (was `f8783a5`). Backups: `es-index.html.bak-20260806-034627`,
+  `-20260806-035748`, `-20260806-073111`, `-20260807-040307` (the last one is the
+  pre-`fac442e` state, i.e. `f8783a5` — roll back to that).
 
 ## Verification — how to confirm things still work
 - `cd /home/ubuntu/Prime_AI/Landingpage && node test-palette.js` — expect `OK`, exit 0,
@@ -121,14 +123,19 @@ Six commits, three of them deployed. **`fac442e` is committed and NOT deployed.*
   expect `1` and a `[es] fontaneros in a meta description` line. Restore with
   `cp /tmp/x.html es.html`.
 - `curl -s https://prime-ai.es/es/ | grep -c 'id="prueba"'` — expect `1`.
-- `curl -s https://prime-ai.es/es/ | grep -c 'id="cifras"'` — expect **`0`** until
-  `fac442e` is deployed.
+- `curl -s https://prime-ai.es/es/ | grep -c 'id="cifras"'` — expect `1` (was `0` before
+  `fac442e` shipped).
 - `curl -s https://prime-ai.es/es/ | grep -c 'cal.eu/prime.ai/intro-wa'` — expect `2`.
   Same on `/en/`.
 - `curl -sI https://prime-ai.es/ | grep -i location` — expect `https://prime-ai.es/es/`.
 - Occupation words absent from shipped copy:
   `curl -s https://prime-ai.es/es/ | perl -0777 -pe 's/<!--.*?-->//gs' | grep -ciE 'fontaner|plumbers|oficio|una avería|inside a leak'` — expect `0`.
-- Rollback: `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260806-073111 /var/www/prime-ai/es/index.html`
+- Rollback to `f8783a5` (drops hero + stats band, keeps the proof section):
+  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260807-040307 /var/www/prime-ai/es/index.html`
+  - Backups verified against git, because the filename does not say what is inside:
+    `-20260807-040307` = `f8783a5`, `-20260806-073111` = **`0256e4a`**. The previous
+    handoff named `073111` as the rollback target; that is one commit too far back and
+    would silently also drop the proof section.
 
 ## Deferred + open questions
 - **Open: may the 62% and 21x stat cards come to `/es/`?** `ES_BANS` forbids `%`
@@ -170,8 +177,40 @@ Six commits, three of them deployed. **`fac442e` is committed and NOT deployed.*
   state and is attached to no number; `/voice/privacidad` is Spanish-only; `/en-trades/`
   if English organic traffic matters.
 
+## Deployed since — 2026-08-07
+
+`fac442e` is live. The prior "Pick up here" is done; nothing about it is outstanding.
+
+- Pre-flight held: live `index.html` was byte-identical to `git show f8783a5:es.html`,
+  so no concurrent hand-edit. Working tree `es.html` was byte-identical to
+  `fac442e:es.html`. Both guards green (`13 contrast pairs, 8 ban rules` on both pages;
+  `64 combinations` + `es.html sum: 16`).
+- Backed up to `es-index.html.bak-20260807-040307`, installed, and confirmed the
+  deployed file is byte-identical to `fac442e:es.html`.
+- Live checks: `id="cifras"` 1, `id="prueba"` 1, cal link 2, root redirect to `/es/`,
+  occupation words 0, and **`%` in the live rendered body 0** — the `ES_BANS` rule the
+  stat cards were trimmed to satisfy holds against what is actually served, not just
+  against the file.
+- Verified in the browser, not only by curl: the hero carries the wash and halo and the
+  sand band clears the fold at 1440×900 and 390×844.
+- **Counter proven end to end, since it was the one piece with a live failure mode.**
+  At load the markup already reads `2 tonos` / `168 horas`, so scripts-off is correct
+  (this is the `/en/` `0 rings` bug not being ported). Sampling across a scroll shows
+  it reset to `0` only once the grid was really visible, count up, and land on 168 —
+  so the `threshold: 0.6` on `.cifras` is doing the job the shared 0.1 observer could
+  not.
+
 ## Pick up here
-Deploy `fac442e` (hero warmth + the two-card stats band) to `/es/` — re-diffing
-`/var/www/prime-ai/es/index.html` against `git show f8783a5:es.html` first to confirm no
-concurrent hand-edit, then backup, install, and verify `id="cifras"` returns 1 on the
-live URL.
+Nothing is queued. The open questions below are what is left, and the first three
+need Dan, not code:
+
+1. **Do the 62% and 21x cards come to `/es/`?** Needs a decision on narrowing `ES_BANS`.
+2. **The Spanish agent is still unverified** — `ES_AGENT_ID` may or may not carry the
+   money-back guarantee rule and the pricing bans. This is the one with real downside:
+   the page can only promise what the call will repeat.
+3. **How bold should the hero get?** It is warmer now; live screenshots are in the repo
+   root if that helps the call.
+4. Unblocked and doable without Dan: sweep `/en/` with the all-strings occupation check
+   (deferred twice, and the same class of miss was found twice on `es.html`), and fix
+   `es.html:85`, which still claims the page has no ROI calculator and no stats bar —
+   both halves are now false.
