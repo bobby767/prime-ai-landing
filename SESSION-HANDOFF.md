@@ -12,8 +12,8 @@ not claim what the call must refuse to repeat.
 
 ## Decisions locked + what shipped
 
-Nine commits. **Four deployed to `/es/` (`943fb53`, `7a6654d`, `3b76d04`) and one to `/en/`
-(`20a4ec0`); `8754ec3` is committed and NOT deployed.**
+Nine commits. **All deployed. `/es/` took `943fb53`, `7a6654d`, `3b76d04`, then `8754ec3`;
+`/en/` took `20a4ec0`, then `8754ec3`. Both pages now serve `8754ec3`.**
 
 - **`943fb53` deployed** — name off the `/es/` call panel, decided by Dan over batching.
 - **`190c477` + `20a4ec0` deployed to `/en/`** — name off the `/en/` panel, and its
@@ -30,7 +30,10 @@ Nine commits. **Four deployed to `/es/` (`943fb53`, `7a6654d`, `3b76d04`) and on
   (`951aded`): the footer is last in the document, so extra padding becomes scroll distance.
 - **`3b76d04` deployed** — name and city out of the `/es/` footer. "Prime AI" stayed
   (the business, not his name); the deletion route stayed.
-- **`8754ec3` NOT deployed** — both pages swapped to `support@prime-ai.es`.
+- **`8754ec3` deployed to both** — both pages swapped to `support@prime-ai.es`. Held one
+  session on the question the SMTP probe could not answer: `250 2.1.5 Ok` proves Proton
+  *accepts* the recipient, not that the mailbox is one Dan can open. Deployed only once he
+  confirmed reading a real message there.
 
 **Email infrastructure, which was the bulk of the session.** `dan@primeai.agency` was live
 on `/en/` at a domain returning **NXDOMAIN** — every mail to it had bounced for as long as
@@ -103,7 +106,10 @@ commits-ahead count I hand-wrote wrong.
 - **36 untracked screenshots in the repo root** — pre-existing debris. Dan has been asked
   three times about delete vs `.gitignore`; no answer. Mine this session went to the
   scratchpad instead of adding to it.
-- Live `/es/` = **`3b76d04`**. Live `/en/` = **`20a4ec0`**.
+- Live `/es/` = **`8754ec3`**. Live `/en/` = **`8754ec3`**. Both deployed 2026-08-07 21:14
+  UTC after Dan confirmed a real message to `support@prime-ai.es` reached a readable inbox.
+  Backups of the previous live state: `es-index.html.bak-20260807-211435` (verified equal to
+  `3b76d04`) and `en-index.html.bak-20260807-211435` (verified equal to `20a4ec0`).
 - `/en/` deploy path is `/var/www/prime-ai/en/index.html`; backups are
   `/var/www/prime-ai-backups/en-index.html.bak-<YYYYMMDD-HHMMSS>`. `/es/` is
   `/var/www/prime-ai/es/index.html` with `es-index.html.bak-<stamp>`.
@@ -129,8 +135,15 @@ commits-ahead count I hand-wrote wrong.
 - `curl -s https://prime-ai.es/voice/privacidad | grep -c 'Daniel Kooij'` — must be **>=1**.
   This is now the ONLY controller disclosure anywhere on the site.
 - `curl -s https://prime-ai.es/es/ | grep -c 'class="llamada"'` -> `1`;
-  `grep -o '<i></i>' | wc -l` -> `28`; `id="cifras"` -> `1`; `id="prueba"` -> `1`;
-  `cal.eu/prime.ai/intro-wa` -> `3` (raw occurrences, 2 rendered links).
+  `grep -o '<i></i>' | wc -l` -> `28`; `id="cifras"` -> `1`; `id="prueba"` -> `1`.
+- `curl -s https://prime-ai.es/es/ | grep -o 'cal.eu/prime.ai/intro-wa' | wc -l` -> `3`
+  (2 rendered links). **Must be `grep -o | wc -l`, not `grep -c`** — the previous handoff
+  paired "3 raw occurrences" with a `grep -c` that counts matching *lines* and returns `2`.
+  Two of the three share a line. Running it as written looks like a regression that isn't.
+- Both pages: `grep -o 'mailto:support@prime-ai.es' | wc -l` -> `2` each, and
+  `perl -0777 -pe 's/<!--.*?-->//gs' | grep -c 'oscarinfo@proton.me'` -> `0`. One raw
+  `oscarinfo` survives on each page inside the comment explaining its own removal — same
+  deliberate pattern as `primeai.agency`.
 - `curl -s https://prime-ai.es/es/ | perl -0777 -pe 's/<!--.*?-->//gs' | sed -n '/<body/,$p' | perl -0777 -pe 's/<script.*?<\/script>//gs' | grep -c '%'` -> `0`.
 - `node /tmp/claude-1000/-home-ubuntu-Prime-AI-Landingpage/44557b58-6029-4916-b7ef-995f223f6120/scratchpad/probe2.js`
   — expect `250 2.1.5 Ok` for `support@prime-ai.es` and `550 5.1.1` for the bogus control.
@@ -149,10 +162,9 @@ commits-ahead count I hand-wrote wrong.
   the wrapper.
 
 ## Deferred + open questions
-- **Open, blocking the deploy: has a real message to `support@prime-ai.es` landed in an
-  inbox Dan can read?** The SMTP probe proves Proton accepts the recipient; it cannot prove
-  the mailbox is one he can see. Asked at end of session, unanswered. `8754ec3` waits on it.
-- **Open: `/voice/privacidad` still gives `oscarinfo@proton.me`** as the controller contact,
+- **CLOSED: a real message to `support@prime-ai.es` reached a readable inbox.** Dan
+  confirmed 2026-08-07; `8754ec3` deployed on the strength of it.
+- **Open, now more urgent: `/voice/privacidad` still gives `oscarinfo@proton.me`** as the controller contact,
   so the art. 13 notice now names a different address than both pages point to. Other repo,
   needs a PM2 restart of `prime-voice`. Offered, unanswered.
 - **Open: DMARC `rua=mailto:dan@prime-ai.es`** — that address does not exist (proved 550),
@@ -184,7 +196,15 @@ commits-ahead count I hand-wrote wrong.
   organic traffic matters.
 
 ## Pick up here
-Confirm with Dan that a real message to `support@prime-ai.es` arrived in a readable inbox,
-then deploy `8754ec3` to both `/es/` and `/en/` using the established routine — diff live
-against the last deployed commit to rule out a hand-edit, back up and verify that backup
-against git, install, confirm the served bytes match the commit.
+The email deploy is done; nothing in this repo is committed-but-unshipped. The live pages
+now point at an address the art. 13 notice does not name, so the top item is the
+`/voice/privacidad` mismatch in `Prime_AI-voiceagent` — swap `oscarinfo@proton.me` for
+`support@prime-ai.es` in `src/demo.ts` (~line 565) and restart PM2 `prime-voice`. That is a
+different repo and a service restart, so confirm with Dan first. The one-line DNS fix
+(DMARC `rua=` still points at the non-existent `dan@prime-ai.es`) can go in the same pass.
+
+Still unanswered after three or more sessions each, and worth forcing a decision rather
+than re-asking in passing: pushing `warm-palette` (now 21+ commits ahead, never pushed),
+the 36 untracked screenshots, whether the 62%/21x cards may come to `/es/`, and the
+`ES_AGENT_ID` verification — that last one carries the highest downside, since the page can
+only safely promise what the call will actually repeat.
