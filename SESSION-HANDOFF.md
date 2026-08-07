@@ -108,9 +108,9 @@ bottom); everything below is otherwise as written at handoff time.
 - **12 untracked screenshots in the repo root** (`hero-*.png`, `prueba-*.png`,
   `cifras.png`, `anchor-check.png`) — my debris, not pushed. Dan was asked about
   deleting vs `.gitignore`; no answer.
-- Live `/es/` = `fac442e` (was `f8783a5`). Backups: `es-index.html.bak-20260806-034627`,
-  `-20260806-035748`, `-20260806-073111`, `-20260807-040307` (the last one is the
-  pre-`fac442e` state, i.e. `f8783a5` — roll back to that).
+- Live `/es/` = **`44a0187`**. Backups, each identified by diffing against git rather
+  than by its timestamp: `-20260807-042235` = `fac442e`, `-20260807-040307` = `f8783a5`,
+  `-20260806-073111` = `0256e4a`, plus `-20260806-034627` and `-20260806-035748`.
 
 ## Verification — how to confirm things still work
 - `cd /home/ubuntu/Prime_AI/Landingpage && node test-palette.js` — expect `OK`, exit 0,
@@ -130,7 +130,10 @@ bottom); everything below is otherwise as written at handoff time.
 - `curl -sI https://prime-ai.es/ | grep -i location` — expect `https://prime-ai.es/es/`.
 - Occupation words absent from shipped copy:
   `curl -s https://prime-ai.es/es/ | perl -0777 -pe 's/<!--.*?-->//gs' | grep -ciE 'fontaner|plumbers|oficio|una avería|inside a leak'` — expect `0`.
-- Rollback to `f8783a5` (drops hero + stats band, keeps the proof section):
+- Rollback one step, to `fac442e` (keeps stats band + proof, reverts only the hero
+  vignette — note this reinstates the 4.48:1 letra chica):
+  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260807-042235 /var/www/prime-ai/es/index.html`
+- Rollback further, to `f8783a5` (drops hero + stats band, keeps the proof section):
   `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260807-040307 /var/www/prime-ai/es/index.html`
   - Backups verified against git, because the filename does not say what is inside:
     `-20260807-040307` = `f8783a5`, `-20260806-073111` = **`0256e4a`**. The previous
@@ -200,17 +203,50 @@ bottom); everything below is otherwise as written at handoff time.
   so the `threshold: 0.6` on `.cifras` is doing the job the shared 0.1 observer could
   not.
 
-## Pick up here
-Nothing is queued. The open questions below are what is left, and the first three
-need Dan, not code:
+## Then `44a0187` — the hero again, because the first one was not visible
 
-1. **Do the 62% and 21x cards come to `/es/`?** Needs a decision on narrowing `ES_BANS`.
-2. **The Spanish agent is still unverified** — `ES_AGENT_ID` may or may not carry the
+Dan looked at deployed `fac442e` and said "looks exactly the same". He was right, and
+the deploy was fine — the served bytes matched `fac442e` exactly. The change was simply
+below the threshold of sight. Measured on background pixels with text excluded:
+`f8783a5` span **0.0** (a single flat colour), `fac442e` **37.4**, `44a0187` **90.3**.
+
+- **The first hero bought warmth by darkening the ground under the text.** It put
+  `--clay` — the deepest token available — in the CENTRE, behind the headline, and left
+  the edges light. `44a0187` inverts it: depth at the edges, centre lightens.
+- **That first version was a live AA failure.** `letra chica` measured **4.48:1** on
+  deployed `fac442e`. The inverted version improves every line instead of degrading it:
+  marbete 4.98→5.70, entrada 5.00→5.67, letra chica 4.48→**4.69**. Verified on rendered
+  pixels at 1440×900 and 390×844, then again on the live URL after deploy.
+- **`PAIRS` structurally cannot catch this.** It compares token against token; a
+  gradient with a blurred halo composited over it produces colours that are not any
+  token. Only the rendered pixel shows it. Worth knowing before trusting a green guard
+  on anything involving a gradient.
+- **New token `--terra` (`#D0BDAB`)**, the only one below clay. paper/shell/sand/clay
+  all sit within ten points of lightness, so no rearrangement of those four is visible.
+  Ending the vignette on clay also works and needs no new token, but reaches 60 not 90 —
+  recorded in the token's comment if the palette rule is ever enforced strictly.
+- **A guard bug, found by hitting it.** `test-palette.js`'s token pattern used `[^;]+`,
+  which crosses newlines, so prose in a `:root` comment reading `--clay:` started a match
+  and ran to the next semicolon, swallowing the declaration after it. `--clay` got a
+  garbage value, `--terra` was never registered, and because `hexOf` returned nothing for
+  both, the contrast loop treated them as exempt and **skipped them silently while
+  printing OK**. Now `[^;\n]+`. Proven with the same poisoned comment: old → `38 tokens,
+  OK`; new → `39 tokens, OK`.
+  - **The only symptom was the token count not going up.** That number in the summary
+    line is the sole thing that makes this class of miss visible — do not drop it.
+
+## Pick up here
+Nothing is queued. `/es/` is at `44a0187` and verified. What is left needs Dan:
+
+1. **The Spanish agent is still unverified** — `ES_AGENT_ID` may or may not carry the
    money-back guarantee rule and the pricing bans. This is the one with real downside:
    the page can only promise what the call will repeat.
-3. **How bold should the hero get?** It is warmer now; live screenshots are in the repo
-   root if that helps the call.
+2. **Do the 62% and 21x cards come to `/es/`?** Needs a decision on narrowing `ES_BANS`.
+3. **Is the hero bold enough now?** It is 2.4× the depth of what Dan called invisible,
+   and it is live — so this is now answerable by looking rather than by argument.
 4. Unblocked and doable without Dan: sweep `/en/` with the all-strings occupation check
-   (deferred twice, and the same class of miss was found twice on `es.html`), and fix
+   (deferred twice, and the same class of miss was found twice on `es.html`); fix
    `es.html:85`, which still claims the page has no ROI calculator and no stats bar —
-   both halves are now false.
+   both halves are now false; and **check whether `/en/`'s hero has the same composite
+   contrast problem**, since `PAIRS` is equally blind there and `receptionist.html` has
+   its own gradients.
