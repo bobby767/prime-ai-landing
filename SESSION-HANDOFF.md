@@ -110,7 +110,7 @@ adjacent to the one being asked. This is the session's through-line:**
   were started this session.
 - Dev servers / ports: `http://127.0.0.1:9876/es.html`. PM2 `prime-voice` on
   `:3023/voice`.
-- Open worktrees / branches: `Landingpage` on **`warm-palette`**, **8 commits ahead of
+- Open worktrees / branches: `Landingpage` on **`warm-palette`**, **12 commits ahead of
   `origin/warm-palette`** — not pushed this session. `Prime_AI-voiceagent` on
   `voice-agent-build`, untouched this session.
 - A Playwright MCP browser is open at `http://127.0.0.1:9876/es.html?lang=en`.
@@ -176,7 +176,7 @@ adjacent to the one being asked. This is the session's through-line:**
   may only promise what the call will repeat.
 - **Open: may the 62% and 21x stat cards come to `/es/`?** Needs a decision on narrowing
   `ES_BANS`, which forbids `%` outright. Asked across two sessions; unanswered.
-- **Open: push `warm-palette`?** 8 commits ahead of origin; never asked this session.
+- **Open: push `warm-palette`?** 12 commits ahead of origin; never asked in either session.
 - Deferred: `/en/` has never been swept with the all-strings occupation check, and its
   hero has never been checked for the composite-contrast blind spot — `PAIRS` is equally
   blind there and `receptionist.html` has its own gradients.
@@ -193,5 +193,6 @@ adjacent to the one being asked. This is the session's through-line:**
 Both blocking questions are answered and both edits are done. Next: decide whether to
 deploy `190c477` to `/en/`, and — before or with it — close the `/en/` controller gap,
 since that page now has no controller record of its own and points only at a Spanish-only
-privacy page. Then `warm-palette` is **10 commits ahead of origin** and has never been
-pushed; that has gone unasked for two sessions.
+privacy page. Then `warm-palette` is **12 commits ahead of origin** (re-check with
+`git rev-list --count origin/warm-palette..HEAD`) and has never been pushed; that has gone
+unasked for two sessions.
