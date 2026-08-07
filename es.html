@@ -376,17 +376,156 @@
     /* ============================================
        ALTO (hero)
        ============================================ */
+    /* La portada era papel liso, y a 92vh eso es una pantalla entera de
+       blanco antes de que empiece nada. Dan, 2026-08-07: "está
+       completamente blanca, dale algo de vida".
+
+       Lo que hay es un lavado diagonal entre tres tonos que ya existen —
+       concha arriba a la izquierda, papel por el medio, arena abajo a la
+       derecha. Nada de color nuevo: los tres son fichas del sistema y los
+       tres están medidos contra el texto en test-palette.js, así que la
+       portada se calienta sin abrir un caso de contraste nuevo.
+
+       Sin transparencias a propósito. Un degradado que termina en
+       "transparent" termina en negro transparente, y sobre un fondo cálido
+       eso se ve como un halo gris; entre fichas opacas no puede pasar. */
+    /* 92vh dejaba la portada ocupando la pantalla entera y la banda de
+       cifras justo por debajo del corte, así que lo primero que se veía era
+       una pantalla de blanco y nada más. A 80vh asoman los números, que es
+       el único color de esa zona, y además se ve que la página sigue. */
     .alto {
-      min-height: 92vh;
+      min-height: 80vh;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: var(--space-10) var(--space-3) var(--space-8);
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(
+        166deg,
+        var(--shell) 0%,
+        var(--paper) 38%,
+        var(--paper) 55%,
+        var(--sand) 100%
+      );
+    }
+
+    /* El lavado solo no se veía: papel, concha y arena viven entre 0.92 y
+       0.98 de luminosidad, así que un degradado entre los tres es casi
+       invisible. Esto es lo que da el calor de verdad — un halo de barro
+       (0.879, la ficha clara más profunda que hay) detrás del titular.
+
+       Termina en papel, que es el fondo real, así que no hay borde ni
+       halo gris; el desenfoque se come lo que quede. Decorativo y
+       aria-hidden por construcción: es un ::before sin contenido. */
+    .alto::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 42%;
+      width: 78vw;
+      height: 78vw;
+      max-width: 980px;
+      max-height: 980px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, var(--clay) 0%, var(--sand) 42%, var(--paper) 72%);
+      opacity: 0.8;
+      filter: blur(50px);
+      pointer-events: none;
     }
 
     .alto-dentro {
       max-width: 820px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Entrada escalonada: lo único que se mueve al cargar, y por eso es lo
+       que se nota. CSS puro, sin JavaScript — termina visible, así que el
+       visitante que llega con los scripts caídos ve la portada entera
+       igual. "backwards" mantiene el elemento oculto durante su espera; sin
+       él aparecería y volvería a saltar. */
+    .alto-dentro > * {
+      animation: subir 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    .alto-dentro > *:nth-child(1) { animation-delay: 0.05s; }
+    .alto-dentro > *:nth-child(2) { animation-delay: 0.14s; }
+    .alto-dentro > *:nth-child(3) { animation-delay: 0.23s; }
+    .alto-dentro > *:nth-child(4) { animation-delay: 0.32s; }
+    .alto-dentro > *:nth-child(5) { animation-delay: 0.41s; }
+
+    @keyframes subir {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* El bloque global de reduced-motion de abajo acorta la DURACIÓN pero no
+       la espera, y una espera sin animación es un elemento que aparece tarde
+       de golpe: peor que no animar. */
+    @media (prefers-reduced-motion: reduce) {
+      .alto-dentro > * { animation-delay: 0s !important; }
+    }
+
+    /* ============================================
+       CIFRAS
+       La barra de /en/ (#stats), con la mitad fuera.
+
+       /en/ lleva cuatro tarjetas y dos son estadísticas publicadas: 62% con
+       su fuente y 21x con la suya. Aquí no pueden estar: ES_BANS de
+       test-palette.js prohíbe el carácter "%" en esta página entera, y esa
+       decisión es de Dan, no mía.
+
+       Las otras dos sí, y son justo las que /en/ ya había reescrito por este
+       mismo motivo — el comentario de receptionist.html:1719 cuenta que esa
+       tarjeta tuvo antes un sueldo y luego 13.125 €/mes, y que las dos
+       versiones estaban mal porque una cifra en una tarjeta se lee como un
+       hecho y el agente no puede repetirla treinta segundos después. Lo que
+       quedó es un hecho del producto, comprobable apretando el botón de
+       arriba. Eso viaja a esta página sin discusión.
+
+       Va sobre arena: papel arriba, arena aquí, tinta en "las llamadas que
+       hoy se pierden" justo debajo. Dos bandas oscuras seguidas se leerían
+       como una sola, que es lo que ya advierte el comentario de .banda-oscura.
+       El número va en azul y no en ámbar: ámbar sobre arena da 2.95:1 y no
+       vale ni para texto grande — el guard lo comprueba a propósito. */
+    .cifras {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: var(--space-4);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .cifra {
+      text-align: center;
+      padding: var(--space-3) var(--space-2);
+    }
+
+    /* tabular-nums para que el número no cambie de ancho mientras sube y
+       arrastre la línea de debajo con él. */
+    .cifra-num {
+      font-family: var(--font-heading);
+      font-size: var(--font-2xl);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      margin-bottom: var(--space-1);
+    }
+
+    .cifra-que {
+      color: var(--text-primary);
+      font-size: var(--font-base);
+      line-height: 1.5;
+    }
+
+    .cifra-fuente {
+      margin-top: var(--space-2);
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
     }
 
     .marbete {
@@ -1210,6 +1349,37 @@
   </section>
 
   <!-- ============================================
+       CIFRAS
+       Las dos tarjetas de /en/ que son hechos del producto y no
+       estadísticas. Las otras dos (62% y 21x) se quedan allí: ES_BANS
+       prohíbe el "%" en esta página, y eso lo decide Dan.
+
+       ⚠ El número va ENTERO en el marcado, no en cero como en /en/.
+       receptionist.html pone <div data-target="2">0 rings</div>, así que
+       quien llegue sin JavaScript lee "0 rings and someone has picked up",
+       que es la frase contraria a la que se quería. Aquí el marcado ya dice
+       la verdad y el contador sólo la anima desde cero. Misma regla que el
+       español del resto de la página: sin scripts tiene que seguir siendo
+       correcta, no sólo verse.
+       ============================================ -->
+  <section class="banda banda-arena aparece" id="cifras">
+    <div class="container">
+      <div class="cifras">
+        <div class="cifra">
+          <div class="cifra-num" data-en="2 rings">2 tonos</div>
+          <div class="cifra-que" data-en="and someone has picked up — day, night, or Sunday">y alguien ha cogido el teléfono — de día, de noche o en domingo</div>
+          <div class="cifra-fuente" data-en="Not a statistic. Press the button above and count them.">No es una estadística. Dale al botón de arriba y cuéntalos.</div>
+        </div>
+        <div class="cifra">
+          <div class="cifra-num" data-en="168 hrs">168 horas</div>
+          <div class="cifra-que" data-en="a week with your phone answered — evenings, Sundays and your lunch break">a la semana con el teléfono cogido — tardes, domingos y la hora de comer</div>
+          <div class="cifra-fuente" data-en="Not a statistic. Just a calendar.">No es una estadística. Es el calendario.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
        LAS LLAMADAS QUE HOY SE PIERDEN
        Los tres momentos de la página /voice, más los dos que Dan nombró:
        la que suena mientras hablas con otro cliente, y la que se pierde
@@ -1717,6 +1887,31 @@
         });
       });
 
+      // --- LAS CIFRAS SUBEN AL VERLAS -----------------------------------
+      // Reescribe SÓLO los dígitos de cabeza, y por eso no sabe de idiomas:
+      // "2 tonos" y "2 rings" empiezan los dos por el número, así que si
+      // alguien cambia de idioma a media cuenta el sufijo que quede es el
+      // suyo y la animación sigue igual.
+      //
+      // El valor final sale del propio marcado, no de un data-target. Es
+      // la misma decisión que allí arriba: la página tiene que ser correcta
+      // sin scripts, así que no animar es ya el resultado bueno y esto sólo
+      // le añade el movimiento.
+      var subirCifra = function (el) {
+        var fin = parseInt((el.textContent.match(/^\d+/) || ['0'])[0], 10);
+        if (!fin) return;
+        var t0 = null;
+        var paso = function (t) {
+          if (t0 === null) t0 = t;
+          var p = Math.min((t - t0) / 900, 1);
+          // easeOutCubic: arranca rápido y frena, que es como se lee un contador
+          var v = Math.round(fin * (1 - Math.pow(1 - p, 3)));
+          el.textContent = el.textContent.replace(/^\d+/, v);
+          if (p < 1) requestAnimationFrame(paso);
+        };
+        requestAnimationFrame(paso);
+      };
+
       // --- APARICIÓN AL BAJAR ---
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduce) {
@@ -1728,6 +1923,25 @@
           });
         }, { threshold: 0.1 });
         document.querySelectorAll('.aparece').forEach(function (el) { obs.observe(el); });
+
+        // Observador aparte para el contador, y no por gusto: con la portada
+        // a 80vh el borde de la banda ya asoma al cargar — un 28% de ella —
+        // así que el observador de arriba, a 0.1, dispara sola al entrar en
+        // la página. Colgar de él la cuenta la gastaba entera mientras el
+        // visitante seguía mirando el titular, con los números todavía por
+        // debajo del corte. A 0.6 sobre la rejilla, y no sobre la sección,
+        // el disparo ocurre cuando las cifras se ven de verdad.
+        var rejilla = document.querySelector('.cifras');
+        if (rejilla) {
+          var obsCifras = new IntersectionObserver(function (entradas) {
+            entradas.forEach(function (e) {
+              if (!e.isIntersecting) return;
+              obsCifras.unobserve(e.target);
+              e.target.querySelectorAll('.cifra-num').forEach(subirCifra);
+            });
+          }, { threshold: 0.6 });
+          obsCifras.observe(rejilla);
+        }
       }
 
       // --- LA CUENTA ----------------------------------------------------

@@ -93,6 +93,13 @@ function sharedChecks() {
     ['--text-on-ink',    '--ink',      4.5],
     ['--amber',          '--ink',      4.5],
     ['--amber',          '--paper',    3.0],  // large text only
+    // The stat numbers in #cifras on es.html. Large display type, so 3.0 is
+    // the bar it has to clear, and it sits at 4.13. Amber is what normally
+    // carries a figure on this page, but amber on sand is 2.95 and fails even
+    // for large text — the constraint asserted just below. Blue is what is
+    // left that reads on a warm mid-tone, which is why the numbers are blue
+    // and not the usual amber.
+    ['--accent',         '--sand',     3.0],  // large text only (#cifras)
   ];
 
   for (const [fg, bg, min] of PAIRS) {
