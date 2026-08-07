@@ -661,6 +661,52 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   }
 }
 
+// ---- deliverable email addresses -------------------------------------
+// Every address on these pages is a contact route someone is invited to use to
+// exercise a right: art. 13 identifies the controller by it, and both call
+// panels offer email as the way to opt out of being recorded. An address that
+// does not receive is therefore worse than an ugly one that does — the request
+// is not refused, it is silently lost, and the sender believes it arrived.
+//
+// This is not hypothetical. dan@primeai.agency sat in the /en/ footer, in both
+// the href and the label, until 2026-08-07. primeai.agency returns NXDOMAIN —
+// the domain is not registered — so every one of those mails bounced for as
+// long as the page has been up, and nothing here noticed.
+//
+// So: an allowlist, deliberately awkward to extend. Do NOT add an address here
+// because it looks right or because the domain is yours. Add it only after a
+// real message has been delivered to it and read. Checked 2026-08-07:
+//   oscarinfo@proton.me   delivers (Proton).
+//   dan@prime-ai.es       does NOT. The domain resolves and serves this site,
+//                         but it publishes no MX record, and the VPS Postfix
+//                         (srv1233720.hstgr.cloud) answers "454 Relay access
+//                         denied" for it. It is the address Dan wants; it goes
+//                         in this list the day Proton custom-domain is live and
+//                         a test mail has actually arrived, and not before.
+// john@example.com is exempt: it is the placeholder attribute on a form input,
+// never presented as a way to reach anyone.
+const MAIL_OK = ['oscarinfo@proton.me'];
+for (const [page, html] of Object.entries(PAGES)) {
+  const body = html.replace(/<!--[\s\S]*?-->/g, '');
+  const found = new Set();
+  // Both the mailto: target and any address printed as visible text — the dead
+  // one was in both places, and fixing only the href would leave the page
+  // telling people to write to an address that does not exist.
+  // The & is in the exclusion class because es.html stores an escaped copy of
+  // this markup in a data-en attribute, where the closing quote is &quot; — so
+  // a class that allows & swallows the entity and reports a nonsense address.
+  for (const m of body.matchAll(/mailto:([^"'?>\s&]+)/g)) found.add(m[1]);
+  for (const m of body.matchAll(/[\w.%+-]+@[\w.-]+\.[a-z]{2,}/gi)) {
+    if (!/placeholder="[^"]*$/.test(body.slice(Math.max(0, m.index - 200), m.index))) found.add(m[0]);
+  }
+  for (const addr of found) {
+    if (addr === 'john@example.com') continue;
+    if (!MAIL_OK.includes(addr)) {
+      fail.push(`[${page}] ${addr} is not on the delivering-address allowlist. Either it does not receive mail, or it was never verified. Send a real message to it and read it before adding it to MAIL_OK — this page offers it as the route to opt out of a recording and to reach the data controller.`);
+    }
+  }
+}
+
 // ---- report ----------------------------------------------------------
 if (fail.length) { console.error('FAIL\n' + fail.map(f => '  - ' + f).join('\n')); process.exit(1); }
 const summary = Object.entries(seen)
