@@ -208,12 +208,42 @@ for (const need of ['id="callDialog"', 'id="callStart"', "'/voice/token'"]) {
 // speak the notice (Voice_agent/src/demo.ts:246) and the press IS the consent,
 // so the AI fact, the recording fact and the controller must be in the panel,
 // and the recording fact must sit ABOVE the button that starts the call.
-const noticeAt = src.indexOf('class="call-notice"');
-const startAt = src.indexOf('id="callStart"');
+// Comment-stripped ON PURPOSE, and all three of the checks below are defeated
+// without it. receptionist.html mentions /voice/privacidad in a comment at
+// line 29 — about 2,160 lines ABOVE the panel — so an unscoped search finds
+// that one and reports the route present no matter what the panel contains.
+// It writes <dialog> in a comment at line 1365, so scoping from the first
+// match spans ~800 lines and swallows everything between. And the comment now
+// sitting in the panel QUOTES the controller line it replaced, so a check for
+// the literal name passes on the explanation of its own removal. The ES side
+// hit the first two of these for real; this is the same body-building step it
+// uses (test-palette.js:316).
+const enBody = src.replace(/<!--[\s\S]*?-->/g, '');
+const noticeAt = enBody.indexOf('class="call-notice"');
+const startAt = enBody.indexOf('id="callStart"');
 if (noticeAt === -1) fail.push('no AI/recording disclosure in the call panel');
 else if (startAt === -1 || noticeAt > startAt) fail.push('the disclosure sits below the start button: the press is the consent');
-for (const phrase of ['not a person', 'recorded', 'Daniel Kooij']) {
-  if (!src.includes(phrase)) fail.push(`disclosure no longer says "${phrase}"`);
+for (const phrase of ['not a person', 'recorded']) {
+  if (!enBody.includes(phrase)) fail.push(`disclosure no longer says "${phrase}"`);
+}
+// 'Daniel Kooij' used to be in that list. Dan removed it from this panel on
+// 2026-08-07, matching the /es/ change in 943fb53. The requirement changed
+// shape rather than weakening: the route to the controller must EXIST in the
+// panel and must sit ABOVE the button, because the press is the consent and a
+// route that only appears after it is not a route.
+//
+// What this cannot check is what /voice/privacidad actually serves. If that
+// page is emptied or moved, art. 13 stops being satisfied anywhere in the flow
+// and this guard stays green. On /en/ that blind spot is WIDER than on /es/:
+// /es/ still carries the full controller line in its page footer, and this
+// page has no footer copy at all, so /voice/privacidad is the single point of
+// failure — and it is Spanish-only.
+const enDialogAt = enBody.indexOf('<dialog');
+const enPrivacyAt = enDialogAt === -1 ? -1 : enBody.indexOf('/voice/privacidad', enDialogAt);
+if (enPrivacyAt === -1) {
+  fail.push('the call panel has no route to the data controller — /voice/privacidad is the only place the name and address still live');
+} else if (startAt !== -1 && enPrivacyAt > startAt) {
+  fail.push('the route to the data controller (/voice/privacidad) sits below the start button — the press is the consent, so it has to be reachable before it');
 }
 if (!/Talk to the AI \(recorded\)/.test(src)) fail.push('the start button label no longer carries the recording fact');
 

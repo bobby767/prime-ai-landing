@@ -2190,6 +2190,7 @@
     <button class="call-close" id="callClose" aria-label="Close">&times;</button>
     <h3 id="callTitle">Hear it answer</h3>
     <p class="call-notice">It's an AI, not a person — the same one that would answer your business's phone. The call is recorded, so we can make it better.</p>
+    <p class="call-fine"><a href="/voice/privacidad">What happens to the recording and how to have it deleted (in Spanish)</a>.</p>
     <button class="btn btn-primary call-start" id="callStart">Talk to the AI (recorded)</button>
     <p class="call-status" id="callStatus" role="status" aria-live="polite"></p>
     <!-- The agent is prompted (Voice_agent/src/sales-agent.ts, WEB_CLOSE) to close by
@@ -2197,11 +2198,35 @@
          in the page behind it is not on the page as far as the caller is concerned.
          This anchor is what makes that instruction true on /en/. Same href as /es/. -->
     <p class="call-fine"><a class="btn btn-secondary" href="https://cal.eu/prime.ai/intro-wa">Book a call with me</a></p>
-    <!-- Identity and deletion rights, art. 13. Copied verbatim from the
-         /voice footer so there is one controller record, not two. The
-         privacy page it links to is Spanish-only — that is a real gap
-         for an English visitor, and the only notice that exists. -->
-    <p class="call-fine">Recording held by <strong>Daniel Kooij (Prime AI)</strong>, Fuengirola, Málaga — <a href="mailto:oscarinfo@proton.me">oscarinfo@proton.me</a>. <a href="/voice/privacidad">What happens to it and how to have it deleted</a>. Rather not be recorded? Email instead and we'll talk anyway.</p>
+    <!-- Dan, 2026-08-07: the controller's name is no longer written here.
+         This line used to read "Recording held by Daniel Kooij (Prime AI),
+         Fuengirola, Málaga — oscarinfo@proton.me"; introducing himself as
+         the data controller to someone who only wants to hear the agent was
+         noise. Same edit as the /es/ panel (943fb53), same reasoning.
+
+         The identity has NOT been dropped — art. 13 needs it AT the moment of
+         consent, and pressing the button IS the consent. It moved to the
+         second layer: /voice/privacidad carries the name, address and email.
+         That is layered disclosure, which is accepted practice, but ONLY for
+         as long as that page keeps serving those fields. The guard below
+         checks that the route exists and where it sits; it cannot check what
+         is on the other end.
+
+         The link MOVED ABOVE the button in this edit, and that is not
+         cosmetic. While the name was written down here its position did not
+         matter, because the identity was already on the page. Now the link IS
+         the identity, and a route to the controller that only appears AFTER
+         the press is not a route: by then consent has been given.
+
+         ⚠ /en/ IS WEAKER THAN /es/ HERE, and knowingly so. /es/ keeps the full
+         controller line in its page footer, so removing it from the panel left
+         a second copy on the same page. This page has no such footer — grep it,
+         there is now no controller record anywhere in receptionist.html. So an
+         English visitor's only route is /voice/privacidad, which is
+         Spanish-only. That gap predates this edit but this edit makes it
+         load-bearing. Flagged to Dan 2026-08-07; the fix is either an English
+         privacy page or a footer here. -->
+    <p class="call-fine">Rather not be recorded? <a href="mailto:oscarinfo@proton.me">Email instead</a> and we'll talk anyway.</p>
   </dialog>
 
   <!-- ============================================
