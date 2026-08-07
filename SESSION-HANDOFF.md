@@ -131,7 +131,7 @@ bottom); everything below is otherwise as written at handoff time.
 - Occupation words absent from shipped copy:
   `curl -s https://prime-ai.es/es/ | perl -0777 -pe 's/<!--.*?-->//gs' | grep -ciE 'fontaner|plumbers|oficio|una avería|inside a leak'` — expect `0`.
 - Rollback one step, to `fac442e` (keeps stats band + proof, reverts only the hero
-  vignette — note this reinstates the 4.48:1 letra chica):
+  vignette; the "4.48:1 letra chica" this line used to cite was a measurement error, see the correction below):
   `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260807-042235 /var/www/prime-ai/es/index.html`
 - Rollback further, to `f8783a5` (drops hero + stats band, keeps the proof section):
   `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260807-040307 /var/www/prime-ai/es/index.html`
@@ -213,9 +213,26 @@ below the threshold of sight. Measured on background pixels with text excluded:
 - **The first hero bought warmth by darkening the ground under the text.** It put
   `--clay` — the deepest token available — in the CENTRE, behind the headline, and left
   the edges light. `44a0187` inverts it: depth at the edges, centre lightens.
-- **That first version was a live AA failure.** `letra chica` measured **4.48:1** on
-  deployed `fac442e`. The inverted version improves every line instead of degrading it:
-  marbete 4.98→5.70, entrada 5.00→5.67, letra chica 4.48→**4.69**. Verified on rendered
+- **CORRECTED 2026-08-07 — the "live AA failure" was mine, not the page's.** I reported
+  `letra chica` at **4.48:1** on deployed `fac442e` and called it an AA failure. Measured
+  properly it is **5.00:1 and passes**. Nothing on this page has ever failed AA.
+  - The bad number came from a percentile sampler: it took the 2nd-percentile pixel in
+    a text block as "the text" and the 95th-percentile as "the ground". On antialiased
+    type over a gradient that picks a half-lit glyph edge against the lightest patch of
+    ground, which deflates the ratio every time. It also produced a phantom "blue text
+    at 4.40:1" earlier in the same session, which turned out to be the CTA button's
+    shadow bleeding into the sample band.
+  - What actually works: take the text colour from the **declared token** (it is known
+    exactly — `--text-secondary` is `#6B5F54`) and the ground from the **modal pixel**
+    under the block, since text is always the minority. That method disagrees with the
+    sampler on every figure below, so treat any contrast number in this file dated
+    before this correction as unverified.
+  - True figures, marbete / entrada / letra-chica: `f8783a5` 5.84 / 5.84 / 5.84 —
+    `fac442e` 4.81 / 4.77 / 5.00 — `44a0187` 5.65 / 5.70 / 5.55. So `44a0187` is a real
+    improvement (~4.8 → ~5.6) but it **fixed no failure**, and the commit message on
+    `44a0187` overstates this. The message is wrong in the repo and cannot be edited
+    without a rewrite; this note is the correction of record.
+- The inverted halo still improves every line rather than degrading it. Verified on rendered
   pixels at 1440×900 and 390×844, then again on the live URL after deploy.
 - **`PAIRS` structurally cannot catch this.** It compares token against token; a
   gradient with a blurred halo composited over it produces colours that are not any
@@ -235,8 +252,36 @@ below the threshold of sight. Measured on background pixels with text excluded:
   - **The only symptom was the token count not going up.** That number in the summary
     line is the sole thing that makes this class of miss visible — do not drop it.
 
+## Then `951aded` — an object on screen one, COMMITTED, NOT DEPLOYED
+
+Dan said "still don't see a difference" after `44a0187` too. Right again, and the
+reason is measurable: **dark-pixel coverage in screen one was 4.7% before any of this
+work, and still exactly 4.7% after BOTH washes.** Neither one added visual mass — they
+only re-tinted near-white. Mean L* moved 94.3 → 91.2. With the card it is 9.9% and 87.0.
+
+- **The ceiling was structural.** Any ground dark enough to register sits under the
+  text; the one light variant that cleared the perceptual bar (ΔL* −11.8) failed all
+  three text checks. So the answer was never a darker background — it was an object
+  carrying its own ground. Ink card on paper is a ~60-point local L* step and adds no
+  unguarded contrast surface, since `--paper`/`--ink` and `--text-on-ink`/`--ink` are
+  already `PAIRS` entries. Rendered: 15.68:1 and 5.74:1.
+- **The card quotes nothing the agent says.** That would be the page asserting what the
+  call must repeat, and `ES_AGENT_ID` is the open unverified item. "Contestado — de día,
+  de noche o en domingo" is already live verbatim in `#cifras`: new claim surface zero.
+- **Waveform keyframes rest at `scaleY(1)` and dip at 50%, not the reverse.** The global
+  reduced-motion block forces `animation-iteration-count: 1`, freezing an element on its
+  100% frame — resting at full height makes that frozen frame a correct static waveform
+  instead of 28 slivers. Verified under emulated reduced motion.
+- **Mobile: trimming padding-TOP is what moved the card, not adding padding-bottom.**
+  Tried the obvious one first and it did nothing: with the card in place `.alto`'s height
+  comes from content (794) not `min-height` (675), so bottom padding only extends the
+  section downward. Card was 27px under the 80px sticky CTA bar; now 13px clear.
+- EN toggle verified on both new strings; guards green (39 tokens both ways).
+
 ## Pick up here
-Nothing is queued. `/es/` is at `44a0187` and verified. What is left needs Dan:
+Deploy `951aded` (the call card) once Dan has looked at it — same backup/diff/install/verify
+path, and note the mobile sticky-bar clearance is only 13px so re-check 390x844 after.
+Then what is left needs Dan:
 
 1. **The Spanish agent is still unverified** — `ES_AGENT_ID` may or may not carry the
    money-back guarantee rule and the pricing bans. This is the one with real downside:
