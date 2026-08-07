@@ -119,10 +119,17 @@ adjacent to the one being asked. This is the session's through-line:**
 - Live `/es/` = **`3b76d04`** (deployed 2026-08-07 19:56, verified byte-identical to the
   commit). Deploy order today: `fac442e` → `44a0187` → `951aded` → `943fb53` → `7a6654d` →
   `3b76d04`.
-- Live `/en/` = unchanged and **two commits behind**: it still shows the name in its call
-  panel AND still advertises `dan@primeai.agency`, a domain that does not exist. `190c477`
-  and `20a4ec0` are committed and NOT deployed. `/en/` has never been deployed by me — its
-  path and backup convention are unconfirmed.
+- Live `/en/` = **`20a4ec0`** (deployed 2026-08-07 20:00, verified byte-identical). Path is
+  `/var/www/prime-ai/en/index.html`; backup convention is
+  `/var/www/prime-ai-backups/en-index.html.bak-<YYYYMMDD-HHMMSS>`. Before this it was
+  `434f569`, identified by diffing live against every commit that touched
+  `receptionist.html` rather than assumed — worth repeating, because the handoff had never
+  recorded which commit `/en/` was on. Rollback:
+  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/en-index.html.bak-20260807-200007 /var/www/prime-ai/en/index.html`
+  (that file is `434f569`, verified against git).
+- `primeai.agency` still greps on live `/en/`, and that is fine: it survives only inside
+  the comment explaining its own removal. Zero occurrences after stripping comments, zero
+  `href`/`mailto` pointing at it.
 - **No page on prime-ai.es identifies the data controller any more.** After `3b76d04` the
   name, address and email exist only on `/voice/privacidad`, served by the OTHER repo
   (`Voice_agent/src/demo.ts`, PM2 `prime-voice`). Verified 2026-08-07: 200, all three
