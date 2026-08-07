@@ -18,11 +18,27 @@ const fail = [];
 // sweep; the short version is that a dead address does not refuse a deletion
 // request, it loses it. Do not add an entry until a real message has been
 // delivered to it and read.
-//   oscarinfo@proton.me  delivers (Proton), checked 2026-08-07.
-//   dan@prime-ai.es      does NOT yet: no MX, and the VPS Postfix answers
-//                        "454 Relay access denied". Add it the day Proton
-//                        custom-domain is live and a test mail has arrived.
-const MAIL_OK = ['oscarinfo@proton.me'];
+//   support@prime-ai.es  accepted by Proton's MX, 2026-08-07. This is what the
+//                        pages now show. Evidence, stated exactly, because it
+//                        is one step short of the bar written above: a real
+//                        SMTP session over verified TLS to mail.protonmail.ch
+//                        answered "250 2.1.5 Ok" for it, while a bogus address
+//                        on the SAME domain in the SAME session got "550 5.1.1
+//                        Address does not exist". The control matters — without
+//                        it a server that accepts everything looks identical to
+//                        one that accepts this. What is NOT yet confirmed is a
+//                        message read in the inbox, so a mailbox that exists
+//                        but is not visible to Dan would still slip through.
+//   oscarinfo@proton.me  delivers (Proton). No longer on either page, kept here
+//                        because /voice/privacidad still names it and it is a
+//                        verified-good address to fall back to.
+//   dan@prime-ai.es      NOT on the list and NOT a typo for the above. It was
+//                        the plan until Dan created support@ instead. Proton
+//                        answers 550 for it — the domain routes, the mailbox
+//                        was never created. Note the DMARC record still sends
+//                        aggregate reports to rua=mailto:dan@prime-ai.es, which
+//                        therefore bounce; that is a DNS fix, not a code one.
+const MAIL_OK = ['support@prime-ai.es', 'oscarinfo@proton.me'];
 let PAGE = 'en';
 let src = PAGES.en;
 // Prefix every shared-block failure with the page it came from, or a palette
