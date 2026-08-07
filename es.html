@@ -504,6 +504,114 @@
     }
 
     /* ============================================
+       LA LLAMADA — el objeto de la primera pantalla
+
+       Por qué existe, porque no es decoración: la primera pantalla era texto
+       sobre un fondo vacío, y dos intentos de calentar ese fondo fracasaron
+       midiendo bien y viéndose igual. En L* (perceptual, 0-100) el centro del
+       héroe se movió 6.1 con el primer lavado y 1.3 con el segundo; por debajo
+       de ~2 no se nota. La causa no era la paleta sino el sitio: cualquier
+       fondo lo bastante oscuro para verse cae DEBAJO del texto y le rompe el
+       contraste — la versión que sí se notaba (-11.8) suspendió las tres
+       comprobaciones de texto.
+
+       La salida no es teñir, es poner un objeto. Una tarjeta de tinta sobre
+       papel da un salto local de ~60 puntos de L* sin tocar el suelo del
+       texto, porque la tarjeta trae el suyo. Y papel-sobre-tinta ya es un par
+       vigilado en PAIRS, así que no estrena riesgo de contraste.
+
+       Lo que dice está deliberadamente limitado. NO lleva una frase
+       entrecomillada de la agente: sería afirmar en la página lo que la
+       llamada tendría que repetir, y el prompt de ES_AGENT_ID está sin
+       verificar (ver el handoff). "Contestado — de día, de noche o en
+       domingo" es palabra por palabra lo que ya vive en #cifras, o sea
+       superficie de afirmación nueva: cero. */
+    .llamada {
+      width: min(400px, 100%);
+      margin: var(--space-5) auto 0;
+      padding: var(--space-3) var(--space-4);
+      background: var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lift);
+      text-align: left;
+    }
+
+    .llamada-fila {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .llamada-punto {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--amber);
+      flex: none;
+      animation: latido 1.6s ease-in-out infinite;
+    }
+
+    .llamada-estado {
+      font-size: var(--font-sm);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--paper);
+    }
+
+    /* Las barras descansan ARRIBA y se hunden a la mitad, no al revés. El
+       bloque global de prefers-reduced-motion pone iteration-count:1, que
+       deja al elemento congelado en su fotograma del 100%: con el reposo en
+       scaleY(1) eso es una onda estática correcta, y con el reposo abajo
+       serían catorce astillas. El caso accesible sale bien sin código extra. */
+    .onda {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2px;
+      height: 26px;
+      margin: var(--space-3) 0 var(--space-2);
+    }
+
+    /* flex:1 con max-width, no un ancho fijo: las barras se quedan finas y el
+       sobrante lo reparte space-between, así que la onda ocupa la tarjeta
+       entera a cualquier ancho sin tocar el número de barras. Con flex:1 solo
+       se ensanchaban a ~24px cada una y aquello eran bloques, no una onda. */
+    .onda i {
+      flex: 1;
+      max-width: 5px;
+      background: var(--amber);
+      border-radius: 2px;
+      transform-origin: center bottom;
+      animation: onda 1.05s ease-in-out infinite;
+    }
+
+    @keyframes onda {
+      0%, 100% { transform: scaleY(1); }
+      50%      { transform: scaleY(0.28); }
+    }
+
+    .onda i:nth-child(14n+1)  { height: 30%; animation-delay: -0.90s; }
+    .onda i:nth-child(14n+2)  { height: 55%; animation-delay: -0.15s; }
+    .onda i:nth-child(14n+3)  { height: 80%; animation-delay: -0.60s; }
+    .onda i:nth-child(14n+4)  { height: 45%; animation-delay: -0.35s; }
+    .onda i:nth-child(14n+5)  { height: 95%; animation-delay: -0.75s; }
+    .onda i:nth-child(14n+6)  { height: 65%; animation-delay: -0.05s; }
+    .onda i:nth-child(14n+7)  { height: 100%; animation-delay: -0.50s; }
+    .onda i:nth-child(14n+8)  { height: 40%; animation-delay: -0.95s; }
+    .onda i:nth-child(14n+9)  { height: 75%; animation-delay: -0.25s; }
+    .onda i:nth-child(14n+10) { height: 50%; animation-delay: -0.70s; }
+    .onda i:nth-child(14n+11) { height: 88%; animation-delay: -0.40s; }
+    .onda i:nth-child(14n+12) { height: 35%; animation-delay: -0.85s; }
+    .onda i:nth-child(14n+13) { height: 60%; animation-delay: -0.20s; }
+    .onda i:nth-child(14n) { height: 25%; animation-delay: -0.55s; }
+
+    .llamada-pie {
+      font-size: var(--font-sm);
+      color: var(--text-on-ink);
+    }
+
+    /* ============================================
        CIFRAS
        La barra de /en/ (#stats), con la mitad fuera.
 
@@ -1284,8 +1392,20 @@
         padding: var(--space-8) 0;
       }
 
+      /* El padding de ARRIBA baja de space-6 a space-3, y esto es lo que hace
+         sitio para la tarjeta. Subir el de abajo no servía y se probó: con la
+         tarjeta dentro, la altura de .alto ya no la manda min-height (675) sino
+         el contenido (794), así que el relleno de abajo se limita a alargar la
+         sección hacia abajo y no sube el contenido ni un píxel. La barra fija
+         .cta-movil ocupa los últimos 80px del viewport y la tarjeta se metía 27
+         por debajo; los 24 de aquí más los 16 que suelta su propio margen dan
+         los 40 que hacen falta. */
       .alto {
-        padding: var(--space-6) var(--space-3) var(--space-8);
+        padding: var(--space-3) var(--space-3) var(--space-8);
+      }
+
+      .llamada {
+        margin-top: var(--space-3);
       }
 
       .cta-movil {
@@ -1380,6 +1500,23 @@
       <p class="entrada" data-en="It answers for you when you can't pick up, speaks English or Spanish, and puts the job straight in your calendar.">Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario.</p>
       <button class="btn btn-primary llamar" data-en="Call it now — right here, no phone needed">Llámala ahora — aquí mismo, sin teléfono</button>
       <small class="letra-chica" data-en="I won't tell you about it, you'll hear it. Talk to it on this page and ask it to book you in. Takes a minute.">No te lo cuento, lo escuchas. Habla con ella en esta misma página y pídele una cita de prueba. Un minuto.</small>
+
+      <!-- La onda va aria-hidden porque es forma, no información: lo que
+           significa ya lo dicen las dos líneas de al lado. El texto NO va
+           aria-hidden — se lee, y se lee una sola vez. -->
+      <div class="llamada">
+        <div class="llamada-fila">
+          <span class="llamada-punto"></span>
+          <span class="llamada-estado" data-en="On the line">Al teléfono</span>
+        </div>
+        <div class="onda" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <p class="llamada-pie" data-en="Answered — day, night, or Sunday">Contestado — de día, de noche o en domingo</p>
+      </div>
     </div>
   </section>
 
