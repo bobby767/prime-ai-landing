@@ -436,7 +436,7 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
     if (re.test(body)) {
       fail.push(`[es] ${label} in the page copy — this page sells to "negocios de Málaga" and names no occupation (matched ${re})`);
     }
-    if (re.test(descriptions.join('   '))) {
+    if (re.test(descriptions.join(' \0 '))) {
       fail.push(`[es] ${label} in a meta description — the search snippet must not promise a page the visitor does not land on (matched ${re})`);
     }
   }
