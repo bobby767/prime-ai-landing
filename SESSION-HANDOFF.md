@@ -1,104 +1,91 @@
-# Session Handoff — Deployed the hero three times before measuring the right thing, then took Dan's name off the call panel
+# Session Handoff — Two deploys of the name removal, a LinkedIn link, and an email address that took three rounds to prove was real
 
 _Last updated: 2026-08-07_
 
 ## Where it started
-Picked up the previous handoff's "Pick up here": deploy `fac442e` (hero warmth + the
-two-card stats band) to `/es/`. That was twenty minutes. The rest of the session came out
-of Dan looking at the result and saying "looks exactly the same" — twice — which was
-correct both times and was not a caching problem. Governing constraint unchanged:
-pressing the button reaches the agent in ~30 seconds, so the page may not claim what the
-call must refuse to repeat.
+Picked up the previous handoff's "Pick up here": answer the two blocking questions on the
+name work, then remove `Daniel Kooij` from wherever Dan named. He chose deploy-now and
+`/en/` panel only. The session then grew three more asks — LinkedIn in the footer, a
+branded email, and taking his name and city out of the footer entirely. Governing
+constraint unchanged: pressing the button reaches the agent in ~30 seconds, so the page may
+not claim what the call must refuse to repeat.
 
 ## Decisions locked + what shipped
 
-Six commits. **Three deployed (`fac442e`, `44a0187`, `951aded`); `943fb53` is committed
-and NOT deployed.**
+Nine commits. **Four deployed to `/es/` (`943fb53`, `7a6654d`, `3b76d04`) and one to `/en/`
+(`20a4ec0`); `8754ec3` is committed and NOT deployed.**
 
-- **`fac442e` deployed, then `44a0187`, then `951aded`.** Each one: diff live against the
-  previously deployed commit to rule out a hand-edit, backup, install, then verify the
-  served bytes are byte-identical to the commit. Backups written this session:
-  `-20260807-040307` = `f8783a5`, `-20260807-042235` = `fac442e`,
-  `-20260807-043924` = `44a0187`.
-- **The previous handoff's rollback line was wrong — `8a76af7`.** It named
-  `es-index.html.bak-20260806-073111` as the way back to `f8783a5`; diffed against git
-  that file is **`0256e4a`**, so running it would have silently dropped the proof section
-  along with the hero. Every backup is now identified by diffing against git, never by
-  reading its timestamp.
-- **Hero attempt 2 — `44a0187`, deployed.** Inverted the halo: the first version put
-  `--clay` (the deepest token) in the *centre*, behind the headline, and left the edges
-  light. New token `--terra` (`#D0BDAB`), the only one below clay, because
-  paper/shell/sand/clay all sit inside ten points of lightness. Ending the vignette on
-  clay also works and needs no new token but reaches 60 levels instead of 90.
-- **Hero attempt 3 — `951aded`, deployed. This is the one that worked.** An ink call-card
-  on screen one: status dot, 28-bar waveform, caption. Not a tint.
-  - **The number that explains three rounds of confusion:** dark-pixel coverage in screen
-    one was **4.7% before any of this work and still exactly 4.7% after BOTH washes.**
-    They only re-tinted near-white; they added no visual mass at all. With the card it is
-    9.9%, and mean L* went 94.3 → 87.0.
-  - **The ceiling was structural, not a tuning problem.** Any ground dark enough to
-    register sits under the text — the one light variant that cleared the perceptual bar
-    (ΔL* −11.8) failed all three text checks. An object carries its own ground:
-    `--paper`/`--ink` and `--text-on-ink`/`--ink` are already `PAIRS` entries, so the card
-    adds no unguarded contrast surface. Rendered live: 15.75:1 and 7.45:1.
-  - **The card quotes nothing the agent says.** That would be the page asserting what the
-    call must repeat, and `ES_AGENT_ID` is the open unverified item. "Contestado — de día,
-    de noche o en domingo" is already live verbatim in `#cifras`: new claim surface zero.
-  - Waveform keyframes **rest at `scaleY(1)` and dip at 50%**, not the reverse. The global
-    reduced-motion block forces `animation-iteration-count: 1`, which freezes an element
-    on its 100% frame; resting at full height makes the frozen frame a correct static
-    waveform instead of 28 slivers. Verified under emulated reduced motion.
-  - Mobile: **trimming padding-TOP is what moved the card.** Adding padding-bottom was
-    tried first and did nothing — with the card in place `.alto`'s height comes from its
-    content (794) rather than `min-height` (675), so bottom padding only extends the
-    section downward. The card was 27px under the 80px sticky CTA bar; now 13px clear.
-- **Dan's name out of the call panel — `943fb53`, COMMITTED, NOT DEPLOYED.** Dan: "this is
-  a conversational AI, the call is being recorded, that's it." The identity is demoted to
-  the second layer, not deleted: `/voice/privacidad` carries the name, address and email,
-  checked against the live page rather than assumed.
-  - **The link moved above the button.** With the name written into the panel its position
-    was irrelevant; now the link *is* the identity, and a route to the controller that
-    appears after the press is not a route — pressing is the consent.
-  - The guard asserted the literal string `'Daniel Kooij'`. Replaced rather than deleted:
-    it now requires the panel to have a route to the controller **and** for that route to
-    precede the button. Both failure modes are proven to fail the build.
+- **`943fb53` deployed** — name off the `/es/` call panel, decided by Dan over batching.
+- **`190c477` + `20a4ec0` deployed to `/en/`** — name off the `/en/` panel, and its
+  footer's dead email replaced. The guard was rewritten from asserting the literal
+  `'Daniel Kooij'` to asserting the route to the controller exists **and** precedes the
+  button.
+- **`7a6654d` deployed** — LinkedIn link in the `/es/` footer, reusing the anchor and SVG
+  already in `receptionist.html`. It sits **outside** the `data-en` div deliberately:
+  `traducir()` swaps `innerHTML`, so markup inside would need repeating escaped in the
+  attribute, and drift between the two produces no visible error. Two things only the
+  browser caught — the link came out 23.8px tall (WCAG 2.2 wants 24x24) and my ~56px of new
+  content ate the mobile clearance under the 80px fixed `.cta-movil`, leaving 4px. Now
+  90x31.8 and 64px. Note the padding-bottom fix works here and did NOT in `.alto`
+  (`951aded`): the footer is last in the document, so extra padding becomes scroll distance.
+- **`3b76d04` deployed** — name and city out of the `/es/` footer. "Prime AI" stayed
+  (the business, not his name); the deletion route stayed.
+- **`8754ec3` NOT deployed** — both pages swapped to `support@prime-ai.es`.
 
-**Three checks failed silently this session, all the same shape — answering a question
-adjacent to the one being asked. This is the session's through-line:**
+**Email infrastructure, which was the bulk of the session.** `dan@primeai.agency` was live
+on `/en/` at a domain returning **NXDOMAIN** — every mail to it had bounced for as long as
+the page had been up. `prime-ai.es` had no MX and its VPS Postfix answered `454 Relay
+access denied`. Dan set up Proton custom domain across three rounds, and **each round
+looked like success from inside Proton's UI**: first only the `protonmail-verification` TXT
+existed, so the domain was verified but nothing routed; then the three DKIM CNAMEs saved
+but MX, SPF and DMARC did not; then MX arrived and Proton answered authoritatively for the
+domain while rejecting every recipient, because the domain had been added and no mailbox
+created. Final state verified by SMTP over verified TLS — `250 2.1.5 Ok` for
+`support@prime-ai.es` against `550 5.1.1` for a bogus address in the same session.
 
-- `test-palette.js`'s token pattern used `[^;]+`, which crosses newlines, so prose in a
-  `:root` comment reading `--clay:` started a match and ran to the next semicolon,
-  swallowing the `--terra` declaration whole. `--clay` got a garbage value, `--terra` was
-  never registered, and because `hexOf` returned nothing for both, the contrast loop
-  treats them as *exempt and skips them* — while printing `OK`. Now `[^;\n]+`. **The only
-  symptom was the token count in the summary line not going up. Do not drop that count.**
-- My own new consent check passed green while the panel's privacy link still sat below the
-  button, because the first `/voice/privacidad` in the document belongs to the **footer**,
-  which precedes the dialog in source order. It was comparing the footer's link against
-  the panel's button. Now scoped to `<dialog>`.
-- **I reported a live AA failure that never existed.** `letra chica` on `fac442e` was
-  **5.00:1 and passing**, not the 4.48:1 I claimed. My percentile sampler took a
-  2nd-percentile pixel in a text block as "the text" and the 95th as "the ground" — on
-  antialiased type over a gradient that is a half-lit glyph edge against the lightest
-  patch of ground, which deflates the ratio every time. The same sampler invented a "blue
-  text at 4.40:1" that turned out to be the CTA button's shadow bleeding into the sample
-  band. **Nothing on this page has ever failed AA.** `44a0187` is still a real improvement
-  (~4.8 → ~5.6 across the three secondary elements) but it fixed no failure, and its
-  commit message overstates that; the message cannot be edited without a rewrite, so
-  `8e9192e` is the correction of record. What actually works: text colour from the
-  **declared token** (known exactly) and ground from the **modal pixel** under the block.
-  Treat any contrast figure in this repo dated before `8e9192e` as unverified.
+**Two guards added, both proven to bite.** An email allowlist (`MAIL_OK`) over both pages
+reading `mailto:` targets *and* visible text, and a `/es/` footer check asserting the
+deletion route survives. Both are meant to be awkward to extend: an address earns a place
+by having a real message delivered to it, not by looking plausible.
+
+**Five checks failed silently this session — the same shape as the previous session's
+three: answering the question adjacent to the one asked.** Every one was a second copy of
+the same content sitting where the cheap pattern looks first.
+
+- **`test-palette.js` contained a raw NUL byte** (`descriptions.join(' \0 ')`). `file`
+  classified the guard as binary, so ugrep — which backs both the `grep` shell function and
+  the Grep tool — **silently skipped the entire file**, exiting 1 indistinguishably from a
+  real zero. Found only because `sed` printed a line `grep` swore did not exist. Fixed as
+  the two-character escape `\0` in `0b298b7`.
+- My `<dialog>` extraction matched a tag written **inside a comment** 700 lines above the
+  real one, swallowing the footer. The guard itself was fine — it strips comments at
+  `test-palette.js:319`; my ad-hoc curl check was the broken one.
+- The `/en/` guard asserted the literal name against **raw** `src`, so the comment I added
+  quoting the removed line would have kept it green. Now comment-stripped.
+- My first `/es/` footer guard **passed with the visible mailto deleted, and again with the
+  visible privacy link deleted**, because `data-en` holds an escaped copy of both. Now
+  asserts the Spanish visible markup and the English `data-en` payload separately.
+- Two mutation tests reported "no gap" when the `sed` had simply not matched. Both re-run
+  with a `diff` assertion proving the file actually changed first.
+
+Also corrected: the previous handoff's `intro-wa` expectation (raw count is 3 and always
+was), its "three other places" grouping (two were footers, not call panels), and a
+commits-ahead count I hand-wrote wrong.
 
 ## Key files for next session
-- `/home/ubuntu/Prime_AI/Landingpage/es.html` — the deliverable. The `.llamada` CSS block
-  and the `<dialog class="panel">` comment both carry reasoning that cannot be
-  reconstructed from the code.
-- `/home/ubuntu/Prime_AI/Landingpage/test-palette.js` — one guard for both pages. Token
-  regex at ~line 40 (the newline fix), ES consent checks at ~line 447.
-- `/home/ubuntu/Prime_AI/Landingpage/receptionist.html` — `/en/`. Still has
-  `Daniel Kooij` in its panel.
-- `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/demo.ts` — line 565 is the `/voice/`
-  page's controller notice; lines 52 and 66 hold `AGENT_ID` and `ES_AGENT_ID`.
+- `/home/ubuntu/Prime_AI/Landingpage/test-palette.js` — one guard for both pages. `MAIL_OK`
+  is at the TOP: the footer check runs before the address sweep, so declaring it at the
+  bottom was a TDZ `ReferenceError`. ES consent checks ~line 490, footer check just after,
+  address sweep near the bottom.
+- `/home/ubuntu/Prime_AI/Landingpage/es.html` — the `.pie` footer comment and the
+  `<dialog class="panel">` comment carry reasoning not reconstructable from the code.
+- `/home/ubuntu/Prime_AI/Landingpage/receptionist.html` — `/en/`. The panel comment records
+  why `/en/` is weaker than `/es/`.
+- `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/demo.ts` — line ~565 is the `/voice/`
+  page footer; lines 52 and 66 hold `AGENT_ID` and `ES_AGENT_ID`.
+- `/tmp/claude-1000/-home-ubuntu-Prime-AI-Landingpage/44557b58-6029-4916-b7ef-995f223f6120/scratchpad/probe2.js`
+  — working SMTP probe. Proton rejects pipelined commands; this one waits for each response
+  and does STARTTLS with verification on.
 - Plan file: none drove this session.
 - Memory files touched: none.
 
@@ -108,114 +95,96 @@ adjacent to the one being asked. This is the session's through-line:**
   confirmed alive. Kill with `kill 305506`. Pre-existing, not started this session.
   **Publicly reachable** — port 9876, plain HTTP, no TLS. No `run_in_background` shells
   were started this session.
-- Dev servers / ports: `http://127.0.0.1:9876/es.html`. PM2 `prime-voice` on
-  `:3023/voice`.
-- Open worktrees / branches: `Landingpage` on **`warm-palette`**, **12 commits ahead of
-  `origin/warm-palette`** — not pushed this session. `Prime_AI-voiceagent` on
-  `voice-agent-build`, untouched this session.
-- A Playwright MCP browser is open at `http://127.0.0.1:9876/es.html?lang=en`.
-- **36 untracked screenshots in the repo root** — my debris. Dan has been asked twice
-  about delete vs `.gitignore`; no answer.
-- Live `/es/` = **`3b76d04`** (deployed 2026-08-07 19:56, verified byte-identical to the
-  commit). Deploy order today: `fac442e` → `44a0187` → `951aded` → `943fb53` → `7a6654d` →
-  `3b76d04`.
-- Live `/en/` = **`20a4ec0`** (deployed 2026-08-07 20:00, verified byte-identical). Path is
-  `/var/www/prime-ai/en/index.html`; backup convention is
-  `/var/www/prime-ai-backups/en-index.html.bak-<YYYYMMDD-HHMMSS>`. Before this it was
-  `434f569`, identified by diffing live against every commit that touched
-  `receptionist.html` rather than assumed — worth repeating, because the handoff had never
-  recorded which commit `/en/` was on. Rollback:
-  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/en-index.html.bak-20260807-200007 /var/www/prime-ai/en/index.html`
-  (that file is `434f569`, verified against git).
-- `primeai.agency` still greps on live `/en/`, and that is fine: it survives only inside
-  the comment explaining its own removal. Zero occurrences after stripping comments, zero
-  `href`/`mailto` pointing at it.
-- **No page on prime-ai.es identifies the data controller any more.** After `3b76d04` the
-  name, address and email exist only on `/voice/privacidad`, served by the OTHER repo
-  (`Voice_agent/src/demo.ts`, PM2 `prime-voice`). Verified 2026-08-07: 200, all three
-  present. If that page is emptied or moved, art. 13 fails site-wide and every guard here
-  stays green — they cannot see across the repo boundary.
+- Dev servers / ports: `http://127.0.0.1:9876/es.html`. PM2 `prime-voice` on `:3023/voice`.
+- Open worktrees / branches: `Landingpage` on **`warm-palette`**, **20 commits ahead of
+  `origin/warm-palette`**, never pushed. `Prime_AI-voiceagent` on `voice-agent-build`,
+  untouched this session.
+- A Playwright MCP browser is open at `https://prime-ai.es/en/`.
+- **36 untracked screenshots in the repo root** — pre-existing debris. Dan has been asked
+  three times about delete vs `.gitignore`; no answer. Mine this session went to the
+  scratchpad instead of adding to it.
+- Live `/es/` = **`3b76d04`**. Live `/en/` = **`20a4ec0`**.
+- `/en/` deploy path is `/var/www/prime-ai/en/index.html`; backups are
+  `/var/www/prime-ai-backups/en-index.html.bak-<YYYYMMDD-HHMMSS>`. `/es/` is
+  `/var/www/prime-ai/es/index.html` with `es-index.html.bak-<stamp>`.
 
 ## Verification — how to confirm things still work
-- `cd /home/ubuntu/Prime_AI/Landingpage && node test-palette.js` — expect `OK`, exit 0,
-  and **`39 tokens` for es**. A count of 38 means the token regex has silently eaten one
-  again; that count is the only visible symptom of the whole failure class.
+- `cd /home/ubuntu/Prime_AI/Landingpage && node test-palette.js` — expect `OK`, exit 0, and
+  **`43 tokens` for en, `39 tokens` for es**. A drop means the token regex has silently
+  eaten one; that count is the only visible symptom of the whole failure class.
 - `node test-roi.js` — expect `OK — 64 combinations checked` and
   `OK — es.html sum: 16 combinations, agrees with sales-agent.ts`.
-- **The consent guard bites** — both must exit 1: (a) move the panel's
-  `/voice/privacidad` line below the `id="ir"` button, (b) separately, delete it. Expect
-  `route to the data controller ... sits below the start button` and
-  `the call panel has no route to the data controller`.
-- `curl -s https://prime-ai.es/es/ | grep -c 'class="llamada"'` → `1`, and
-  `curl -s https://prime-ai.es/es/ | grep -o '<i></i>' | wc -l` → `28`.
-- `curl -s https://prime-ai.es/es/ | grep -c 'linkedin.com/in/danielkooij'` → `1`. **That
-  URL is UNVERIFIED.** LinkedIn answers HTTP 999 to anything without a browser session, so
-  it cannot be checked from here. It was not invented — it came from the `/en/` footer,
-  where it was already live — but if the handle is wrong it is now wrong on both pages.
-  The link must also stay OUTSIDE the `data-en` div: `traducir()` swaps `innerHTML`, so
-  markup inside would have to be repeated escaped in the attribute. Regression test is to
-  click the ES/EN toggle and confirm the icon and href survive.
-- `curl -s https://prime-ai.es/es/ | grep -c 'id="cifras"'` → `1`; `id="prueba"` → `1`;
-  `cal.eu/prime.ai/intro-wa` → **`3`, not `2`**. The `2` written here was wrong: it is the
-  number of rendered links, but the command counts raw string occurrences, and the panel's
-  line carries the href twice (the real one plus its escaped copy in `data-en`). It was
-  already `3` on `951aded`; nothing regressed.
-- `curl -s https://prime-ai.es/es/ | perl -0777 -pe 's/<!--.*?-->//gs' | sed -n '/<body/,$p' | perl -0777 -pe 's/<script.*?<\/script>//gs' | grep -c '%'` → `0`.
-- `curl -s https://prime-ai.es/es/ | perl -0777 -pe 's/<!--.*?-->//gs' | grep -ciE 'fontaner|plumbers|oficio|una avería|inside a leak'` → `0`.
-- `curl -s https://prime-ai.es/voice/privacidad | grep -c 'Daniel Kooij'` — must be
-  **≥1**. This is now the only controller disclosure in the call flow; if it reaches 0,
-  art. 13 is unsatisfied and `test-palette.js` will still report green. Layered
-  disclosure is a live dependency, not a one-off edit.
-- Rollback one step from live (`3b76d04`) to `7a6654d`:
+- **The guards bite** — each must exit 1: (a) move the panel's `/voice/privacidad` below
+  the `id="ir"` button, (b) delete it, (c) delete the footer's visible mailto, (d) delete
+  the footer's visible privacy link, (e) gut the footer's `data-en` payload, (f) put
+  `dan@prime-ai.es` on either page. **Always `diff` to prove the mutation applied first** —
+  two "no gap" results this session were unmatched `sed` patterns, not real gaps.
+- `curl -s https://prime-ai.es/es/ | grep -c 'linkedin.com/in/danielkooij'` -> `1`. **That
+  URL is UNVERIFIED**: LinkedIn answers HTTP 999 without a browser session. It was not
+  invented — it came from `/en/` where it was already live — but a wrong handle is now
+  wrong on both pages. The link must stay OUTSIDE the `data-en` div; regression test is
+  clicking the ES/EN toggle and confirming icon and href survive.
+- `curl -s https://prime-ai.es/es/ | perl -0777 -pe 's/<!--.*?-->//gs' | grep -c 'Daniel Kooij'`
+  -> `0`; same command for `Fuengirola` -> `0`.
+- `curl -s https://prime-ai.es/voice/privacidad | grep -c 'Daniel Kooij'` — must be **>=1**.
+  This is now the ONLY controller disclosure anywhere on the site.
+- `curl -s https://prime-ai.es/es/ | grep -c 'class="llamada"'` -> `1`;
+  `grep -o '<i></i>' | wc -l` -> `28`; `id="cifras"` -> `1`; `id="prueba"` -> `1`;
+  `cal.eu/prime.ai/intro-wa` -> `3` (raw occurrences, 2 rendered links).
+- `curl -s https://prime-ai.es/es/ | perl -0777 -pe 's/<!--.*?-->//gs' | sed -n '/<body/,$p' | perl -0777 -pe 's/<script.*?<\/script>//gs' | grep -c '%'` -> `0`.
+- `node /tmp/claude-1000/-home-ubuntu-Prime-AI-Landingpage/44557b58-6029-4916-b7ef-995f223f6120/scratchpad/probe2.js`
+  — expect `250 2.1.5 Ok` for `support@prime-ai.es` and `550 5.1.1` for the bogus control.
+  **Without the control the result means nothing** — a catch-all server looks identical.
+- `dig +short MX prime-ai.es @8.8.8.8` -> `10 mail.protonmail.ch. 20 mailsec.protonmail.ch.`
+- `primeai.agency` still greps on live `/en/` and that is expected: it survives only inside
+  the comment explaining its own removal. Zero after stripping comments, zero hrefs.
+- Rollback `/es/` one step to `7a6654d`:
   `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260807-195647 /var/www/prime-ai/es/index.html`
-  — that file is **`7a6654d`**, verified by diffing against git before use. Further back:
-  `-20260807-062713` is `943fb53`, `-20260807-055651` is `951aded`, `-20260807-043924` is
-  `44a0187`. Verify any backup by diffing it against git before trusting its filename.
-- **`grep` in this repo is a shell function wrapping ugrep with `-I`**, so it silently
-  skips any file that `file` calls binary — exiting 1, which reads exactly like a real
-  zero. `test-palette.js` was in that state until `0b298b7` because of one raw NUL byte.
-  If a `grep` result ever contradicts `sed`/`Read`, check `file <path>` before believing
-  the grep; use `command grep` to bypass the wrapper.
+- Rollback `/en/` one step to `434f569`:
+  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/en-index.html.bak-20260807-200007 /var/www/prime-ai/en/index.html`
+- Verify any backup by diffing it against git before trusting its filename.
+- **`grep` in this repo is a shell function wrapping ugrep with `-I`**, so it silently skips
+  any file `file` calls binary, exiting 1 exactly like a real zero. If a `grep` result
+  contradicts `sed`/`Read`, run `file <path>` before believing it; `command grep` bypasses
+  the wrapper.
 
 ## Deferred + open questions
-- ~~Open: deploy `943fb53` now, or batch it?~~ **Answered: deploy now. Done** — live `/es/`
-  is `943fb53`.
-- ~~Open: the name is still in three other places.~~ **Answered: `/en/` call panel only.
-  Done in `190c477`, not deployed.** The handoff mislabelled these: `demo.ts:565` is a
-  `<footer class="pie">`, not a call panel, and `es.html:1951` is the `.pie` footer too.
-  Only `receptionist.html` was the twin of the panel Dan objected to. Both footers keep
-  the name deliberately — they are the second layer that makes removing it from the panels
-  safe.
-- **Open, and now load-bearing: `/en/` has no controller record at all.** `/es/` kept its
-  footer copy; `receptionist.html` never had one, so after `190c477` an English visitor's
-  only route to the controller is `/voice/privacidad`, which is **Spanish-only**. The gap
-  predates the commit; the commit makes it the single point of failure. Fix is an English
-  privacy page or a footer on `/en/`. Not chosen by me.
-- **Open: deploy `190c477` to `/en/`?** Not asked — Dan approved the `/es/` deploy only.
+- **Open, blocking the deploy: has a real message to `support@prime-ai.es` landed in an
+  inbox Dan can read?** The SMTP probe proves Proton accepts the recipient; it cannot prove
+  the mailbox is one he can see. Asked at end of session, unanswered. `8754ec3` waits on it.
+- **Open: `/voice/privacidad` still gives `oscarinfo@proton.me`** as the controller contact,
+  so the art. 13 notice now names a different address than both pages point to. Other repo,
+  needs a PM2 restart of `prime-voice`. Offered, unanswered.
+- **Open: DMARC `rua=mailto:dan@prime-ai.es`** — that address does not exist (proved 550),
+  so aggregate reports bounce. One DNS edit to `support@prime-ai.es`.
+- **Open, structural: no page on prime-ai.es identifies the data controller any more.** The
+  name, address and email exist only on `/voice/privacidad`, served by the OTHER repo. If it
+  is emptied, moved or left behind by a deploy there, art. 13 fails site-wide and every
+  guard here stays green — none can see across the repo boundary.
+- **Open: `/en/` has no controller record of its own** and points only at a Spanish-only
+  privacy page. Fix is an English privacy page or a footer on `/en/`.
 - **Open, highest downside: `ES_AGENT_ID` is unverified.** `/es/` routes to
   `agent_d591526dbfd45aa59effa61f60` (`demo.ts:66`). It is unknown whether it carries the
   money-back guarantee rule and the pricing bans. No `RETELL_API_KEY` exists in
   `Prime_AI-voiceagent/Voice_agent/.env*`, so it could not be checked at the API. The page
   may only promise what the call will repeat.
 - **Open: may the 62% and 21x stat cards come to `/es/`?** Needs a decision on narrowing
-  `ES_BANS`, which forbids `%` outright. Asked across two sessions; unanswered.
-- **Open: push `warm-palette`?** 12 commits ahead of origin; never asked in either session.
-- Deferred: `/en/` has never been swept with the all-strings occupation check, and its
-  hero has never been checked for the composite-contrast blind spot — `PAIRS` is equally
-  blind there and `receptionist.html` has its own gradients.
-- Deferred: `es.html:85` still claims the page has no ROI calculator and no stats bar.
-  Both halves are now false.
-- Deferred: vault daily note `/home/ubuntu/TheVault/DailyNotes/2026-08-07.md` was updated
-  twice this session but does not cover the call card or the panel name removal.
+  `ES_BANS`, which forbids `%` outright. Asked across three sessions; unanswered.
+- **Open: push `warm-palette`?** 20 commits ahead of origin. Asked three times across three
+  sessions; never answered.
+- Deferred: `/en/`'s two footer SVGs lack `aria-hidden="true"`; the `/es/` LinkedIn icon has
+  it. One attribute each, not done to avoid sprawling scope.
+- Deferred: `es.html:85` still claims the page has no ROI calculator and no stats bar. Both
+  halves are now false.
+- Deferred: vault daily note `/home/ubuntu/TheVault/DailyNotes/2026-08-07.md` was not
+  updated this session.
 - Deferred, unchanged: `receptionist.html` warm-palette Tasks 3-6; the phone twin
-  (`PHONE — Prime AI Receptionist Demo`) still has its bans scoped to the pitch state and
-  is attached to no number; `/voice/privacidad` is Spanish-only; `/en-trades/` if English
+  (`PHONE — Prime AI Receptionist Demo`) still has its bans scoped to the pitch state and is
+  attached to no number; `/voice/privacidad` is Spanish-only; `/en-trades/` if English
   organic traffic matters.
 
 ## Pick up here
-Both blocking questions are answered and both edits are done. Next: decide whether to
-deploy `190c477` to `/en/`, and — before or with it — close the `/en/` controller gap,
-since that page now has no controller record of its own and points only at a Spanish-only
-privacy page. Then `warm-palette` is **12 commits ahead of origin** (re-check with
-`git rev-list --count origin/warm-palette..HEAD`) and has never been pushed; that has gone
-unasked for two sessions.
+Confirm with Dan that a real message to `support@prime-ai.es` arrived in a readable inbox,
+then deploy `8754ec3` to both `/es/` and `/en/` using the established routine — diff live
+against the last deployed commit to rule out a hand-edit, back up and verify that backup
+against git, install, confirm the served bytes match the commit.
