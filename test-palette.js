@@ -10,6 +10,19 @@ const fs = require('fs');
 const read = f => fs.readFileSync(`${__dirname}/${f}`, 'utf8');
 const PAGES = { en: read('receptionist.html'), es: read('es.html') };
 const fail = [];
+
+// Addresses proven to actually receive mail. Declared up here because two
+// separate checks need it — the sweep over every address on both pages, near
+// the bottom of this file, and the /es/ footer deletion-route check. The full
+// reasoning, and why this list is meant to be awkward to extend, is with the
+// sweep; the short version is that a dead address does not refuse a deletion
+// request, it loses it. Do not add an entry until a real message has been
+// delivered to it and read.
+//   oscarinfo@proton.me  delivers (Proton), checked 2026-08-07.
+//   dan@prime-ai.es      does NOT yet: no MX, and the VPS Postfix answers
+//                        "454 Relay access denied". Add it the day Proton
+//                        custom-domain is live and a test mail has arrived.
+const MAIL_OK = ['oscarinfo@proton.me'];
 let PAGE = 'en';
 let src = PAGES.en;
 // Prefix every shared-block failure with the page it came from, or a palette
@@ -512,6 +525,57 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
     fail.push('[es] the start button label no longer says the call is recorded');
   }
 
+  // The footer, after Dan took his name and city out of it on 2026-08-07.
+  //
+  // What left the page was the controller's IDENTITY. What must not leave is
+  // the ROUTE — the address to write to and the link to the notice — because
+  // that is now the only thing on any page of this site that lets a visitor
+  // act on the recording. The identity itself moved one layer down to
+  // /voice/privacidad, which is served by a DIFFERENT repository
+  // (Voice_agent/src/demo.ts, PM2 prime-voice). Verified 2026-08-07: that page
+  // returns 200 and carries the name, Fuengirola, Málaga and the email.
+  //
+  // This check cannot see any of that. It proves the footer still offers a way
+  // out; it cannot prove anything is on the other end of the link. If
+  // /voice/privacidad is emptied or moved, art. 13 stops being satisfied across
+  // the whole site and this stays green. That is a live cross-repo dependency,
+  // not a one-off edit, and the deploy that breaks it will not touch this file.
+  {
+    const pie = body.match(/<footer class="pie"[\s\S]*?<\/footer>/);
+    if (!pie) {
+      fail.push('[es] no <footer class="pie"> found — the deletion route lives there');
+    } else {
+      // The footer holds its content TWICE: as live markup, and escaped inside
+      // data-en for the language swap. Checking the raw footer therefore proves
+      // nothing — a regex matches whichever copy it hits first and cannot say
+      // which. Deleting the visible link leaves English-mode visitors fine and
+      // strands Spanish-mode ones, and vice versa, so both layers are asserted
+      // separately. Written this way after the single-layer version passed with
+      // the visible mailto and the visible privacy link both deleted.
+      const unescape = s => s.replace(/&quot;/g, '"').replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+      const layers = {
+        // visible: the same markup with every data-en attribute removed
+        'Spanish (visible markup)': pie[0].replace(/\sdata-en="[^"]*"/g, ''),
+        // translated: the concatenated data-en payloads, unescaped
+        'English (data-en payload)': [...pie[0].matchAll(/\sdata-en="([^"]*)"/g)]
+          .map(m => unescape(m[1])).join('\n'),
+      };
+      for (const [layer, f] of Object.entries(layers)) {
+        if (!f.trim()) continue;  // no data-en in the footer at all is legitimate
+        const mail = f.match(/mailto:([^"'?>\s&]+)/);
+        if (!mail) {
+          fail.push(`[es] the footer's ${layer} no longer offers an email address to ask for the recording to be deleted — with the controller name gone from the page, this is the only route left on it`);
+        } else if (!MAIL_OK.includes(mail[1])) {
+          fail.push(`[es] the footer's ${layer} offers ${mail[1]} for deletion requests, which is not on the delivering-address allowlist — a deletion request sent there is not refused, it is lost`);
+        }
+        if (!f.includes('/voice/privacidad')) {
+          fail.push(`[es] the footer's ${layer} no longer links to /voice/privacidad — that page is now the ONLY place the data controller is identified anywhere on this site`);
+        }
+      }
+    }
+  }
+
   // The frame, positively. Same three load-bearing ideas as the English page.
   const ES_MUST = [
     [/cuando no puedes cogerlo/i,          'the hero does not say it answers WHEN YOU CANNOT — the whole positioning'],
@@ -685,7 +749,9 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
 //                         a test mail has actually arrived, and not before.
 // john@example.com is exempt: it is the placeholder attribute on a form input,
 // never presented as a way to reach anyone.
-const MAIL_OK = ['oscarinfo@proton.me'];
+//
+// MAIL_OK itself is declared at the top of this file, because the /es/ footer
+// check needs it too and that one runs earlier.
 for (const [page, html] of Object.entries(PAGES)) {
   const body = html.replace(/<!--[\s\S]*?-->/g, '');
   const found = new Set();
