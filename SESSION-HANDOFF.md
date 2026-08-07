@@ -84,8 +84,14 @@ commits-ahead count I hand-wrote wrong.
   `<dialog class="panel">` comment carry reasoning not reconstructable from the code.
 - `/home/ubuntu/Prime_AI/Landingpage/receptionist.html` — `/en/`. The panel comment records
   why `/en/` is weaker than `/es/`.
-- `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/demo.ts` — line ~565 is the `/voice/`
-  page footer; lines 52 and 66 hold `AGENT_ID` and `ES_AGENT_ID`.
+- `/home/ubuntu/Prime_AI-voiceagent/Voice_agent/src/demo.ts` — line ~554 is the `/voice/`
+  page footer; lines 52 and 66 hold `AGENT_ID` and `ES_AGENT_ID`. Controller name/town/email
+  are **not** literals here — they interpolate `CONTROLLER` from `sales-agent.ts:531`, fed by
+  `VOICE_TOWN`/`VOICE_EMAIL` in `/home/ubuntu/Prime_AI/outreach-engine/.env`.
+- `/home/ubuntu/Prime_AI/outreach-engine/.env` — the real config for `prime-voice` despite
+  living in an unrelated project. Also holds `RETELL_API_KEY` (a previous handoff said no key
+  existed because it looked only in `Voice_agent/.env*`, where there is none) and
+  `VOICE_BOOK_SECRET`, which `--phone` requires.
 - `/tmp/claude-1000/-home-ubuntu-Prime-AI-Landingpage/44557b58-6029-4916-b7ef-995f223f6120/scratchpad/probe2.js`
   — working SMTP probe. Proton rejects pipelined commands; this one waits for each response
   and does STARTTLS with verification on.
@@ -164,9 +170,24 @@ commits-ahead count I hand-wrote wrong.
 ## Deferred + open questions
 - **CLOSED: a real message to `support@prime-ai.es` reached a readable inbox.** Dan
   confirmed 2026-08-07; `8754ec3` deployed on the strength of it.
-- **Open, now more urgent: `/voice/privacidad` still gives `oscarinfo@proton.me`** as the controller contact,
-  so the art. 13 notice now names a different address than both pages point to. Other repo,
-  needs a PM2 restart of `prime-voice`. Offered, unanswered.
+- **CLOSED: `/voice/privacidad` now gives `support@prime-ai.es`.** All three surfaces agree.
+  **The fix was NOT where this file said it was.** `demo.ts:554` renders
+  `${CONTROLLER.email}`; the literal string is nowhere in `Prime_AI-voiceagent`. `CONTROLLER`
+  (`sales-agent.ts:531`) reads `process.env.VOICE_EMAIL`, and the service is started with
+  `bun --env-file=/home/ubuntu/Prime_AI/outreach-engine/.env` — **a different project's env
+  file**, line 54. That file is gitignored and mode 0600; backup
+  `.env.bak-20260807-211928`. Editing `demo.ts` would have changed nothing.
+  Note `/proc/<pid>/environ` does NOT show these: `--env-file` vars are injected after exec,
+  so they are invisible there and the first search for `VOICE_EMAIL` came back empty on a
+  process that was plainly using it.
+- **Open, dormant: the PHONE twin still speaks `oscarinfo@proton.me`.**
+  `agent_fcbf6c22d64c0d7b4ab237eb35` / `llm_1501cd321ddbc400b481cf145290`, 1 occurrence.
+  Its prompt is baked at publish time, so the env change does not reach it — it needs
+  `bun run sales-agent --phone`. Harmless today because `list-phone-numbers` returns `[]`,
+  so nothing can call it. Not republished unasked: that agent still has the known
+  bans-scoped-to-pitch-state defect, so publishing it is not a no-op.
+  **Both web agents are clean** — their prompts contain no email at all (the recording
+  notice is `--phone`-only by design, because the web caller has the privacy page).
 - **Open: DMARC `rua=mailto:dan@prime-ai.es`** — that address does not exist (proved 550),
   so aggregate reports bounce. One DNS edit to `support@prime-ai.es`.
 - **Open, structural: no page on prime-ai.es identifies the data controller any more.** The
