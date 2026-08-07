@@ -116,7 +116,9 @@ adjacent to the one being asked. This is the session's through-line:**
 - A Playwright MCP browser is open at `http://127.0.0.1:9876/es.html?lang=en`.
 - **36 untracked screenshots in the repo root** — my debris. Dan has been asked twice
   about delete vs `.gitignore`; no answer.
-- Live `/es/` = **`951aded`**.
+- Live `/es/` = **`943fb53`** (deployed 2026-08-07 05:56, verified byte-identical to the
+  commit). Live `/en/` = unchanged, **still shows the name**; `190c477` is committed and
+  NOT deployed.
 
 ## Verification — how to confirm things still work
 - `cd /home/ubuntu/Prime_AI/Landingpage && node test-palette.js` — expect `OK`, exit 0,
@@ -131,7 +133,10 @@ adjacent to the one being asked. This is the session's through-line:**
 - `curl -s https://prime-ai.es/es/ | grep -c 'class="llamada"'` → `1`, and
   `curl -s https://prime-ai.es/es/ | grep -o '<i></i>' | wc -l` → `28`.
 - `curl -s https://prime-ai.es/es/ | grep -c 'id="cifras"'` → `1`; `id="prueba"` → `1`;
-  `cal.eu/prime.ai/intro-wa` → `2`.
+  `cal.eu/prime.ai/intro-wa` → **`3`, not `2`**. The `2` written here was wrong: it is the
+  number of rendered links, but the command counts raw string occurrences, and the panel's
+  line carries the href twice (the real one plus its escaped copy in `data-en`). It was
+  already `3` on `951aded`; nothing regressed.
 - `curl -s https://prime-ai.es/es/ | perl -0777 -pe 's/<!--.*?-->//gs' | sed -n '/<body/,$p' | perl -0777 -pe 's/<script.*?<\/script>//gs' | grep -c '%'` → `0`.
 - `curl -s https://prime-ai.es/es/ | perl -0777 -pe 's/<!--.*?-->//gs' | grep -ciE 'fontaner|plumbers|oficio|una avería|inside a leak'` → `0`.
 - `curl -s https://prime-ai.es/voice/privacidad | grep -c 'Daniel Kooij'` — must be
@@ -139,18 +144,31 @@ adjacent to the one being asked. This is the session's through-line:**
   art. 13 is unsatisfied and `test-palette.js` will still report green. Layered
   disclosure is a live dependency, not a one-off edit.
 - Rollback one step to `951aded`:
-  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260807-043924 /var/www/prime-ai/es/index.html`
-  — that file is `44a0187`. Verify any backup by diffing it against git before trusting
-  its filename.
+  `sudo install -o www-data -g www-data -m 644 /var/www/prime-ai-backups/es-index.html.bak-20260807-055651 /var/www/prime-ai/es/index.html`
+  — that file is **`951aded`**, verified by diffing against git before use. (The older
+  `-20260807-043924` is `44a0187`, one step further back.) Verify any backup by diffing it
+  against git before trusting its filename.
+- **`grep` in this repo is a shell function wrapping ugrep with `-I`**, so it silently
+  skips any file that `file` calls binary — exiting 1, which reads exactly like a real
+  zero. `test-palette.js` was in that state until `0b298b7` because of one raw NUL byte.
+  If a `grep` result ever contradicts `sed`/`Read`, check `file <path>` before believing
+  the grep; use `command grep` to bypass the wrapper.
 
 ## Deferred + open questions
-- **Open: deploy `943fb53` now, or hold it and ship the name removal everywhere at once?**
-  Asked at end of session, unanswered.
-- **Open: the name is still in three other places.** `es.html` footer (`.pie`); the
-  `/voice/` page (`demo.ts:565`, other repo, needs a PM2 restart of `prime-voice`); and
-  `/en/` `receptionist.html`. The `/voice/` one is arguably part of "pressing the button
-  to listen", since that is where the button sends you. Dan was asked which to do;
-  unanswered.
+- ~~Open: deploy `943fb53` now, or batch it?~~ **Answered: deploy now. Done** — live `/es/`
+  is `943fb53`.
+- ~~Open: the name is still in three other places.~~ **Answered: `/en/` call panel only.
+  Done in `190c477`, not deployed.** The handoff mislabelled these: `demo.ts:565` is a
+  `<footer class="pie">`, not a call panel, and `es.html:1951` is the `.pie` footer too.
+  Only `receptionist.html` was the twin of the panel Dan objected to. Both footers keep
+  the name deliberately — they are the second layer that makes removing it from the panels
+  safe.
+- **Open, and now load-bearing: `/en/` has no controller record at all.** `/es/` kept its
+  footer copy; `receptionist.html` never had one, so after `190c477` an English visitor's
+  only route to the controller is `/voice/privacidad`, which is **Spanish-only**. The gap
+  predates the commit; the commit makes it the single point of failure. Fix is an English
+  privacy page or a footer on `/en/`. Not chosen by me.
+- **Open: deploy `190c477` to `/en/`?** Not asked — Dan approved the `/es/` deploy only.
 - **Open, highest downside: `ES_AGENT_ID` is unverified.** `/es/` routes to
   `agent_d591526dbfd45aa59effa61f60` (`demo.ts:66`). It is unknown whether it carries the
   money-back guarantee rule and the pricing bans. No `RETELL_API_KEY` exists in
@@ -172,7 +190,8 @@ adjacent to the one being asked. This is the session's through-line:**
   organic traffic matters.
 
 ## Pick up here
-Answer the two open questions blocking the name work — deploy `943fb53` now or batch it —
-then remove `Daniel Kooij` from whichever of the remaining three locations Dan names,
-applying the same layered-disclosure pattern (`/voice/privacidad` link above the consent
-button, guard asserting the route rather than the literal name).
+Both blocking questions are answered and both edits are done. Next: decide whether to
+deploy `190c477` to `/en/`, and — before or with it — close the `/en/` controller gap,
+since that page now has no controller record of its own and points only at a Spanish-only
+privacy page. Then `warm-palette` is **10 commits ahead of origin** and has never been
+pushed; that has gone unasked for two sessions.
