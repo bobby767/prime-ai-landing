@@ -1884,11 +1884,22 @@
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="respuesta">
-            <!-- El español dice "la mitad de los clientes extranjeros". En
-                 inglés va sin la fracción: una proporción sobre el negocio
-                 del que lee es exactamente la clase de cifra que el agente
-                 tiene prohibido afirmar. -->
-            <div class="respuesta-txt" data-en="Yes, and it works out which one the caller is speaking instead of making them choose. On this coast, where plenty of your customers will not be Spanish, that shows straight away. Other languages can be looked at depending on the customers you get — better to talk it through on the call.">Sí, y detecta cuál está hablando quien llama en vez de hacerle elegir. En la costa, con la mitad de los clientes extranjeros, eso se nota enseguida. Otros idiomas se pueden mirar según la clientela que tengas — mejor comentarlo en la llamada.</div>
+            <!-- Decía que detecta solo cuál habla quien llama, y eso ya no es
+                 verdad: el 2026-08-08 el agente inglés se pasó al español a
+                 mitad de llamada (call_c46d9b05a82d3dce7204580ddbe, un solo
+                 turno inaudible bastó) y los dos agentes quedaron fijados a un
+                 idioma cada uno — Voice_agent/src/sales-agent.ts, EN_LANG y
+                 ES_LANG. Los botones ES/EN de esta misma página son ahora lo
+                 que elige, así que la respuesta dice lo que la página hace.
+                 "vale" -> "ballet" es real y está en el prompt del agente: es el
+                 fallo con respuestas cortas, y contarlo vende mejor que
+                 esconderlo.
+                 La fracción "la mitad de los clientes extranjeros" se cayó de
+                 las dos versiones. Iba solo en español porque afirmar una
+                 proporción sobre el negocio de quien lee es la clase de cifra
+                 que el agente tiene prohibida — y si el agente no puede
+                 decirla, la página tampoco debería. -->
+            <div class="respuesta-txt" data-en="Both — but each line answers in the language you set it to, and stays in it for the whole call. It does not guess halfway through: short answers are exactly what a recogniser gets wrong (&quot;vale&quot; reaches it as &quot;ballet&quot;), and being answered in the wrong language is worse than choosing once. On this page you choose with the ES/EN buttons. If you want both on the same number, or another language, that is worth going through on the call.">Las dos — pero cada línea contesta en el idioma que le pongas y se queda en él toda la llamada. No lo adivina a mitad de conversación: con respuestas cortas es justo cuando se equivoca ("vale" le llega como "ballet"), y que te contesten en el idioma que no es molesta más que elegirlo una vez. En esta página lo eliges tú con los botones ES/EN. Si quieres las dos en el mismo número, o algún otro idioma, mejor verlo en la llamada.</div>
           </div>
         </div>
 
