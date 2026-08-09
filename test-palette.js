@@ -484,9 +484,9 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   // Never let this check pass by finding nothing. If the markup is reshaped
   // so the strings stop matching, that is a silent hole, not a green build —
   // the same rule the --amber/--sand check above follows.
-  if (descriptions.length !== 3) {
+  if (descriptions.length !== 4) {
     fail.push(
-      `[es] expected 3 description strings (the static meta, T.es, T.en), found ${descriptions.length} — ` +
+      `[es] expected 4 description strings (the static meta, T.es, T.en, T.nl), found ${descriptions.length} — ` +
         'the occupation check cannot confirm it covered them, so it is not reporting green',
     );
   }
@@ -571,10 +571,16 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
       const unescape = s => s.replace(/&quot;/g, '"').replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>').replace(/&amp;/g, '&');
       const layers = {
-        // visible: the same markup with every data-en attribute removed
-        'Spanish (visible markup)': pie[0].replace(/\sdata-en="[^"]*"/g, ''),
-        // translated: the concatenated data-en payloads, unescaped
+        // visible: the same markup with EVERY translation attribute removed.
+        // Both of them, and that is not tidiness: leaving data-nl in means the
+        // Dutch payload's own mailto satisfies this check, and deleting the
+        // visible Spanish link goes green. Exactly the failure the two-layer
+        // split was written for, one language later.
+        'Spanish (visible markup)': pie[0].replace(/\sdata-(?:en|nl)="[^"]*"/g, ''),
+        // translated: the concatenated payloads of each language, unescaped
         'English (data-en payload)': [...pie[0].matchAll(/\sdata-en="([^"]*)"/g)]
+          .map(m => unescape(m[1])).join('\n'),
+        'Dutch (data-nl payload)': [...pie[0].matchAll(/\sdata-nl="([^"]*)"/g)]
           .map(m => unescape(m[1])).join('\n'),
       };
       for (const [layer, f] of Object.entries(layers)) {
@@ -676,6 +682,7 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   // would depend on a script, and the swap would capture English into
   // data-es on first use and lose the Spanish permanently.
   const enValues = [...body.matchAll(/data-en="([^"]*)"/g)].map(m => m[1]);
+  const nlValues = [...body.matchAll(/data-nl="([^"]*)"/g)].map(m => m[1]);
 
   // Counting data-en attributes cannot catch the failure that actually
   // happens — a NEW Spanish string added with no English — because the count
@@ -694,6 +701,23 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
       if (!tag.includes('data-en=')) {
         fail.push(`[es] a .${cls} carries no data-en, so it stays Spanish when the page switches: ${tag.slice(0, 70)}`);
       }
+      if (!tag.includes('data-nl=')) {
+        fail.push(`[es] a .${cls} carries no data-nl, so it stays Spanish when the page switches to Dutch: ${tag.slice(0, 70)}`);
+      }
+    }
+  }
+
+  // The one that catches the drift nobody means to cause. English arrived
+  // first and is on all 96 strings, so [data-en] IS the list of translatable
+  // copy — and traducir() iterates exactly that list. An element that gains a
+  // data-en without a data-nl therefore renders its Spanish inside a Dutch
+  // page (the fallback keeps it readable rather than printing "undefined"),
+  // and nothing about the page looks broken enough to notice. Asserted per
+  // TAG rather than by comparing counts: equal counts prove nothing when one
+  // element has both and the next has neither.
+  for (const tag of body.match(/<[^>]*\sdata-en="[^"]*"[^>]*>/g) || []) {
+    if (!/\sdata-nl="/.test(tag)) {
+      fail.push(`[es] this element has English but no Dutch, so it stays Spanish for a Dutch visitor: ${tag.slice(0, 90)}`);
     }
   }
   if (/\sdata-es="/.test(body)) {
@@ -702,11 +726,15 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   for (const [re, label] of [
     [/data-idioma="es"/, 'the ES button'],
     [/data-idioma="en"/, 'the EN button'],
+    [/data-idioma="nl"/, 'the NL button'],
   ]) {
     if (!re.test(body)) fail.push(`[es] the language switch is missing ${label}`);
   }
   if (enValues.some(v => v.trim() === '')) {
     fail.push('[es] a data-en is empty — switching to English would blank that element');
+  }
+  if (nlValues.some(v => v.trim() === '')) {
+    fail.push('[es] a data-nl is empty — switching to Dutch would blank that element');
   }
 
   // Spanish left inside an English string. Accents are useless as a signal
@@ -716,6 +744,17 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   for (const v of enValues) {
     if (SPANISH_IN_EN.test(v)) {
       fail.push(`[es] untranslated Spanish inside a data-en: "${v.slice(0, 60)}…"`);
+    }
+  }
+
+  // Same idea for the Dutch, minus "los" — which is an ordinary Dutch word
+  // (loose, undone) and would fire on correct copy. Spanish that got left in
+  // never arrives as a lone "los" anyway; it arrives as a whole clause, and
+  // the other seven words catch a clause.
+  const SPANISH_IN_NL = /[¿¡ñ]|\b(que|para|las|con|una|tus|del)\b/i;
+  for (const v of nlValues) {
+    if (SPANISH_IN_NL.test(v)) {
+      fail.push(`[es] untranslated Spanish inside a data-nl: "${v.slice(0, 60)}…"`);
     }
   }
 
@@ -737,6 +776,60 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   for (const phrase of ['This is an AI, not a person', 'The call is recorded', 'Talk to the AI (recorded)']) {
     if (!body.includes(phrase)) {
       fail.push(`[es] the English disclosure no longer carries "${phrase}" — pressing the button is the consent in both languages`);
+    }
+  }
+
+  // ---- the Dutch half -------------------------------------------------
+  // The same four load-bearing ideas as ES_MUST and EN_MUST. A third
+  // language is where a page starts saying three slightly different things.
+  const NL_MUST = [
+    [/als jij niet kunt opnemen/i,  'the Dutch hero does not say it answers WHEN YOU CANNOT — the whole positioning'],
+    [/Geen nieuwe lijn, geen nieuw toestel/i, 'the Dutch "nothing changes on your side" promise is gone from the steps'],
+    [/gaat de telefoon (?:toch|net zo goed) over/i, 'the Dutch copy no longer names the call the person on the phone could not get to'],
+    [/vervangt (?:dit )?die persoon niet/i, 'the Dutch "it does not replace anyone" section is gone'],
+  ];
+  for (const [re, label] of NL_MUST) {
+    if (!re.test(body)) fail.push(`[es] ${label}`);
+  }
+
+  // Art. 50 + art. 13 in Dutch. Three languages now reach the same button and
+  // the press is the consent in all three.
+  for (const phrase of ['Dit is een AI, geen mens', 'Het gesprek wordt opgenomen', 'Praat met de AI (wordt opgenomen)']) {
+    if (!body.includes(phrase)) {
+      fail.push(`[es] the Dutch disclosure no longer carries "${phrase}" — pressing the button is the consent in all three languages`);
+    }
+  }
+
+  // ---- Dutch page, non-Dutch line -------------------------------------
+  // THE ONE THAT MATTERS ON THIS PAGE. There are two published agents,
+  // Spanish and English, and neither speaks Dutch — Retell will not swap a
+  // voice or a language per call, so a third language is a third agent and
+  // nobody has built it. A Dutch page in front of an English line is honest
+  // only while it SAYS so, before the button, and while the button actually
+  // asks for English.
+  //
+  // Both halves are asserted because either one alone rots quietly. Drop the
+  // sentence and a Dutch reader presses expecting Dutch. Drop the mapping
+  // and... the call still lands on the English agent, via demo.ts's default
+  // branch — which is exactly why it is asserted: the fallback makes the
+  // deliberate choice invisible, so the only thing keeping it deliberate is
+  // this check failing when someone deletes it as redundant. When the Dutch
+  // agent exists, both of these come out in the same commit as NL_AGENT_ID.
+  {
+    // From `es`, not `body` — `body` strips <script> entirely. Whole-line //
+    // comments come out first: this file has been green twice on a string
+    // that only existed in a comment explaining the string.
+    const script = (es.match(/<script>[\s\S]*<\/script>/) || [''])[0]
+      .replace(/^\s*\/\/.*$/gm, '');
+    if (!/lang:\s*idioma === 'nl' \? 'en' : idioma/.test(script)) {
+      fail.push("[es] the call no longer asks for English when the page is Dutch — demo.ts maps anything that is not 'es' onto the English agent, so this does not throw, it just stops being on purpose");
+    }
+    // The panel notice is the last thing read before the press.
+    const aviso = body.match(/class="aviso"[^>]*data-nl="([^"]*)"/);
+    if (!aviso) {
+      fail.push('[es] the call panel notice has no data-nl — the Dutch visitor gets the Spanish disclosure');
+    } else if (!/in het Engels/i.test(aviso[1])) {
+      fail.push('[es] the Dutch call-panel notice no longer says the demo answers in English — the page is Dutch, the line is not, and this sentence is the whole of that admission');
     }
   }
 }
