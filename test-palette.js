@@ -1,14 +1,23 @@
 // Palette + banned-pattern + claim guard for BOTH landing pages.
 // No deps, same convention as test-roi.js. Run: node test-palette.js
 //
-// One guard for two pages rather than a second copy of it: receptionist.html
-// (English, clinics, deploys to /en/) and es.html (Spanish, trades, deploys to
-// /es/) share the palette verbatim, so the colour and banned-CSS checks are
-// identical and only the copy rules differ. PAGE below picks which page the
-// shared block is currently reading; the per-page rules live at the bottom.
+// One guard for three pages rather than three copies of it: receptionist.html
+// (English, clinics, deploys to /en/), es.html (Spanish, any business, deploys
+// to /es/) and nl.html (Dutch, Rotterdam, NOT DEPLOYED — see below) share the
+// palette verbatim, so the colour and banned-CSS checks are identical and only
+// the copy rules differ. PAGE below picks which page the shared block is
+// currently reading; the per-page rules live at the bottom.
+//
+// nl.html joined on 2026-08-09 and it is the odd one out: it is not live
+// anywhere and cannot be deployed yet. This file deliberately does NOT gate
+// that — its job is copy and palette quality, and it stays green on all three.
+// The deploy blockers (data controller, the /voice proxy, the untranslated
+// privacy notice) live in test-nl-ready.js, which is MEANT to exit 1 until
+// they are cleared. Two signals, because folding them into one would mean
+// either this file failing every run or that gate going quiet.
 const fs = require('fs');
 const read = f => fs.readFileSync(`${__dirname}/${f}`, 'utf8');
-const PAGES = { en: read('receptionist.html'), es: read('es.html') };
+const PAGES = { en: read('receptionist.html'), es: read('es.html'), nl: read('nl.html') };
 const fail = [];
 
 // Addresses proven to actually receive mail. Declared up here because two
@@ -738,6 +747,98 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
     if (!body.includes(phrase)) {
       fail.push(`[es] the English disclosure no longer carries "${phrase}" — pressing the button is the consent in both languages`);
     }
+  }
+}
+
+// ---- nl.html ---------------------------------------------------------
+// The Dutch page's COPY rules. Deploy-readiness is not here — see the note at
+// the top of this file and test-nl-ready.js.
+//
+// Everything below is a translation of a rule that already governs es.html,
+// because the reason for the rule is not Spanish: a visitor presses the button
+// and is talking to sales-agent.ts thirty seconds later, and that agent may not
+// quote a price, promise a result, or invent a figure about the prospect's
+// business — in any language. A page that claims what the call must refuse to
+// repeat is worse than a plainer one. The Dutch copy was never held to this,
+// because when it was written it lived in data-nl attributes on es.html and
+// ES_BANS scanned the body it sat in. Now it IS the body, so it needs its own.
+{
+  const nl = PAGES.nl;
+  const body = nl
+    .slice(nl.indexOf('<body'))
+    .replace(/<style[\s\S]*?<\/style>/g, '')
+    .replace(/<script[\s\S]*?<\/script>/g, '')
+    .replace(/<!--[\s\S]*?-->/g, '');
+
+  const NL_BANS = [
+    [/%/,                       'a percentage: the agent may not promise or cite one'],
+    // "per maand" / "maandelijks" are the Dutch shapes of the monthly-price
+    // ban. Both orders of number and symbol, same as ES_BANS, because nl-NL
+    // writes «€ 1.234» (symbol first) where es-ES writes «1.234 €».
+    [/€\s*[\d.,]+\s*(per maand|\/\s*maand|maandelijks)/i,
+                                'a monthly price for the service — the agent may not quote one'],
+    [/[\d.,]+\s*€\s*(per maand|\/\s*maand|maandelijks)/i,
+                                'a monthly price for the service — the agent may not quote one'],
+    [/\bvanaf\s+€?\s*[\d]/i,    'a "vanaf €X" price for the service'],
+    [/\b(maandbedrag|abonnementskosten|opstartkosten|instapprijs)\b/i,
+                                'a named fee for the service'],
+    // The pricing MODEL ban — the one that is easy to break by accident,
+    // because it reads like helpful honesty rather than a price. Same two
+    // shapes ES_BANS forbids: price varying by call VOLUME, and by rule
+    // COMPLEXITY. sales-agent.ts:942 names the first as a banned model
+    // outright ("not a number, not a range, not a shape").
+    [/\b(hangt af van hoeveel (gesprekken|telefoontjes|regels)|hoe ingewikkeld je regels)\b/i,
+                                'a pricing model (price varying by call volume or rule complexity) — banned exactly like a figure, and the agent may not repeat it'],
+    [/\bgratis\b|\bkosteloos\b|\bzonder kosten\b/i,
+                                'a free-of-charge claim, which is a price claim'],
+    [/\bgarantie|\bgegarandeerd/i,
+                                'a guarantee. es.html may carry the money-back term because Dan added it there deliberately; nothing has been decided for the Dutch page, so it stays banned until it is'],
+    // /en/'s vertical. The cheap way to notice someone has translated the
+    // wrong page into this one.
+    [/pati[eë]nt|kliniek|behandeling/i,
+                                'clinic vocabulary on nl.html — that is /en/\'s vertical, not this one'],
+  ];
+  for (const [re, label] of NL_BANS) {
+    if (re.test(body)) fail.push(`[nl] ${label} (matched ${re})`);
+  }
+
+  // ── ONE LANGUAGE, AND IT STAYS THAT WAY ──────────────────────────────
+  // nl.html has no traducir(), no pills and no data-* translation
+  // attributes: the Dutch is the markup. That is the whole reason the
+  // /es/ footer's two-layer check has no counterpart here — the failure it
+  // catches is an unstripped attribute letting the WRONG language's mailto
+  // satisfy the right language's assertion, and an attribute that does not
+  // exist cannot do that.
+  // So the invariant worth guarding is not the footer, it is the ABSENCE.
+  // If a data-en ever reappears, that whole failure class comes back with
+  // it and this page needs the footer check ported before it is safe.
+  for (const attr of ['data-en', 'data-nl', 'data-es']) {
+    if (nl.includes(`${attr}=`)) {
+      fail.push(`[nl] ${attr}= is back on nl.html. This page is single-language by design; a translation attribute means traducir() is being reintroduced, and the /es/ footer deletion-route check must be ported here in the same edit or the wrong language's mailto can satisfy the right one's assertion.`);
+    }
+  }
+
+  // ── THE MARKET CLAIM MOVES AS ONE ────────────────────────────────────
+  // The city is asserted in exactly three places and they have to agree:
+  // the static <meta> (what a no-JavaScript visitor and a search crawler
+  // get), T.descripcion, and the .marbete under the fold. On es.html these
+  // drifted once already — the meta said "fontaneros, reformas y negocios"
+  // while the marbete said "negocios" — which is why they are counted
+  // rather than trusted.
+  const CITY = 'Rotterdam';
+  const cities = (body.match(/\bRotterdam\b/g) || []).length
+               + (nl.match(/content="[^"]*\bRotterdam\b[^"]*"/g) || []).length
+               + (nl.match(/descripcion: '[^']*\bRotterdam\b[^']*'/g) || []).length;
+  if (cities < 3) {
+    fail.push(`[nl] ${CITY} is asserted in ${cities} of the 3 places that must agree (meta description, T.descripcion, .marbete). One of them has drifted.`);
+  }
+  // Málaga is es.html's market, and this page was derived from it by hand.
+  // A surviving mention is a port that was not finished, not a choice.
+  // The biography is exempt and says "aan de Spaanse kust" instead: Dan
+  // rang businesses on that coast, and rewriting that to Rotterdam would
+  // have invented fieldwork he never did.
+  if (/M[áa]laga/.test(body)) {
+    fail.push(`[nl] Málaga still appears in nl.html's visible body — that is es.html's market. If this is the biography, it should read "aan de Spaanse kust"; anywhere else it is an unfinished port.`);
   }
 }
 
