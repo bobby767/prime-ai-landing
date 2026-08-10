@@ -1494,6 +1494,21 @@
       }
     }
   </style>
+
+  <!--
+    ANALÍTICA — Umami, alojado en este mismo servidor. Sin cookies, sin
+    huella digital, sin datos personales: por eso no hay banner de consentimiento
+    y por eso no hace falta pedir permiso bajo el RGPD.
+
+    /s/t.js y /s/api/send son ESTA misma web (nginx los reenvía al contenedor en
+    127.0.0.1:3025 — ver prime-ai-demo.conf). No es un tercero: la petición nunca
+    sale de prime-ai.es. Un script servido desde un dominio con "analytics" en el
+    nombre lo bloquea cualquier filtro, y entonces no se cuenta a nadie.
+
+    defer: la página no debe esperar nunca a la analítica para pintarse. Si el
+    script falla o lo bloquean, aquí no se rompe nada.
+  -->
+  <script defer src="/s/t.js" data-website-id="dd0fa268-a3be-4a04-8dd2-ba5daafba0cf" data-host-url="https://prime-ai.es/s"></script>
 </head>
 <body>
 
