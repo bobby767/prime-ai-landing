@@ -76,6 +76,25 @@ That filter is the point — it is the thing raw nginx logs could not do. But it
 means **you cannot verify this with a headless browser.** Verify with curl and a
 normal UA, or a real browser.
 
+## The button events
+
+Five `data-umami-event` attributes on `es.html`. The four `.llamar` buttons open
+the demo panel and are named by WHERE they sit, so the split tells you how far
+down the page someone got before they were interested:
+
+| Event | Button |
+|---|---|
+| `demo-abrir-nav` | sticky header, beside the ES/EN pills |
+| `demo-abrir-portada` | hero, under the headline |
+| `demo-abrir-movil` | the mobile CTA bar |
+| `demo-abrir-cierre` | the closing section, `#cierre` |
+| `demo-boton-hablar` | `#ir`, inside the panel — the one that starts the call |
+
+**These count PRESSES, not connected calls.** If the mic is denied or the token
+mints fail, `demo-boton-hablar` has already counted. The number of calls that
+really start is `POST /voice/token` in nginx's log, and the gap between the two
+is exactly the drop-off at that step — which is the useful thing to compare.
+
 ## Verifying it still works
 
 ```sh
@@ -120,6 +139,6 @@ text becomes false and a banner becomes mandatory.
 - **No `$host` in nginx's log format.** Still worth doing — it would make every
   vhost separable in `access.log` for free — but analytics supersedes it for this
   page's purposes.
-- **No goal/event tracking on the demo button.** Umami records the page view, not
-  whether anyone pressed "call". Adding it is a `data-umami-event` attribute on
-  the button.
+- **`/es/?lang=en` is not a separate page to Umami.** The English variant is the
+  same URL with a query string, so both languages land in one bucket. Splitting
+  them means a second website entry or a custom event.

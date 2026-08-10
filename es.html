@@ -1521,12 +1521,12 @@
         <button type="button" class="idioma-btn" data-idioma="es" aria-pressed="true">ES</button>
         <button type="button" class="idioma-btn" data-idioma="en" aria-pressed="false">EN</button>
       </div>
-      <button class="btn btn-primary btn-nav llamar" data-en="Hear it answer">Escúchala contestar</button>
+      <button class="btn btn-primary btn-nav llamar" data-umami-event="demo-abrir-nav" data-en="Hear it answer">Escúchala contestar</button>
     </div>
   </nav>
 
   <div class="cta-movil">
-    <button class="btn llamar" data-en="Hear it answer — no phone needed">Escúchala contestar — sin teléfono</button>
+    <button class="btn llamar" data-umami-event="demo-abrir-movil" data-en="Hear it answer — no phone needed">Escúchala contestar — sin teléfono</button>
   </div>
 
   <!-- ============================================
@@ -1541,7 +1541,7 @@
            carga "when you can't pick up", y test-palette.js exige las dos:
            es la frase que no se puede perder al traducir. -->
       <p class="entrada" data-en="It answers for you when you can't pick up, speaks English or Spanish, and puts the job straight in your calendar.">Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario.</p>
-      <button class="btn btn-primary llamar" data-en="Call it now — right here, no phone needed">Llámala ahora — aquí mismo, sin teléfono</button>
+      <button class="btn btn-primary llamar" data-umami-event="demo-abrir-portada" data-en="Call it now — right here, no phone needed">Llámala ahora — aquí mismo, sin teléfono</button>
       <small class="letra-chica" data-en="I won't tell you about it, you'll hear it. Talk to it on this page and ask it to book you in. Takes a minute.">No te lo cuento, lo escuchas. Habla con ella en esta misma página y pídele una cita de prueba. Un minuto.</small>
 
       <!-- La onda va aria-hidden porque es forma, no información: lo que
@@ -1985,7 +1985,7 @@
       </div>
 
       <div>
-        <button class="btn btn-primary llamar" style="font-size:18px; padding:18px 40px;" data-en="Hear it answer — right here, no phone needed">Escúchala contestar — aquí mismo, sin teléfono</button>
+        <button class="btn btn-primary llamar" style="font-size:18px; padding:18px 40px;" data-umami-event="demo-abrir-cierre" data-en="Hear it answer — right here, no phone needed">Escúchala contestar — aquí mismo, sin teléfono</button>
       </div>
 
       <small class="letra-chica" data-en="Would you rather I talked you through it? Half an hour, no obligation, and I will tell you whether this fits your business or not. If it does not, I will say so.">¿Prefieres que te lo cuente yo? Media hora, sin compromiso, y te digo si esto le encaja a tu negocio o no. Si no le encaja, te lo digo.</small>
@@ -2062,7 +2062,11 @@
     <h3 id="panel-titulo" data-en="Hear it answer">Escúchala contestar</h3>
     <p class="aviso" data-en="This is an AI, not a person — the same one that would answer your business's phone. The call is recorded, to improve it.">Es una IA, no una persona — la misma que contestaría el teléfono de tu negocio. La llamada se graba, para mejorarla.</p>
     <p class="panel-chica" data-en="&lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with the recording and how to ask me to delete it (in Spanish)&lt;/a&gt;."><a href="/voice/privacidad">Qué hago con la grabación y cómo pedir que la borre</a>.</p>
-    <button class="btn btn-primary" id="ir" data-en="Talk to the AI (recorded)">Hablar con la IA (se graba)</button>
+    <!-- data-umami-event cuenta la PULSACIÓN, no la llamada conectada: si el
+         micro se deniega o el token falla, esto ya ha contado. El número de
+         llamadas que de verdad arrancan sale de POST /voice/token en el log de
+         nginx, y comparar los dos es justo lo que dice cuántas se caen aquí. -->
+    <button class="btn btn-primary" id="ir" data-umami-event="demo-boton-hablar" data-en="Talk to the AI (recorded)">Hablar con la IA (se graba)</button>
     <p class="estado" id="estado" role="status" aria-live="polite"></p>
     <!-- El agente cierra apuntando a "el botón de la página" (Voice_agent/src/
          sales-agent.ts, WEB_CLOSE). Este <dialog> trae fondo oscuro, así que el
