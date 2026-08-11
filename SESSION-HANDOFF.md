@@ -1,145 +1,142 @@
-# Session Handoff — The Netherlands page built, and expressive mode turned on live
+# Session Handoff — the demo agent stopped giving up, and the page learned to count
 
-_Last updated: 2026-08-09_
+_Last updated: 2026-08-11_
 
 ## Where it started
-Picked up from the previous handoff's "Pick up here": start the separate Netherlands
-page from the Dutch copy stranded in `db07bb0`. Reading the code first shrank the job —
-the previous handoff claimed the NL page needs "its own market figures", and it does not:
-`es.html` asserts zero market statistics by design. Mid-session Dan changed subject and
-asked whether the landing page agent had "the expressive thing" on. It did not; that
-became the second piece of work, and the only one that reached production.
+Picked up from the previous handoff with both its candidate actions blocked on Dan.
+He changed subject twice instead: first to make the landing-page agent never give up
+selling, then — after asking how many visits the page had today — to discover it had
+no analytics at all. Both shipped and are live; the NL page and the Dutch entity were
+never touched.
 
 ## Decisions locked + what shipped
-- **`a84f7e7` (Landingpage, `warm-palette`) — the Netherlands page. NOT DEPLOYED.**
-  `/home/ubuntu/Prime_AI/Landingpage/nl.html`, 2418 lines. `/es/` in Dutch for
-  Rotterdam on prime-ai.nl. Built by baking `db07bb0`'s 96 `data-nl` attributes into the
-  markup, then deleting the toggle apparatus entirely.
-- **Dan's four answers that shaped it:** domain `prime-ai.nl` (register it); city
-  **Rotterdam**; **Dutch-only, no language toggle**; controller is **a Dutch entity, details
-  to follow**. The demo stays English by precedent — no Dutch Retell agent exists.
-- **Single-language is structural, not cosmetic.** Gone: `traducir()`, the pills, the
-  indexed `T` table, `localStorage`, `?lang`, every `data-*` attribute. `?lang=` now does
-  nothing on that page; `?c=` still works. It also deletes a failure class — the `/es/`
-  footer's two-layer check exists because an unstripped attribute lets the wrong language's
-  mailto satisfy the right language's assertion, and there are no attributes here.
-- **The previous handoff was wrong about market figures.** `#cifras` cards are labelled
-  *"no es una estadística"* and the ROI calculator only multiplies numbers the visitor
-  types. Rotterdam is the ONLY market claim changed, in three places that must agree.
-- **One line deliberately not localised:** the biography reads *"aan de Spaanse kust"*.
-  Dan rang businesses on the Costa del Sol, not Rotterdam; the literal Dutch
-  (*"hier in de buurt"*) was true on `/es/` and would have implied fieldwork he never did.
-- **`85ae78f` (Voice_agent, `voice-agent-v1`) — expressive mode, PUBLISHED AND LIVE.**
-  `enable_expressive_mode: true` + `expressive_emotion_tags` added to `salesAgentPayload`.
-  It lived only in `publish-lead.ts`'s `NATURAL` (the cartesia-Isabel intake agent);
-  nothing imported it into `sales-agent.ts`.
-- **Set in `salesAgentPayload`, not hand-listed in the update path** — `agentUpdatePayload`
-  derives from it, so the field reaches existing agents. That exact drift bit twice before
-  (`voice_temperature` 2026-08-06, `webhook_url` 2026-08-08).
-- **Tags nailed shut to `empathetic/pause/emphasis`.** `happy`/`excited` cut: the page is
-  built on underclaiming, and an agent sounding delighted while refusing to quote a number
-  reads as a salesman. `voice_temperature` deliberately left at 0.5 — one knob at a time.
-- **I corrected myself on the voices mid-session.** They are **`11labs-Willa`** (EN) and
-  **`11labs-Santiago`, persona Alejandro, male** (ES). I had said `retell-Willa` and
-  `cartesia-Isabel`, reading `publish.ts`'s constants — that file is the *clinic demo*
-  publisher. This mattered: it voided the reassurance that the EN voice was safely a
-  platform voice.
-- **`test-nl-ready.js` is a second guard on purpose.** Folding the NL deploy blockers into
-  `test-palette.js` would have made it red every run and taught everyone to ignore it.
+- **`11ce7e0` (Voice_agent) — the web demo never runs out of goes. PUBLISHED AND LIVE.**
+  The two-go budget is replaced by a size ladder that never terminates: full reframe
+  after the first no, short one after the second, **LIGHT TOUCH** (one sentence, door
+  on the latch, asks nothing) from the third onwards, forever.
+- **Deleting the budget was the obvious move and the wrong one.** Unlimited goes at
+  *full* size is an agent that repeats itself until the visitor leaves — same lost
+  booking, slower route. The no-count survives and now SIZES the go instead of ending
+  it, plus "never the same reframe twice".
+- **`end_call` on web: four cases → three.** A no is no longer one at any count;
+  neither is being told to stop (drops to light touch, stays on the line). Still ends
+  on sustained abuse, a done booking, and the clock.
+- **PHONE IS DELIBERATELY UNTOUCHED and proven so** — byte-identical before/after, EN
+  and ES, across general prompt, states, tools, greeting. Web's visitor pressed a
+  button and is capped at 8 min; phone is an unsolicited call that will not take no,
+  which the prompt already argues against and which is regulated. **If these are ever
+  recollapsed, collapse onto the PHONE rule.**
+- **`PITCH_STATE` -> `pitchState(mode)`** — six ternaries in reading order, not two
+  copies that drift. Expression body so 240 array lines keep their indentation.
+  **These arrays are `join('\n')`ed, so wrap position IS content** — the first attempt
+  moved phone by 2 bytes purely from rewrapping. Tool descriptions use `join(' ')` and
+  were immune.
+- **`4170d60` + `b8b1388` (Landingpage) — Umami analytics. LIVE.** Self-hosted, on the
+  Postgres already here. Plausible rejected: needs ClickHouse for a page seeing ~4
+  visits/day.
+- **Tracker proxied through prime-ai.es** (`/s/t.js`, `/s/api/send` -> `127.0.0.1:3025`),
+  not the analytics hostname — a script from a host containing "analytics" is blocked
+  by every filter list. **Two explicit `location` blocks, never a `/s/` prefix** (a
+  prefix would put Umami's dashboard on prime-ai.es). `X-Forwarded-For` is
+  load-bearing: without it every visitor is this server.
+- **Default `admin`/`umami` rotated and proven dead** (old -> 401, new -> 200). Someone
+  was already on that login page while I worked.
+- **`0b0ee34` (Voice_agent) — privacy notice discloses the counter.** Cookieless, no IP
+  stored, so no consent banner; a test pins all four claims because that is WHY there
+  is no banner.
+- **`b8b1388` — five `data-umami-event` attributes**, named by position
+  (nav/portada/movil/cierre) so the split shows how far down the page people get.
+  `demo-boton-hablar` counts the **press, not a connected call**; the real count is
+  `POST /voice/token` in nginx's log, and the gap is the drop-off.
+- **Yesterday's log-based visit count: 1377 -> really about 4.** The rest was Footfay
+  (shares `/es/` paths), Googlebot, Bingbot, ChatGPT-User, a scanner rotating three
+  UAs in one second, and a local monitor curling every 5 min.
+- **Both branches pushed** (`dde454b..b8b1388`, `a95a04e..0b0ee34`), clean
+  fast-forwards, verified 0-ahead/0-behind by re-fetch.
 
 ## Key files for next session
-- `/home/ubuntu/Prime_AI/Landingpage/nl.html` — the page. Its top comment block documents
-  all three deploy blockers and the `db07bb0` provenance. Read before editing anything.
-- `/home/ubuntu/Prime_AI/Landingpage/docs/nl-deploy.md` — the nginx block (written, NOT
-  installed), deploy steps, verification, and the five blockers as a table.
-- `/home/ubuntu/Prime_AI/Landingpage/test-nl-ready.js` — the deploy gate. **Exits 1 by
-  design.** Verified it flips to 0 when all five clear.
-- `/home/ubuntu/Prime_AI/Landingpage/test-palette.js` — now guards THREE pages.
-  `MAIL_OK` still at the top (declaring it lower is a TDZ `ReferenceError`).
-- `/home/ubuntu/Prime_AI/Voice_agent/src/sales-agent.ts` — `EXPRESSIVE_TAGS` ~line 1516,
-  `salesAgentPayload` below it. The docblock records the unresolved platform-voice question.
-- `/home/ubuntu/Prime_AI/Voice_agent/src/demo.ts` — line 56 `agent_override` ignores
-  `voice_id`/`language`; line 939 any non-`es` maps to the English agent silently; line
-  1164 `?lang` whitelist is en-or-es. All three block a third language.
+- `/home/ubuntu/Prime_AI/Landingpage/docs/analytics.md` — the whole Umami setup,
+  credentials location, the bot-filter trap, deploy steps. **Read before touching
+  analytics.**
+- `/home/ubuntu/Prime_AI/Voice_agent/src/sales-agent.ts` — `pitchState(mode)` ~line
+  840; its docblock records why the channels differ and which way to collapse them.
+- `/home/ubuntu/Prime_AI/Landingpage/es.html` — the 5 tracking attributes and the
+  analytics `<script defer>` in `<head>`.
+- `/home/ubuntu/Prime_AI/Voice_agent/src/demo.ts` — `privacyPageHtml()` ~line 866.
+- `/etc/umami/umami.env` (root, 600) — admin password + website ID.
+  `/etc/nginx/sites-available/umami.conf`, and the `/s/` blocks inside
+  `/etc/nginx/sites-enabled/prime-ai-demo.conf`.
+- `/var/www/prime-ai/es/index.html` — **the live page, deployed from a COPY, not from
+  this repo.** Backups `index.html.bak-*` alongside.
 - Plan file: none drove this session.
-- Memory files touched: **none written.** Read `prime-voice-env-file.md` to locate
-  `RETELL_API_KEY` in `/home/ubuntu/Prime_AI/outreach-engine/.env`.
-- Reusable scratch: `readback.ts` in
-  `/tmp/claude-1000/-home-ubuntu-Prime-AI-Landingpage/fc2d92ff-17d1-458e-bfb2-a87441aef35c/scratchpad/`
-  — reads expressive fields off both live agents. Scratchpad is session-scoped; copy it
-  into the repo if it is worth keeping.
+- Memory files touched: **none written.**
 
 ## Running state
 - Background processes: **PID 305506** —
   `python3 -m http.server 9876 --bind 0.0.0.0 --directory /home/ubuntu/Prime_AI/Landingpage`,
-  confirmed alive. Kill with `kill 305506`. Pre-existing, not started this session.
-  **Publicly reachable — port 9876, plain HTTP, no TLS**, and it now serves `nl.html` too.
-  No `run_in_background` shells were started this session.
-- Dev servers / ports: `http://127.0.0.1:9876/nl.html`. PM2 `prime-voice` on `:3023/voice`.
-- Open worktrees / branches: Landingpage on **`warm-palette`, 28 ahead of origin**;
-  Voice_agent on **`voice-agent-v1`, 45 ahead of origin**. **Neither pushed.**
-- A Playwright MCP browser is open at `http://127.0.0.1:9876/nl.html`, viewport 1280x900.
-- **36 untracked screenshots in the Landingpage root** — pre-existing debris, deliberately
-  excluded from `a84f7e7`. My two from this session were deleted.
-- Untracked `outreach-engine/campaigns/*.csv` in the Voice_agent repo, excluded from
-  `85ae78f`. Pre-existing.
+  confirmed alive. Kill with `kill 305506`. Pre-existing, publicly reachable, plain
+  HTTP. **No `run_in_background` shells were started this session.**
+- Docker: container **`umami`**, up 8h, `--restart unless-stopped`, listening
+  `127.0.0.1:3025`. Logs: `sudo docker logs umami`.
+- Dev servers / ports: dashboard https://analytics.srv1233720.hstgr.cloud ;
+  PM2 `prime-voice` on `:3023/voice` — **restarted this session** (count 12->13).
+- Open worktrees / branches: Landingpage `warm-palette`, Voice_agent `voice-agent-v1`
+  — **both pushed, 0 ahead, 0 behind.**
+- A Playwright MCP browser is open at `https://prime-ai.es/es/`, viewport 1280x900.
+- 36 untracked screenshots in the Landingpage root; untracked
+  `outreach-engine/campaigns/*.csv` in Voice_agent. Both pre-existing.
 
 ## Verification — how to confirm things still work
-- `node test-palette.js` — expect `OK` and **`43 tokens` en, `39 tokens` es, `39 tokens`
-  nl**. A drop means the token regex silently ate one; that count is the only visible
-  symptom of the whole failure class.
-- `node test-roi.js` — expect `OK — 64 combinations checked`.
-- `node test-nl-ready.js` — **expect exit 1 and 5 blockers. That is correct.** Exit 0
-  before the Dutch entity exists means a check was weakened.
-- `diff <(curl -s https://prime-ai.es/es/) <(git show 10d26a1:es.html)` — expect no output.
-  `/es/` was NOT touched this session; `es.html` is still byte-identical to `10d26a1`.
-- Expressive mode on the live agents — read back, never trust publish's output, which
-  prints `updated` either way:
-  `cd /home/ubuntu/Prime_AI/Voice_agent && bun --env-file=/home/ubuntu/Prime_AI/outreach-engine/.env run <scratchpad>/readback.ts`
-  Expect `true` and `["empathetic","pause","emphasis"]` on
-  `agent_365110c5e7174c245faa0aa30d` (EN) and `agent_d591526dbfd45aa59effa61f60` (ES).
-- `cd /home/ubuntu/Prime_AI/Voice_agent && bun test src/build.test.ts` — expect
-  **180 pass, 0 fail**. Full `bun test` shows **4 pre-existing failures in
-  `publish-lead.test.ts`** (Grúas Francis prompt), unrelated; verified 4 before and 4 after
-  this session's change.
-- Republish both web agents: `bun --env-file=... run src/sales-agent.ts` (no flag = web,
-  does BOTH EN and ES, by design there is no flag for one).
-- **`grep` in these repos is a shell function wrapping ugrep with `-I`**, so it silently
-  skips any file `file` calls binary, exiting 1 exactly like a real zero. Use
-  `command grep` to bypass.
-- **Put any check containing single quotes in a script file** — bash single-quoting ate
-  two checks in the previous session.
+- `node test-palette.js` — expect `OK` and **43/39/39 tokens** en/es/nl.
+- `node test-roi.js` — expect **two** OK blocks; line 1 is `OK — 64 combinations
+  checked`. **Do not truncate with `tail`** — that hides the first block and reads as
+  a different program.
+- `node test-nl-ready.js` — **expect exit 1, 5 blockers.** Check `$?` before any pipe;
+  `| tail` reports tail's status, not the script's.
+- `cd /home/ubuntu/Prime_AI/Voice_agent && bun test` — expect **233 pass, 0 fail**. The
+  4 `publish-lead.test.ts` failures the last handoff called pre-existing are **gone**,
+  fixed by a commit that landed after `85ae78f`.
+- `curl -s https://prime-ai.es/es/ | grep -c '<script defer src="/s/t.js"'` — expect
+  **1**. Matching the bare path returns 2 (the Spanish comment names it too).
+- `sudo -u postgres psql -d umami -tAc 'select count(*) from website_event'` — the only
+  real proof an event landed.
+- **Umami drops bot UAs while still returning HTTP 200.** A headless browser fires the
+  beacon, gets 200, and leaves no row. **You cannot verify this with Playwright** — use
+  curl with a normal Chrome UA, or prove wiring in the browser and storage with curl
+  separately.
+- Read expressive/prompt state off the LIVE agents, never trust publish's output:
+  scratch script `readback-nogiveup.ts` in
+  `/tmp/claude-1000/-home-ubuntu-Prime-AI-Landingpage/a6a8bc62-87e0-4432-a0f8-6f02de6edb60/scratchpad/`
+  — checks all three agents. Scratchpad is session-scoped; copy it into the repo if it
+  is worth keeping.
+- **`grep` here is a shell function wrapping ugrep with `-I`**; use `command grep`.
+  Note `sudo command grep` FAILS — `command` is a shell builtin sudo cannot exec.
 
 ## Deferred + open questions
+- **Open: does expressive mode actually PERFORM, or is it stored-but-inert?** Unchanged
+  from last session; still needs an ear on a recording. The same call would also
+  exercise the new never-give-up behaviour.
 - **Open, blocking `nl.html`: the Dutch entity's legal name and registered address.**
-  Dan chose "a Dutch entity — I'll give you the details" and the details never arrived.
-  Written nowhere; the footer carries a `TODO-BLOQUEANTE-NL` marker instead. On
-  prime-ai.es NO page names the controller — it exists only at `/voice/privacidad`, behind
-  that hostname — so copying the notice across leaves the Dutch page with no layer naming
-  it at all.
-- **Open: does expressive mode actually PERFORM, or is it stored-but-inert?** The read-back
-  proves the config landed on both agents and settles that `11labs-` voices accept the
-  field. It does not prove the synthesiser performs the tags; those two look identical over
-  the API. Needs an ear on a recording — press the button on `/es/` and on `?lang=es`.
-- **Open: push both repos?** 28 and 45 commits unpushed. Never asked for.
-- **Open: the 36 untracked screenshots** — delete or `.gitignore`? Asked five times across
-  sessions, still no answer.
-- **Open, unchanged: the PHONE twin still speaks `oscarinfo@proton.me`**
-  (`agent_fcbf6c22d64c0d7b4ab237eb35`). Harmless while `list-phone-numbers` returns `[]`.
-  It was NOT republished this session (separate `--phone` run) but will now also pick up
-  expressive mode whenever it is, along with its bans-scoped-to-pitch-state defect.
-- Deferred: **the NL deploy itself** — 5 blockers, `docs/nl-deploy.md` has the nginx block
-  unenabled. The one that breaks the product silently is the demo backend: `/voice/retell.js`
-  and `POST /voice/token` are same-origin, and prime-ai.nl inherits none of prime-ai.es's
-  proxy. `demo.ts` performs no Origin/Host validation (checked), so a proxy is sufficient.
-- Deferred: **the Dutch voice agent** — a third *published* Retell agent, not a per-call
-  override. When it exists, change `lang: 'en'` in `nl.html` plus `demo.ts:939` and `:1164`.
-- Deferred: **native review of the 96 Dutch strings.** Blocker 5. They were live on `/es/`
-  for ~31 minutes and no native speaker has read them; on `nl.html` they are the whole page.
-- Deferred: **the 4 failing `publish-lead.test.ts` tests.** Pre-existing, untouched.
+  Untouched this session; still 5 blockers, `test-nl-ready.js` still exits 1.
+- **Open: should the phone agent also stop giving up?** Asked, never answered. It still
+  stops at three nos.
+- **Open: the 36 untracked screenshots** — delete or `.gitignore`? Asked six times
+  across sessions.
+- Deferred: **`nl.html` has no tracking tag** — not deployed, and would need its own
+  Umami website entry (different domain) rather than reusing this website ID.
+- Deferred: **`$host` in nginx's log format.** Still worth doing — it would make every
+  vhost separable in the shared `access.log` — but analytics supersedes it for this page.
+- Deferred: **`/es/?lang=en` is not a separate page to Umami** — both languages land in
+  one bucket. Splitting needs a second website entry or a custom event.
+- Deferred: the PHONE twin still speaks `oscarinfo@proton.me`
+  (`agent_fcbf6c22d64c0d7b4ab237eb35`); it will also pick up expressive mode whenever it
+  is next republished.
+- Note: **other sessions are actively committing to both repos.** 7 of the 9
+  Voice_agent commits pushed were not from this session.
 
 ## Pick up here
-Nothing is in flight and both repos are committed and clean. The most likely next action is
-whichever Dan answers first: supply the Dutch entity's details to clear `nl.html`'s main
-blocker, or listen to a recording to confirm expressive mode is performing rather than
-merely stored.
+Nothing is in flight; both repos are clean, committed and pushed. The highest-value
+next action is to press the demo button on https://prime-ai.es/es/ and listen — one
+call settles both the expressive-mode question and whether the never-give-up ladder
+sounds persistent rather than pushy. Failing that, check the Umami dashboard, which
+will have roughly a day of real data by now.
