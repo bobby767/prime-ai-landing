@@ -730,6 +730,45 @@
     }
 
     /* ============================================
+       VÍDEO
+       El póster pesa 35 KB y el vídeo 23 MB, así que preload="none": quien
+       no le dé al play no se descarga nada. width/height + aspect-ratio
+       reservan el hueco antes de que llegue el póster, para que la portada
+       no dé un salto al cargar.
+
+       ⚠ El data-en va SÓLO en el pie, nunca en un padre del <video>:
+       traducir() hace innerHTML sobre cada [data-en], y envolver el vídeo
+       lo destruiría y volvería a crearlo al cambiar de idioma — perdiendo
+       la reproducción y volviendo a bajar los 23 MB.
+
+       Los rótulos van quemados en inglés dentro del vídeo y no se pueden
+       cambiar por idioma. Dan lo decidió así el 2026-08-14: se ve en las
+       dos versiones hasta que exista un montaje en español.
+       ============================================ */
+    .video-marco {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .video-pieza {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius);
+      background: var(--ink);
+      box-shadow: var(--shadow-md);
+      margin-bottom: var(--space-3);
+    }
+
+    .video-pie {
+      font-size: var(--font-md);
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    /* ============================================
        BANDAS OSCURAS (anclas)
        El diagnóstico del 2026-08-05 sobre la página inglesa valía igual
        aquí: once secciones repartidas entre dos tonos separados por un 2%
@@ -1559,6 +1598,32 @@
           <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
         </div>
         <p class="llamada-pie" data-en="Answered — day, night, or Sunday">Contestado — de día, de noche o en domingo</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       VÍDEO
+       Va aquí, justo debajo de la portada: lo eligió Dan el 2026-08-14.
+       Sin JavaScript sigue siendo correcto — el <video> es marcado, no
+       se inyecta, y el enlace de descarga del final vale de recambio si
+       el navegador no sabe reproducirlo.
+       ============================================ -->
+  <section class="banda banda-clara aparece" id="video">
+    <div class="container">
+      <div class="video-marco">
+        <video
+          class="video-pieza"
+          controls
+          playsinline
+          preload="none"
+          poster="demo-call-poster.jpg"
+          width="1920" height="1080"
+          data-umami-event="video-demo-play">
+          <source src="demo-call.mp4" type="video/mp4">
+          <a href="demo-call.mp4">Descarga el vídeo</a> (23 MB).
+        </video>
+        <p class="video-pie" data-en="What a missed call really costs — 33 seconds">Lo que cuesta de verdad una llamada perdida — 33 segundos</p>
       </div>
     </div>
   </section>
