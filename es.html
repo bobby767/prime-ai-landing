@@ -395,6 +395,27 @@
       padding: 14px;
     }
 
+    /* El número, sólo en móvil. Ahí llamar es un toque y ya tiene la app de
+       teléfono delante; en escritorio nadie marca un +34 desde un portátil, así
+       que manda el botón de siempre. Los dos van en el HTML y decide el ancho.
+
+       El corte es el mismo 767 que ya usa .cta-movil a propósito: dos puntos de
+       ruptura distintos dejarían un ancho donde la barra fija está puesta pero
+       su contenido no, que es una franja naranja vacía pegada abajo. */
+    .tel-movil {
+      display: none;
+      gap: 8px;
+    }
+
+    /* Tabular para que los tres grupos midan lo mismo, y nowrap porque
+       "951 870 / 630" partido en dos líneas dentro de la barra fija se lee como
+       dos números. */
+    .tel-num {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
     /* ============================================
        ALTO (hero)
        ============================================ */
@@ -712,6 +733,37 @@
       margin-top: var(--space-2);
       max-width: 560px;
       margin-inline: auto;
+    }
+
+    /* DEBAJO de .letra-chica a propósito: las dos reglas son de una clase, así
+       que gana la última, y puesta arriba el `display: block` de .letra-chica la
+       pisaba y salían los dos textos a la vez en escritorio. */
+    .letra-movil {
+      display: none;
+    }
+
+    /* El número EN ESCRITORIO, debajo del botón y no en su lugar.
+       Un portátil no marca, pero eso no es razón para esconderlo: enseñarlo
+       dice "hay un negocio de verdad en Málaga" en una página que vende
+       precisamente que el teléfono se coge. Se ocultó hasta el 21-08-2026 y el
+       efecto fue que en un portátil el número no salía por ningún lado.
+       Sigue siendo un tel: — abre Skype o FaceTime donde los haya, y donde no
+       los haya no hace nada. */
+    .tel-escritorio {
+      margin-top: var(--space-2);
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Hereda el color en vez de ponerse azul de enlace: el número es un dato
+       que se lee, no una llamada a la acción compitiendo con el botón que
+       tiene justo encima. El subrayado basta para que se vea pulsable. */
+    .tel-escritorio a {
+      color: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+      white-space: nowrap;
     }
 
     /* ============================================
@@ -1471,6 +1523,30 @@
         display: flex;
       }
 
+      /* El cambio de canal, y el único sitio donde ocurre. .llamar abre el
+         panel de voz del navegador; .tel-movil marca. Va aquí y no en JS
+         porque lo que decide es el aparato, no el visitante. */
+      .llamar {
+        display: none;
+      }
+
+      .tel-movil {
+        display: inline-flex;
+      }
+
+      .letra-escritorio {
+        display: none;
+      }
+
+      .letra-movil {
+        display: block;
+      }
+
+      /* En móvil sobra: el botón grande ES el número. */
+      .tel-escritorio {
+        display: none;
+      }
+
       /* --space-10 (80px) estaba calculado para la barra .cta-movil, que mide
          80px y es fixed. Al añadir el enlace de LinkedIn debajo del aviso, el
          pie creció ~56px por dentro y ese margen se lo comió: medido al final
@@ -1561,11 +1637,13 @@
         <button type="button" class="idioma-btn" data-idioma="en" aria-pressed="false">EN</button>
       </div>
       <button class="btn btn-primary btn-nav llamar" data-umami-event="demo-abrir-nav" data-en="Hear it answer">Escúchala contestar</button>
+      <a class="btn btn-primary btn-nav tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-nav"><span data-en="Call">Llamar</span></a>
     </div>
   </nav>
 
   <div class="cta-movil">
     <button class="btn llamar" data-umami-event="demo-abrir-movil" data-en="Hear it answer — no phone needed">Escúchala contestar — sin teléfono</button>
+    <a class="btn tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-movil"><span data-en="Call it now">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
   </div>
 
   <!-- ============================================
@@ -1581,7 +1659,16 @@
            es la frase que no se puede perder al traducir. -->
       <p class="entrada" data-en="It answers for you when you can't pick up, speaks English or Spanish, and puts the job straight in your calendar.">Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario.</p>
       <button class="btn btn-primary llamar" data-umami-event="demo-abrir-portada" data-en="Call it now — right here, no phone needed">Llámala ahora — aquí mismo, sin teléfono</button>
-      <small class="letra-chica" data-en="I won't tell you about it, you'll hear it. Talk to it on this page and ask it to book you in. Takes a minute.">No te lo cuento, lo escuchas. Habla con ella en esta misma página y pídele una cita de prueba. Un minuto.</small>
+      <a class="btn btn-primary tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-portada"><span data-en="Call it now">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
+      <!-- data-en va en el SPAN, nunca en el <p>: traducir() asigna innerHTML y
+           traducir el envoltorio se llevaría por delante el enlace con el número. -->
+      <p class="tel-escritorio"><span data-en="or call it on">o llámala al</span> <a href="tel:+34951870630" data-umami-event="demo-llamar-escritorio"><span class="tel-num">951 870 630</span></a></p>
+      <small class="letra-chica letra-escritorio" data-en="I won't tell you about it, you'll hear it. Talk to it on this page and ask it to book you in. Takes a minute.">No te lo cuento, lo escuchas. Habla con ella en esta misma página y pídele una cita de prueba. Un minuto.</small>
+      <!-- La de escritorio dice "en esta misma página", que en móvil es falso:
+           ahí el botón marca un número y la llamada se va de la página. Dos
+           textos, no uno con la frase quitada — lo que sustituye a "sin
+           teléfono" es "contesta en domingo", y eso hay que decirlo. -->
+      <small class="letra-chica letra-movil" data-en="I won't tell you about it, you'll hear it. Ring it and ask it to book you a slot — it answers day, night or Sunday. Takes a minute, and the call is recorded.">No te lo cuento, lo escuchas. Llámala y pídele una cita de prueba — contesta de día, de noche o en domingo. Un minuto, y la llamada se graba.</small>
 
       <!-- La onda va aria-hidden porque es forma, no información: lo que
            significa ya lo dicen las dos líneas de al lado. El texto NO va
@@ -2051,6 +2138,8 @@
 
       <div>
         <button class="btn btn-primary llamar" style="font-size:18px; padding:18px 40px;" data-umami-event="demo-abrir-cierre" data-en="Hear it answer — right here, no phone needed">Escúchala contestar — aquí mismo, sin teléfono</button>
+        <a class="btn btn-primary tel-movil" style="font-size:18px; padding:18px 40px;" href="tel:+34951870630" data-umami-event="demo-llamar-cierre"><span data-en="Call it now">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
+        <p class="tel-escritorio"><span data-en="or call it on">o llámala al</span> <a href="tel:+34951870630" data-umami-event="demo-llamar-escritorio"><span class="tel-num">951 870 630</span></a></p>
       </div>
 
       <small class="letra-chica" data-en="Would you rather I talked you through it? Half an hour, no obligation, and I will tell you whether this fits your business or not. If it does not, I will say so.">¿Prefieres que te lo cuente yo? Media hora, sin compromiso, y te digo si esto le encaja a tu negocio o no. Si no le encaja, te lo digo.</small>
