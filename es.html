@@ -1608,6 +1608,60 @@
         transform: none;
       }
     }
+
+    /* ───────────────────────────────────────────────────────────────────────
+       LÍNEA MUERTA — 23-08-2026. BORRAR ESTE BLOQUE ENTERO cuando +34 951 870
+       630 vuelva a estar `on`.
+
+       El DID se quedó en `status: checking` en Zadarma desde que se compró el
+       21-08. Comprado, pagado, atado en Retell, y sin poder recibir una sola
+       llamada. En toda su vida el log de Zadarma registra UNA entrada, y fue
+       una llamada de prueba nuestra el 22-08: `disposition: undefined`, 4
+       segundos, mientras las dos líneas que sí funcionan registran `answered`
+       con duraciones normales. Que no conste ningún visitante real no quiere
+       decir que no lo hubiera: quien marca y no oye nada no deja rastro en
+       ningún sitio, y el número llevaba dos días en la página.
+
+       Los números de quien llama no se escriben aquí. Esto se sirve a
+       cualquiera que abra la página; su sitio es el log de Zadarma y el ticket
+       interno.
+       Las otras tres líneas del mismo grupo contestan normal. Dan lo marcó a
+       mano el 23-08: no da señal.
+
+       Así que el número se retira de la página, en móvil y en escritorio. No se
+       toca el HTML: los `tel:` siguen ahí y vuelven solos al borrar esto.
+       Mientras tanto el móvil recupera .llamar, que es el demo WebRTC del
+       navegador y funciona hoy — un visitante de móvil pasa de un número muerto
+       a una demo que sí contesta, que es mejor que esconder el CTA y dejarlo
+       sin nada.
+
+       Va al final de la hoja a propósito: todas estas reglas son de una sola
+       clase, igual que las de @media (max-width: 767px), así que lo único que
+       las hace ganar es ir después. Mover este bloque hacia arriba lo desactiva
+       en silencio. Lo mismo que ya documenta .letra-movil más arriba.
+       ─────────────────────────────────────────────────────────────────────── */
+    .llamar {
+      display: inline-flex;
+    }
+
+    .tel-movil {
+      display: none;
+    }
+
+    .tel-escritorio {
+      display: none;
+    }
+
+    /* La letra de móvil dice "llámala y pídele una cita"; sin número que marcar
+       eso miente. Vuelve la de escritorio, que habla de la demo en la página. */
+    .letra-escritorio {
+      display: block;
+    }
+
+    .letra-movil {
+      display: none;
+    }
+
   </style>
 
   <!--
