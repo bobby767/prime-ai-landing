@@ -493,9 +493,13 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   // Never let this check pass by finding nothing. If the markup is reshaped
   // so the strings stop matching, that is a silent hole, not a green build —
   // the same rule the --amber/--sand check above follows.
-  if (descriptions.length !== 3) {
+  // 5 since 2026-08-23: the static meta plus T.es/T.en/T.nl/T.sv. One per
+  // published agent, because each market's meta names its own country and a
+  // count that lagged the toggle would let a whole language's search result
+  // go unchecked.
+  if (descriptions.length !== 5) {
     fail.push(
-      `[es] expected 3 description strings (the static meta, T.es, T.en), found ${descriptions.length} — ` +
+      `[es] expected 5 description strings (the static meta and T.es/en/nl/sv), found ${descriptions.length} — ` +
         'the occupation check cannot confirm it covered them, so it is not reporting green',
     );
   }
@@ -677,14 +681,34 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
     }
   }
 
-  // ---- the ES/EN switch ----------------------------------------------
-  // One page, two languages: Spanish in the markup, English in data-en. The
+  // ---- the four-flag switch -------------------------------------------
+  // One page, four languages: Spanish in the markup, English in data-en,
+  // Dutch in data-nl, Swedish in data-sv. The
   // direction is the rule being enforced here, not a detail. nginx sends the
   // bare domain to this page, so Spanish has to be what renders with no
   // JavaScript having run; if English were the markup, the default language
   // would depend on a script, and the swap would capture English into
   // data-es on first use and lose the Spanish permanently.
   const enValues = [...body.matchAll(/data-en="([^"]*)"/g)].map(m => m[1]);
+
+  // EVERY TRANSLATED LANGUAGE ON EVERY TRANSLATED NODE, and the count is the
+  // check because traducir() falls back to the Spanish original when a
+  // dataset key is missing. That fallback is deliberate — a hole shows the
+  // whole original sentence rather than a blank — which is exactly why it
+  // cannot be seen by looking at the page: a Swedish visitor gets a Spanish
+  // paragraph that reads as if it were meant. Only a count catches it.
+  const IDIOMAS = ['en', 'nl', 'sv'];
+  const cuenta = Object.fromEntries(
+    IDIOMAS.map(l => [l, (body.match(new RegExp(`data-${l}="`, 'g')) || []).length]),
+  );
+  for (const l of IDIOMAS) {
+    if (cuenta[l] !== cuenta.en) {
+      fail.push(
+        `[es] ${cuenta.en} data-en but ${cuenta[l]} data-${l} — ${cuenta.en - cuenta[l]} element(s) ` +
+        `stay Spanish for a ${l.toUpperCase()} visitor, and silently, because the swap falls back to the original`,
+      );
+    }
+  }
 
   // Counting data-en attributes cannot catch the failure that actually
   // happens — a NEW Spanish string added with no English — because the count
@@ -700,31 +724,56 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
     const tags = body.match(new RegExp(`<[^>]*class="[^"]*\\b${cls}\\b[^"]*"[^>]*>`, 'g')) || [];
     if (!tags.length) fail.push(`[es] no .${cls} on the page — the translation check for it is now inert`);
     for (const tag of tags) {
-      if (!tag.includes('data-en=')) {
-        fail.push(`[es] a .${cls} carries no data-en, so it stays Spanish when the page switches: ${tag.slice(0, 70)}`);
+      for (const l of IDIOMAS) {
+        if (!tag.includes(`data-${l}=`)) {
+          fail.push(`[es] a .${cls} carries no data-${l}, so it stays Spanish when the page switches: ${tag.slice(0, 70)}`);
+        }
       }
     }
   }
   if (/\sdata-es="/.test(body)) {
     fail.push('[es] a data-es is baked into the markup — Spanish belongs in the element itself; data-es is written at runtime and only after the first switch');
   }
-  for (const [re, label] of [
-    [/data-idioma="es"/, 'the ES button'],
-    [/data-idioma="en"/, 'the EN button'],
-  ]) {
-    if (!re.test(body)) fail.push(`[es] the language switch is missing ${label}`);
+  // One button per published agent. The flag is checked by its data-idioma and
+  // not by the emoji: on Windows the emoji does not render at all and the
+  // button shows the country letters instead, which is a fallback and not a
+  // fault.
+  for (const l of ['es', ...IDIOMAS]) {
+    if (!new RegExp(`data-idioma="${l}"`).test(body)) {
+      fail.push(`[es] the language switch is missing the ${l.toUpperCase()} button`);
+    }
   }
-  if (enValues.some(v => v.trim() === '')) {
-    fail.push('[es] a data-en is empty — switching to English would blank that element');
+  for (const l of IDIOMAS) {
+    const vals = [...body.matchAll(new RegExp(`data-${l}="([^"]*)"`, 'g'))].map(m => m[1]);
+    if (vals.some(v => v.trim() === '')) {
+      fail.push(`[es] a data-${l} is empty — switching to ${l.toUpperCase()} would blank that element`);
+    }
   }
 
   // Spanish left inside an English string. Accents are useless as a signal
   // (Málaga is in the English copy too), so this looks for punctuation and
   // function words that no English sentence contains.
+  // NOT applied to Dutch or Swedish. Every token here is a real word in at
+  // least one of them — Dutch has "los" and "met", Swedish has "para" nowhere
+  // but takes "con" inside compounds — and a guard that cries wolf gets
+  // deleted. The count check above is what covers those two; this one stays
+  // English-only, where it has caught something.
   const SPANISH_IN_EN = /[¿¡ñ]|\b(que|para|los|las|con|una|tus|del)\b/i;
   for (const v of enValues) {
     if (SPANISH_IN_EN.test(v)) {
       fail.push(`[es] untranslated Spanish inside a data-en: "${v.slice(0, 60)}…"`);
+    }
+  }
+
+  // The tell that a translation was pasted from the wrong sibling. Swedish
+  // takes å and ä; Dutch takes neither, and its ë/ï are a diaeresis rather
+  // than an umlaut. So a ring or an a-umlaut inside a data-nl is Swedish that
+  // wandered — the same line build.test.ts draws between the two prompts, for
+  // the same reason: the languages are cousins and share too much to grep for
+  // by vocabulary.
+  for (const m of body.matchAll(/data-nl="([^"]*)"/g)) {
+    if (/[åä]/.test(m[1])) {
+      fail.push(`[es] Swedish inside a data-nl: "${m[1].slice(0, 60)}…"`);
     }
   }
 

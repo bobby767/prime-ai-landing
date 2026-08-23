@@ -338,10 +338,21 @@
       font-size: var(--font-sm);
     }
 
-    /* ES/EN. Deliberately the quietest thing in the nav: the visitor who
-       needs it spots it, and the visitor who does not is not asked to make
-       a decision before reading the headline. No flags — a flag names a
-       country, and the English here is for people living in this one. */
+    /* Cuatro idiomas. Sigue siendo lo más callado de la barra: quien lo
+       necesita lo encuentra, y a quien no, no se le pide decidir nada antes
+       de leer el titular.
+
+       AHORA SÍ SON BANDERAS, y el motivo es que ha cambiado el hecho, no el
+       gusto. Aquí ponía "no flags — a flag names a country, and the English
+       here is for people living in this one", y era verdad mientras las dos
+       opciones fueran el idioma de un mismo sitio. Desde 2026-08-23 hay
+       cuatro agentes publicados (WEB ES, WEB EN, WEB NL, WEB SV) y cada uno
+       habla para un mercado con su moneda y sus cifras: la bandera nombra
+       exactamente lo que se elige. Cuatro pares de letras a 12px en una
+       barra ya cargada era además la versión ilegible.
+
+       Sin :hover que agrande el emoji: en el móvil no hay hover y la barra
+       fija de abajo ya compite por el pulgar. */
     .idioma {
       display: inline-flex;
       gap: 2px;
@@ -352,10 +363,14 @@
 
     .idioma-btn {
       font-family: var(--font-body);
-      font-size: 12px;
+      /* 15px, no 12: un emoji de bandera a 12px es una mancha. El padding
+         baja a 5/8 para que las cuatro quepan en el mismo ancho que ocupaban
+         ES y EN. line-height:1 porque el emoji arrastra su propia métrica. */
+      font-size: 15px;
+      line-height: 1;
       font-weight: 600;
       letter-spacing: 0.06em;
-      padding: 6px 11px;
+      padding: 5px 8px;
       border: 0;
       border-radius: 999px;
       background: transparent;
@@ -365,6 +380,21 @@
 
     .idioma-btn:hover {
       color: var(--text-primary);
+    }
+
+    /* 320px, que es el iPhone SE de primera generación y el suelo real de la
+       web. MEDIDO, no supuesto: con dos idiomas el grupo ocupaba 105px y la
+       barra cerraba justo; con cuatro pasó a 155px y empujó el botón de la
+       demo a 333px sobre un viewport de 320, o sea fuera. Bajar el padding a
+       4/5 devuelve 24px y con eso vuelve a caber.
+
+       El emoji NO se encoge aquí: a 15px ya es lo justo para reconocer una
+       bandera, y una bandera que no se distingue es peor que no tenerla. Lo
+       que se recorta es el aire, que es lo que sobra. */
+    @media (max-width: 360px) {
+      .idioma-btn {
+        padding: 4px 5px;
+      }
     }
 
     /* aria-pressed carries the state for a screen reader; this carries it
@@ -1686,18 +1716,26 @@
       <a href="#" class="nav-logo">
         <span>Prime <span class="logo-ai">AI</span></span>
       </a>
-      <div class="idioma" role="group" aria-label="Idioma / Language">
-        <button type="button" class="idioma-btn" data-idioma="es" aria-pressed="true">ES</button>
-        <button type="button" class="idioma-btn" data-idioma="en" aria-pressed="false">EN</button>
+      <!-- Cuatro banderas, una por agente publicado. El comentario de .idioma
+           en el CSS explica por qué ahora sí son banderas y antes no.
+           aria-label en el idioma propio: quien busca su lengua la reconoce
+           antes leyéndola que traducida. En Windows el emoji de bandera no
+           se pinta y salen las letras del país (ES, GB, NL, SE), que es una
+           degradación legible y por eso no se le pone respaldo. -->
+      <div class="idioma" role="group" aria-label="Idioma / Language / Taal / Språk">
+        <button type="button" class="idioma-btn" data-idioma="es" aria-pressed="true" aria-label="Español" title="Español">🇪🇸</button>
+        <button type="button" class="idioma-btn" data-idioma="en" aria-pressed="false" aria-label="English" title="English">🇬🇧</button>
+        <button type="button" class="idioma-btn" data-idioma="nl" aria-pressed="false" aria-label="Nederlands" title="Nederlands">🇳🇱</button>
+        <button type="button" class="idioma-btn" data-idioma="sv" aria-pressed="false" aria-label="Svenska" title="Svenska">🇸🇪</button>
       </div>
-      <button class="btn btn-primary btn-nav llamar" data-umami-event="demo-abrir-nav" data-en="Hear it answer">Escúchala contestar</button>
-      <a class="btn btn-primary btn-nav tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-nav"><span data-en="Call">Llamar</span></a>
+      <button class="btn btn-primary btn-nav llamar" data-umami-event="demo-abrir-nav" data-en="Hear it answer" data-nl="Hoor haar opnemen" data-sv="Hör den svara">Escúchala contestar</button>
+      <a class="btn btn-primary btn-nav tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-nav"><span data-en="Call" data-nl="Bellen" data-sv="Ring">Llamar</span></a>
     </div>
   </nav>
 
   <div class="cta-movil">
-    <button class="btn llamar" data-umami-event="demo-abrir-movil" data-en="Hear it answer — no phone needed">Escúchala contestar — sin teléfono</button>
-    <a class="btn tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-movil"><span data-en="Call it now">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
+    <button class="btn llamar" data-umami-event="demo-abrir-movil" data-en="Hear it answer — no phone needed" data-nl="Hoor haar opnemen — geen telefoon nodig" data-sv="Hör den svara — ingen telefon behövs">Escúchala contestar — sin teléfono</button>
+    <a class="btn tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-movil"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
   </div>
 
   <!-- ============================================
@@ -1705,24 +1743,24 @@
        ============================================ -->
   <section class="alto">
     <div class="alto-dentro">
-      <p class="marbete" data-en="For businesses in Málaga">Para negocios de Málaga</p>
-      <h1 class="titular" data-en="The phone that never goes unanswered.">El teléfono que nunca se queda sin contestar.</h1>
+      <p class="marbete" data-en="For businesses in Málaga" data-nl="Voor bedrijven in Nederland" data-sv="För företag i Sverige">Para negocios de Málaga</p>
+      <h1 class="titular" data-en="The phone that never goes unanswered." data-nl="De telefoon die nooit meer overgaat zonder antwoord." data-sv="Telefonen som aldrig får ringa obesvarad.">El teléfono que nunca se queda sin contestar.</h1>
       <!-- "cuando no puedes cogerlo" es todo el posicionamiento, en cuatro
            palabras: contesta contigo, no en lugar de nadie. En inglés lo
            carga "when you can't pick up", y test-palette.js exige las dos:
            es la frase que no se puede perder al traducir. -->
-      <p class="entrada" data-en="It answers for you when you can't pick up, speaks English or Spanish, and puts the job straight in your calendar.">Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario.</p>
-      <button class="btn btn-primary llamar" data-umami-event="demo-abrir-portada" data-en="Call it now — right here, no phone needed">Llámala ahora — aquí mismo, sin teléfono</button>
-      <a class="btn btn-primary tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-portada"><span data-en="Call it now">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
+      <p class="entrada" data-en="It answers for you when you can't pick up, speaks English or Spanish, and puts the job straight in your calendar." data-nl="Ze neemt op als jij niet kunt, spreekt Nederlands of Engels, en zet de afspraak meteen in je agenda." data-sv="Den svarar åt dig när du inte kan, talar svenska eller engelska, och lägger in jobbet direkt i din kalender.">Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario.</p>
+      <button class="btn btn-primary llamar" data-umami-event="demo-abrir-portada" data-en="Call it now — right here, no phone needed" data-nl="Bel haar nu — hier meteen, geen telefoon nodig" data-sv="Ring den nu — här direkt, ingen telefon behövs">Llámala ahora — aquí mismo, sin teléfono</button>
+      <a class="btn btn-primary tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-portada"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
       <!-- data-en va en el SPAN, nunca en el <p>: traducir() asigna innerHTML y
            traducir el envoltorio se llevaría por delante el enlace con el número. -->
-      <p class="tel-escritorio"><span data-en="or call it on">o llámala al</span> <a href="tel:+34951870630" data-umami-event="demo-llamar-escritorio"><span class="tel-num">951 870 630</span></a></p>
-      <small class="letra-chica letra-escritorio" data-en="I won't tell you about it, you'll hear it. Talk to it on this page and ask it to book you in. Takes a minute.">No te lo cuento, lo escuchas. Habla con ella en esta misma página y pídele una cita de prueba. Un minuto.</small>
+      <p class="tel-escritorio"><span data-en="or call it on" data-nl="of bel haar op" data-sv="eller ring den på">o llámala al</span> <a href="tel:+34951870630" data-umami-event="demo-llamar-escritorio"><span class="tel-num">951 870 630</span></a></p>
+      <small class="letra-chica letra-escritorio" data-en="I won't tell you about it, you'll hear it. Talk to it on this page and ask it to book you in. Takes a minute." data-nl="Ik vertel het je niet, je hoort het. Praat met haar op deze pagina en vraag om een proefafspraak. Kost een minuut." data-sv="Jag berättar det inte, du hör det. Prata med den här på sidan och be om en provtid. Tar en minut.">No te lo cuento, lo escuchas. Habla con ella en esta misma página y pídele una cita de prueba. Un minuto.</small>
       <!-- La de escritorio dice "en esta misma página", que en móvil es falso:
            ahí el botón marca un número y la llamada se va de la página. Dos
            textos, no uno con la frase quitada — lo que sustituye a "sin
            teléfono" es "contesta en domingo", y eso hay que decirlo. -->
-      <small class="letra-chica letra-movil" data-en="I won't tell you about it, you'll hear it. Ring it and ask it to book you a slot — it answers day, night or Sunday. Takes a minute, and the call is recorded.">No te lo cuento, lo escuchas. Llámala y pídele una cita de prueba — contesta de día, de noche o en domingo. Un minuto, y la llamada se graba.</small>
+      <small class="letra-chica letra-movil" data-en="I won't tell you about it, you'll hear it. Ring it and ask it to book you a slot — it answers day, night or Sunday. Takes a minute, and the call is recorded." data-nl="Ik vertel het je niet, je hoort het. Bel haar en vraag om een proefafspraak — ze neemt op overdag, 's nachts en op zondag. Kost een minuut, en het gesprek wordt opgenomen." data-sv="Jag berättar det inte, du hör det. Ring den och be om en provtid — den svarar på dagen, på natten och på söndagen. Tar en minut, och samtalet spelas in.">No te lo cuento, lo escuchas. Llámala y pídele una cita de prueba — contesta de día, de noche o en domingo. Un minuto, y la llamada se graba.</small>
 
       <!-- La onda va aria-hidden porque es forma, no información: lo que
            significa ya lo dicen las dos líneas de al lado. El texto NO va
@@ -1730,7 +1768,7 @@
       <div class="llamada">
         <div class="llamada-fila">
           <span class="llamada-punto"></span>
-          <span class="llamada-estado" data-en="On the line">Al teléfono</span>
+          <span class="llamada-estado" data-en="On the line" data-nl="Aan de lijn" data-sv="På linjen">Al teléfono</span>
         </div>
         <div class="onda" aria-hidden="true">
           <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
@@ -1738,7 +1776,7 @@
           <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
           <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
         </div>
-        <p class="llamada-pie" data-en="Answered — day, night, or Sunday">Contestado — de día, de noche o en domingo</p>
+        <p class="llamada-pie" data-en="Answered — day, night, or Sunday" data-nl="Opgenomen — overdag, 's nachts of op zondag" data-sv="Besvarat — på dagen, på natten eller på söndagen">Contestado — de día, de noche o en domingo</p>
       </div>
     </div>
   </section>
@@ -1764,7 +1802,7 @@
           <source src="demo-call.mp4" type="video/mp4">
           <a href="demo-call.mp4">Descarga el vídeo</a> (23 MB).
         </video>
-        <p class="video-pie" data-en="What a missed call really costs — 33 seconds">Lo que cuesta de verdad una llamada perdida — 33 segundos</p>
+        <p class="video-pie" data-en="What a missed call really costs — 33 seconds" data-nl="Wat een gemiste oproep echt kost — 33 seconden" data-sv="Vad ett missat samtal faktiskt kostar — 33 sekunder">Lo que cuesta de verdad una llamada perdida — 33 segundos</p>
       </div>
     </div>
   </section>
@@ -1787,14 +1825,14 @@
     <div class="container">
       <div class="cifras">
         <div class="cifra">
-          <div class="cifra-num" data-en="2 rings">2 tonos</div>
-          <div class="cifra-que" data-en="and someone has picked up — day, night, or Sunday">y alguien ha cogido el teléfono — de día, de noche o en domingo</div>
-          <div class="cifra-fuente" data-en="Not a statistic. Press the button above and count them.">No es una estadística. Dale al botón de arriba y cuéntalos.</div>
+          <div class="cifra-num" data-en="2 rings" data-nl="2 keer overgaan" data-sv="2 signaler">2 tonos</div>
+          <div class="cifra-que" data-en="and someone has picked up — day, night, or Sunday" data-nl="en er heeft iemand opgenomen — overdag, 's nachts of op zondag" data-sv="och någon har svarat — på dagen, på natten eller på söndagen">y alguien ha cogido el teléfono — de día, de noche o en domingo</div>
+          <div class="cifra-fuente" data-en="Not a statistic. Press the button above and count them." data-nl="Geen statistiek. Druk op de knop hierboven en tel ze zelf." data-sv="Ingen statistik. Tryck på knappen ovan och räkna dem själv.">No es una estadística. Dale al botón de arriba y cuéntalos.</div>
         </div>
         <div class="cifra">
-          <div class="cifra-num" data-en="168 hrs">168 horas</div>
-          <div class="cifra-que" data-en="a week with your phone answered — evenings, Sundays and your lunch break">a la semana con el teléfono cogido — tardes, domingos y la hora de comer</div>
-          <div class="cifra-fuente" data-en="Not a statistic. Just a calendar.">No es una estadística. Es el calendario.</div>
+          <div class="cifra-num" data-en="168 hrs" data-nl="168 uur" data-sv="168 tim">168 horas</div>
+          <div class="cifra-que" data-en="a week with your phone answered — evenings, Sundays and your lunch break" data-nl="per week een telefoon die opgenomen wordt — 's avonds, op zondag en tijdens je lunch" data-sv="i veckan med en telefon som blir besvarad — kvällar, söndagar och din lunchrast">a la semana con el teléfono cogido — tardes, domingos y la hora de comer</div>
+          <div class="cifra-fuente" data-en="Not a statistic. Just a calendar." data-nl="Geen statistiek. Gewoon de kalender." data-sv="Ingen statistik. Bara en kalender.">No es una estadística. Es el calendario.</div>
         </div>
       </div>
     </div>
@@ -1808,29 +1846,29 @@
        ============================================ -->
   <section class="banda banda-oscura aparece" id="perdidas">
     <div class="container">
-      <h2 class="rotulo" data-en="The calls you are losing today">Las llamadas que hoy se pierden</h2>
+      <h2 class="rotulo" data-en="The calls you are losing today" data-nl="De gesprekken die je vandaag kwijtraakt" data-sv="Samtalen du förlorar i dag">Las llamadas que hoy se pierden</h2>
       <ul class="lista">
         <li>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span data-en="It rings while your hands are deep in a job you can't walk away from.">Suena mientras tienes las manos metidas en un trabajo que no puedes dejar a medias.</span>
+          <span data-en="It rings while your hands are deep in a job you can't walk away from." data-nl="Hij gaat terwijl je handen in een klus zitten waar je niet zomaar uit stapt." data-sv="Den ringer medan du har händerna i ett jobb du inte kan lämna halvfärdigt.">Suena mientras tienes las manos metidas en un trabajo que no puedes dejar a medias.</span>
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span data-en="It rings at nine at night, long after you've shut — and the firm down the road answers theirs.">Suena a las nueve de la noche, cuando ya has cerrado — y el de al lado sí lo coge.</span>
+          <span data-en="It rings at nine at night, long after you've shut — and the firm down the road answers theirs." data-nl="Hij gaat om negen uur 's avonds, ver na sluitingstijd — en de zaak verderop neemt de zijne wel op." data-sv="Den ringer klockan nio på kvällen, långt efter stängning — och firman längre ner på gatan svarar i sin.">Suena a las nueve de la noche, cuando ya has cerrado — y el de al lado sí lo coge.</span>
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span data-en="It rings while you're on with another customer, and the second one doesn't leave a message: they ring the next name on the list.">Suena mientras estás hablando con otro cliente, y el segundo no deja mensaje: llama al siguiente.</span>
+          <span data-en="It rings while you're on with another customer, and the second one doesn't leave a message: they ring the next name on the list." data-nl="Hij gaat terwijl je een andere klant aan de lijn hebt, en die tweede spreekt niets in: die belt de volgende op de lijst." data-sv="Den ringer medan du pratar med en annan kund, och den andre lämnar inget meddelande: han ringer nästa namn på listan.">Suena mientras estás hablando con otro cliente, y el segundo no deja mensaje: llama al siguiente.</span>
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span data-en="It rings while you're driving to the next job, and by the time you've parked you can't remember who it was.">Suena mientras conduces al siguiente trabajo, y cuando aparcas ya no te acuerdas de quién era.</span>
+          <span data-en="It rings while you're driving to the next job, and by the time you've parked you can't remember who it was." data-nl="Hij gaat terwijl je naar de volgende klus rijdt, en tegen de tijd dat je geparkeerd staat weet je niet meer wie het was." data-sv="Den ringer medan du kör till nästa jobb, och när du har parkerat minns du inte längre vem det var.">Suena mientras conduces al siguiente trabajo, y cuando aparcas ya no te acuerdas de quién era.</span>
         </li>
         <li>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           <!-- Sin adjetivo con género: "ocupada" u "ocupado" da por hecho quién
                coge el teléfono en un negocio que no conocemos. -->
-          <span data-en="Whoever answers your phone is on another call, at lunch, or left at six — and the phone rings anyway.">Quien te coge el teléfono está con otra llamada, comiendo, o ya se ha ido a las seis — y el teléfono suena igual.</span>
+          <span data-en="Whoever answers your phone is on another call, at lunch, or left at six — and the phone rings anyway." data-nl="Wie bij jou de telefoon opneemt zit in een ander gesprek, is aan het lunchen, of is om zes uur naar huis — en de telefoon gaat toch." data-sv="Den som svarar i din telefon sitter i ett annat samtal, är på lunch, eller gick hem klockan sex — och telefonen ringer ändå.">Quien te coge el teléfono está con otra llamada, comiendo, o ya se ha ido a las seis — y el teléfono suena igual.</span>
         </li>
       </ul>
     </div>
@@ -1844,25 +1882,25 @@
        ============================================ -->
   <section class="banda aparece" id="como">
     <div class="container">
-      <h2 class="rotulo" data-en="How it works">Cómo funciona</h2>
+      <h2 class="rotulo" data-en="How it works" data-nl="Hoe het werkt" data-sv="Så fungerar det">Cómo funciona</h2>
       <div class="pasos">
         <div class="paso">
           <div class="paso-num">1</div>
-          <h3 data-en="You change nothing">No cambias nada</h3>
+          <h3 data-en="You change nothing" data-nl="Jij verandert niets" data-sv="Du ändrar ingenting">No cambias nada</h3>
           <!-- "Ni línea nueva, ni aparato nuevo" / "No new line, no new
                handset" es la frase que hace que no haya nada que sustituir.
                test-palette.js la exige en los dos idiomas. -->
-          <p data-en="Your own number rings, on your own phone. No new line, no new handset, and nobody's job. It sits behind what you already have and picks up what you can't: you carry on answering exactly the same calls you answer today.">Suena tu mismo número, en tu mismo teléfono. Ni línea nueva, ni aparato nuevo, ni el puesto de nadie. Está detrás de lo que ya tienes y coge lo que tú no puedes: tú sigues cogiendo exactamente las mismas llamadas que hoy.</p>
+          <p data-en="Your own number rings, on your own phone. No new line, no new handset, and nobody's job. It sits behind what you already have and picks up what you can't: you carry on answering exactly the same calls you answer today." data-nl="Je eigen nummer gaat over, op je eigen toestel. Geen nieuwe lijn, geen nieuw apparaat, en niemands baan. Ze zit achter wat je al hebt en pakt op wat jij niet kunt: jij blijft precies dezelfde gesprekken aannemen als vandaag." data-sv="Ditt eget nummer ringer, i din egen telefon. Ingen ny linje, ingen ny lur, och ingens jobb. Den sitter bakom det du redan har och tar det du inte hinner: du fortsätter svara på exakt samma samtal som du svarar på i dag.">Suena tu mismo número, en tu mismo teléfono. Ni línea nueva, ni aparato nuevo, ni el puesto de nadie. Está detrás de lo que ya tienes y coge lo que tú no puedes: tú sigues cogiendo exactamente las mismas llamadas que hoy.</p>
         </div>
         <div class="paso">
           <div class="paso-num">2</div>
-          <h3 data-en="It answers on the second ring">Contesta en dos tonos</h3>
-          <p data-en="Trained on your services, your hours and your rules: what counts as an emergency and what doesn't. It talks like a person, in English or Spanish, and real emergencies come through to you instead of being booked in.">Entrenada con tus servicios, tus horarios y tus reglas: qué es una urgencia y qué no lo es. Habla como una persona, en español o en inglés, y las urgencias de verdad te las pasa a ti en vez de darles cita.</p>
+          <h3 data-en="It answers on the second ring" data-nl="Ze neemt op na twee keer overgaan" data-sv="Den svarar på andra signalen">Contesta en dos tonos</h3>
+          <p data-en="Trained on your services, your hours and your rules: what counts as an emergency and what doesn't. It talks like a person, in English or Spanish, and real emergencies come through to you instead of being booked in." data-nl="Getraind op jouw diensten, jouw tijden en jouw regels: wat een spoedgeval is en wat niet. Ze praat als een mens, in het Nederlands of Engels, en echte spoedgevallen zet ze naar jou door in plaats van er een afspraak van te maken." data-sv="Tränad på dina tjänster, dina tider och dina regler: vad som är ett akutfall och vad som inte är det. Den pratar som en människa, på svenska eller engelska, och riktiga akutfall kopplar den till dig i stället för att boka in dem.">Entrenada con tus servicios, tus horarios y tus reglas: qué es una urgencia y qué no lo es. Habla como una persona, en español o en inglés, y las urgencias de verdad te las pasa a ti en vez de darles cita.</p>
         </div>
         <div class="paso">
           <div class="paso-num">3</div>
-          <h3 data-en="The job is already in the diary">La cita ya está puesta</h3>
-          <p data-en="By the time you look at your calendar it is already there, with a note on who rang and what they wanted. We listen to the calls and tune it every week. There is no software for you to learn.">Cuando mires el calendario ya está ahí, con una nota de quién ha llamado y qué quería. Escuchamos las llamadas y la afinamos cada semana. No hay ningún programa que aprender.</p>
+          <h3 data-en="The job is already in the diary" data-nl="De klus staat al in de agenda" data-sv="Jobbet står redan i kalendern">La cita ya está puesta</h3>
+          <p data-en="By the time you look at your calendar it is already there, with a note on who rang and what they wanted. We listen to the calls and tune it every week. There is no software for you to learn." data-nl="Tegen de tijd dat jij in je agenda kijkt staat het er al, met een notitie van wie er belde en wat diegene wilde. Wij luisteren de gesprekken terug en stellen haar elke week bij. Er is geen programma dat jij moet leren." data-sv="När du tittar i kalendern står det redan där, med en notering om vem som ringde och vad han ville. Vi lyssnar på samtalen och finjusterar den varje vecka. Det finns inget program som du behöver lära dig.">Cuando mires el calendario ya está ahí, con una nota de quién ha llamado y qué quería. Escuchamos las llamadas y la afinamos cada semana. No hay ningún programa que aprender.</p>
         </div>
       </div>
     </div>
@@ -1879,9 +1917,9 @@
   <section class="banda banda-arena aparece" id="resultado">
     <div class="container">
       <div class="resultado">
-        <h2 class="rotulo" data-en="What you actually end up with: more customers">Para qué es todo esto: más clientes</h2>
-        <p class="resultado-grande" data-en="What you are buying is not an AI that answers the phone. It is the customers who ring you today and end up going to somebody else.">Lo que compras no es una IA que coge el teléfono. Son los clientes que hoy te llaman y acaban yéndose a otro.</p>
-        <p data-en="Someone who cannot get hold of you does not try again later. They ring the next name on the list, and that one gets the work. A phone that gets answered is the only thing standing between those two outcomes — and it is the whole reason this is worth paying for.">Quien no consigue hablar contigo no lo vuelve a intentar más tarde. Llama al siguiente de la lista, y ése se queda el trabajo. Un teléfono que se coge es lo único que separa una cosa de la otra — y es la razón entera por la que esto merece la pena.</p>
+        <h2 class="rotulo" data-en="What you actually end up with: more customers" data-nl="Waar het uiteindelijk om gaat: meer klanten" data-sv="Vad det här faktiskt ger dig: fler kunder">Para qué es todo esto: más clientes</h2>
+        <p class="resultado-grande" data-en="What you are buying is not an AI that answers the phone. It is the customers who ring you today and end up going to somebody else." data-nl="Wat je koopt is niet een AI die de telefoon opneemt. Het zijn de klanten die je vandaag bellen en uiteindelijk naar een ander gaan." data-sv="Det du köper är inte en AI som svarar i telefon. Det är kunderna som ringer dig i dag och slutar hos någon annan.">Lo que compras no es una IA que coge el teléfono. Son los clientes que hoy te llaman y acaban yéndose a otro.</p>
+        <p data-en="Someone who cannot get hold of you does not try again later. They ring the next name on the list, and that one gets the work. A phone that gets answered is the only thing standing between those two outcomes — and it is the whole reason this is worth paying for." data-nl="Wie jou niet te pakken krijgt probeert het later niet nog eens. Die belt de volgende op de lijst, en die krijgt het werk. Een telefoon die opgenomen wordt is het enige dat tussen die twee uitkomsten staat — en het is de hele reden dat dit de moeite waard is." data-sv="Den som inte får tag i dig försöker inte igen senare. Han ringer nästa namn på listan, och den får jobbet. En telefon som blir besvarad är det enda som skiljer de två utfallen åt — och det är hela skälet till att det här är värt att betala för.">Quien no consigue hablar contigo no lo vuelve a intentar más tarde. Llama al siguiente de la lista, y ése se queda el trabajo. Un teléfono que se coge es lo único que separa una cosa de la otra — y es la razón entera por la que esto merece la pena.</p>
       </div>
     </div>
   </section>
@@ -1908,32 +1946,32 @@
        ============================================ -->
   <section class="banda banda-oscura aparece" id="cuenta">
     <div class="container">
-      <h2 class="rotulo" data-en="What is walking past you">Lo que se te está escapando</h2>
+      <h2 class="rotulo" data-en="What is walking past you" data-nl="Wat er langs je heen loopt" data-sv="Det som går dig förbi">Lo que se te está escapando</h2>
       <div class="calc">
 
         <div class="calc-campo">
-          <label id="lbl-llamadas" data-en="How many calls do you miss on a normal day?">¿Cuántas llamadas se te escapan en un día normal?</label>
+          <label id="lbl-llamadas" data-en="How many calls do you miss on a normal day?" data-nl="Hoeveel gesprekken mis je op een normale dag?" data-sv="Hur många samtal missar du en vanlig dag?">¿Cuántas llamadas se te escapan en un día normal?</label>
           <div class="calc-ops" role="radiogroup" aria-labelledby="lbl-llamadas">
-            <input type="radio" name="llamadas" id="ll-1" value="1"><label for="ll-1" data-en="1 a day">1 al día</label>
-            <input type="radio" name="llamadas" id="ll-3" value="3"><label for="ll-3" data-en="3 a day">3 al día</label>
-            <input type="radio" name="llamadas" id="ll-5" value="5"><label for="ll-5" data-en="5 a day">5 al día</label>
-            <input type="radio" name="llamadas" id="ll-10" value="10"><label for="ll-10" data-en="10 or more">10 o más</label>
+            <input type="radio" name="llamadas" id="ll-1" value="1"><label for="ll-1" data-en="1 a day" data-nl="1 per dag" data-sv="1 om dagen">1 al día</label>
+            <input type="radio" name="llamadas" id="ll-3" value="3"><label for="ll-3" data-en="3 a day" data-nl="3 per dag" data-sv="3 om dagen">3 al día</label>
+            <input type="radio" name="llamadas" id="ll-5" value="5"><label for="ll-5" data-en="5 a day" data-nl="5 per dag" data-sv="5 om dagen">5 al día</label>
+            <input type="radio" name="llamadas" id="ll-10" value="10"><label for="ll-10" data-en="10 or more" data-nl="10 of meer" data-sv="10 eller fler">10 o más</label>
           </div>
         </div>
 
         <div class="calc-campo">
-          <label id="lbl-precio" data-en="What does the cheapest thing a customer books cost?">¿Cuánto cuesta lo más barato que te reserva un cliente?</label>
+          <label id="lbl-precio" data-en="What does the cheapest thing a customer books cost?" data-nl="Wat kost het goedkoopste dat een klant bij je boekt?" data-sv="Vad kostar det billigaste en kund bokar hos dig?">¿Cuánto cuesta lo más barato que te reserva un cliente?</label>
           <div class="calc-ops" role="radiogroup" aria-labelledby="lbl-precio">
-            <input type="radio" name="precio" id="pr-60" value="60"><label for="pr-60" data-en="€60">60 €</label>
-            <input type="radio" name="precio" id="pr-150" value="150"><label for="pr-150" data-en="€150">150 €</label>
-            <input type="radio" name="precio" id="pr-400" value="400"><label for="pr-400" data-en="€400">400 €</label>
-            <input type="radio" name="precio" id="pr-900" value="900"><label for="pr-900" data-en="€900 or more">900 € o más</label>
+            <input type="radio" name="precio" id="pr-60" value="60"><label for="pr-60" data-en="€60" data-nl="€90" data-sv="700 kr">60 €</label>
+            <input type="radio" name="precio" id="pr-150" value="150"><label for="pr-150" data-en="€150" data-nl="€225" data-sv="1 700 kr">150 €</label>
+            <input type="radio" name="precio" id="pr-400" value="400"><label for="pr-400" data-en="€400" data-nl="€600" data-sv="4 500 kr">400 €</label>
+            <input type="radio" name="precio" id="pr-900" value="900"><label for="pr-900" data-en="€900 or more" data-nl="€1.350 of meer" data-sv="10 000 kr eller mer">900 € o más</label>
           </div>
         </div>
 
         <div class="calc-salida">
           <div class="calc-cifra" id="cifra" role="status" aria-live="polite">—</div>
-          <p class="calc-pie" id="cifra-pie" data-en="Pick your two numbers and the sum is done on them, not on anyone else's.">Elige tus dos cifras y la cuenta se hace con ellas, no con las de nadie más.</p>
+          <p class="calc-pie" id="cifra-pie" data-en="Pick your two numbers and the sum is done on them, not on anyone else's." data-nl="Kies je twee cijfers en de som wordt met die van jou gemaakt, niet met die van iemand anders." data-sv="Välj dina två siffror så görs räkningen på dem, inte på någon annans.">Elige tus dos cifras y la cuenta se hace con ellas, no con las de nadie más.</p>
         </div>
 
       </div>
@@ -1949,9 +1987,9 @@
   <section class="banda banda-clara aparece" id="nadie">
     <div class="container">
       <div class="nadie">
-        <h2 class="rotulo" data-en="It is not here to take anyone's place">No viene a quitarle el sitio a nadie</h2>
-        <p data-en="If someone already answers the phone in your business, this does not replace them: it picks up what that person cannot. While they are on with one caller, the second one hears ringing. While they are at lunch, on a day off, away on holiday, the phone rings just the same. That is arithmetic, not a criticism.">Si ya hay alguien cogiendo el teléfono en tu negocio, esto no lo sustituye: coge lo que esa persona no puede coger. Mientras habla con uno, el segundo oye tonos. Mientras come, mientras libra, mientras está de vacaciones, el teléfono suena igual. Eso es aritmética, no una crítica.</p>
-        <p data-en="What usually happens is that it takes pressure off, not work away: the same calls as always — “are you open on Saturday?”, “what do you charge to come and look?” — stop interrupting, and anyone who genuinely needs a person gets one sooner, with what they have already explained written down.">Lo que suele pasar es que quita presión, no trabajo: las llamadas de siempre — «¿abrís el sábado?», «¿cuánto cuesta que lo miréis?» — dejan de interrumpir, y quien de verdad necesita hablar con una persona la tiene antes, con lo que ha contado ya recogido.</p>
+        <h2 class="rotulo" data-en="It is not here to take anyone's place" data-nl="Ze komt niemands plek innemen" data-sv="Den är inte här för att ta någons plats">No viene a quitarle el sitio a nadie</h2>
+        <p data-en="If someone already answers the phone in your business, this does not replace them: it picks up what that person cannot. While they are on with one caller, the second one hears ringing. While they are at lunch, on a day off, away on holiday, the phone rings just the same. That is arithmetic, not a criticism." data-nl="Als er bij jou al iemand de telefoon opneemt, vervangt dit die persoon niet: ze pakt op wat diegene niet kan. Terwijl hij of zij met de ene beller in gesprek is, hoort de tweede de telefoon overgaan. Tijdens de lunch, op een vrije dag, in de vakantie gaat de telefoon net zo goed. Dat is rekenwerk, geen kritiek." data-sv="Om någon redan svarar i telefonen hos dig ersätter det här inte den personen: den tar det som personen inte hinner. Medan hon pratar med en som ringer hör nästa bara signaler. Medan hon är på lunch, ledig eller på semester ringer telefonen precis lika mycket. Det är matematik, inte kritik.">Si ya hay alguien cogiendo el teléfono en tu negocio, esto no lo sustituye: coge lo que esa persona no puede coger. Mientras habla con uno, el segundo oye tonos. Mientras come, mientras libra, mientras está de vacaciones, el teléfono suena igual. Eso es aritmética, no una crítica.</p>
+        <p data-en="What usually happens is that it takes pressure off, not work away: the same calls as always — “are you open on Saturday?”, “what do you charge to come and look?” — stop interrupting, and anyone who genuinely needs a person gets one sooner, with what they have already explained written down." data-nl="Wat er meestal gebeurt is dat het druk wegneemt, geen werk: de gesprekken van altijd — “zijn jullie zaterdag open?”, “wat kost het als jullie komen kijken?” — houden op met storen, en wie echt een mens nodig heeft krijgt die eerder, met wat hij al verteld heeft opgeschreven." data-sv="Det som brukar hända är att det tar bort press, inte arbete: samma samtal som alltid — ”är ni öppna på lördag?”, ”vad kostar det att ni kommer och tittar?” — slutar avbryta, och den som verkligen behöver en människa får en snabbare, med det han redan har förklarat nedskrivet.">Lo que suele pasar es que quita presión, no trabajo: las llamadas de siempre — «¿abrís el sábado?», «¿cuánto cuesta que lo miréis?» — dejan de interrumpir, y quien de verdad necesita hablar con una persona la tiene antes, con lo que ha contado ya recogido.</p>
       </div>
     </div>
   </section>
@@ -1978,21 +2016,21 @@
   <section class="banda banda-arena aparece" id="prueba">
     <div class="container">
       <div class="prueba">
-        <h2 class="rotulo" data-en="Built by someone who has done this before">Esto lo ha montado alguien que ya lo ha hecho antes</h2>
+        <h2 class="rotulo" data-en="Built by someone who has done this before" data-nl="Gebouwd door iemand die dit eerder heeft gedaan" data-sv="Byggd av någon som har gjort det här förut">Esto lo ha montado alguien que ya lo ha hecho antes</h2>
         <div class="paso-num" aria-hidden="true">D</div>
-        <p data-en="I spent two years building AI systems for a football academy that operates across five countries: qualifying leads, instant response, automated follow-up, call scoring. I watched it fill intake after intake. Then I started phoning businesses around here to ask how they handled their phone, and most of the time &lt;em&gt;nobody picked up.&lt;/em&gt; That was the whole business case. I built Prime AI so that call gets answered.">Me he pasado dos años montando sistemas de IA para una academia de fútbol que trabaja en cinco países: calificar contactos, responder al momento, seguimiento automático, puntuar llamadas. Los vi llenar convocatoria tras convocatoria. Después me puse a llamar a negocios de aquí para preguntarles cómo llevaban el teléfono, y la mayoría de las veces <em>no me lo cogió nadie.</em> Ése fue todo el estudio de mercado. Monté Prime AI para que esa llamada se coja.</p>
-        <p class="prueba-cita" data-en="&lt;em&gt;“You and I are both tired of ‘AI solutions’ that turn out to be a chatbot with a nice dashboard. This one answers the phone, and we run it for you.”&lt;/em&gt;"><em>«Tú y yo estamos igual de hartos de las “soluciones con IA” que acaban siendo un chatbot con un panel bonito. Ésta coge el teléfono, y te la llevamos nosotros.»</em></p>
-        <p class="prueba-firma" data-en="Dan — Full-stack AI engineer. Cybersecurity background. Production systems running in five countries.">Dan — Ingeniero de IA full-stack. Vengo de ciberseguridad. Sistemas en producción en cinco países.</p>
+        <p data-en="I spent two years building AI systems for a football academy that operates across five countries: qualifying leads, instant response, automated follow-up, call scoring. I watched it fill intake after intake. Then I started phoning businesses around here to ask how they handled their phone, and most of the time &lt;em&gt;nobody picked up.&lt;/em&gt; That was the whole business case. I built Prime AI so that call gets answered." data-nl="Ik heb twee jaar AI-systemen gebouwd voor een voetbalacademie die in vijf landen actief is: leads kwalificeren, direct reageren, automatische opvolging, gesprekken scoren. Ik zag hoe het lichting na lichting vol kreeg. Daarna ging ik bedrijven bellen om te vragen hoe zij hun telefoon regelden, en meestal &lt;em&gt;nam er niemand op.&lt;/em&gt; Dat was de hele businesscase. Ik heb Prime AI gebouwd zodat dat gesprek wel wordt opgenomen." data-sv="Jag har lagt två år på att bygga AI-system åt en fotbollsakademi som finns i fem länder: kvalificera leads, svara direkt, automatisk uppföljning, poängsätta samtal. Jag såg det fylla kull efter kull. Sedan började jag ringa företag för att fråga hur de skötte sin telefon, och för det mesta &lt;em&gt;svarade ingen.&lt;/em&gt; Det var hela affärsidén. Jag byggde Prime AI för att det samtalet ska bli besvarat.">Me he pasado dos años montando sistemas de IA para una academia de fútbol que trabaja en cinco países: calificar contactos, responder al momento, seguimiento automático, puntuar llamadas. Los vi llenar convocatoria tras convocatoria. Después me puse a llamar a negocios de aquí para preguntarles cómo llevaban el teléfono, y la mayoría de las veces <em>no me lo cogió nadie.</em> Ése fue todo el estudio de mercado. Monté Prime AI para que esa llamada se coja.</p>
+        <p class="prueba-cita" data-en="&lt;em&gt;“You and I are both tired of ‘AI solutions’ that turn out to be a chatbot with a nice dashboard. This one answers the phone, and we run it for you.”&lt;/em&gt;" data-nl="&lt;em&gt;“Jij en ik zijn allebei klaar met ‘AI-oplossingen’ die een chatbot met een mooi dashboard blijken te zijn. Deze neemt de telefoon op, en wij draaien hem voor je.”&lt;/em&gt;" data-sv="&lt;em&gt;”Du och jag är lika trötta på ’AI-lösningar’ som visar sig vara en chatbot med en snygg instrumentpanel. Den här svarar i telefon, och vi sköter den åt dig.”&lt;/em&gt;"><em>«Tú y yo estamos igual de hartos de las “soluciones con IA” que acaban siendo un chatbot con un panel bonito. Ésta coge el teléfono, y te la llevamos nosotros.»</em></p>
+        <p class="prueba-firma" data-en="Dan — Full-stack AI engineer. Cybersecurity background. Production systems running in five countries." data-nl="Dan — Full-stack AI-engineer. Achtergrond in cybersecurity. Productiesystemen draaiend in vijf landen." data-sv="Dan — Full-stack AI-ingenjör. Bakgrund inom cybersäkerhet. Produktionssystem i drift i fem länder.">Dan — Ingeniero de IA full-stack. Vengo de ciberseguridad. Sistemas en producción en cinco países.</p>
 
         <div class="paso">
-          <h3 data-en="The same system, already proven at scale">El mismo sistema, ya probado en grande</h3>
-          <p data-en="I built a whole AI lead pipeline — qualification, WhatsApp follow-up, booked calls, call scoring — running across five countries. Same architecture. Now pointed at your phone.">Monté un sistema entero de captación con IA — calificación, seguimiento por WhatsApp, llamadas reservadas, puntuación de llamadas — funcionando en cinco países. La misma arquitectura. Ahora apuntando a tu teléfono.</p>
+          <h3 data-en="The same system, already proven at scale" data-nl="Hetzelfde systeem, al bewezen op schaal" data-sv="Samma system, redan bevisat i stor skala">El mismo sistema, ya probado en grande</h3>
+          <p data-en="I built a whole AI lead pipeline — qualification, WhatsApp follow-up, booked calls, call scoring — running across five countries. Same architecture. Now pointed at your phone." data-nl="Ik heb een complete AI-leadpijplijn gebouwd — kwalificatie, WhatsApp-opvolging, ingeplande gesprekken, gespreksscores — draaiend in vijf landen. Dezelfde architectuur. Nu op jouw telefoon gericht." data-sv="Jag byggde en komplett AI-pipeline för leads — kvalificering, uppföljning på WhatsApp, bokade samtal, samtalspoäng — i drift i fem länder. Samma arkitektur. Nu riktad mot din telefon.">Monté un sistema entero de captación con IA — calificación, seguimiento por WhatsApp, llamadas reservadas, puntuación de llamadas — funcionando en cinco países. La misma arquitectura. Ahora apuntando a tu teléfono.</p>
           <div class="prueba-paises">
-            <span data-en="Mexico">México</span>
-            <span data-en="UAE">Emiratos Árabes Unidos</span>
-            <span data-en="Saudi Arabia">Arabia Saudí</span>
-            <span data-en="Canada">Canadá</span>
-            <span data-en="France">Francia</span>
+            <span data-en="Mexico" data-nl="Mexico" data-sv="Mexiko">México</span>
+            <span data-en="UAE" data-nl="VAE" data-sv="Förenade Arabemiraten">Emiratos Árabes Unidos</span>
+            <span data-en="Saudi Arabia" data-nl="Saoedi-Arabië" data-sv="Saudiarabien">Arabia Saudí</span>
+            <span data-en="Canada" data-nl="Canada" data-sv="Kanada">Canadá</span>
+            <span data-en="France" data-nl="Frankrijk" data-sv="Frankrike">Francia</span>
           </div>
         </div>
       </div>
@@ -2006,33 +2044,33 @@
     <div class="container">
       <div class="encaje">
         <div class="encaje-si">
-          <h3 data-en="This fits you if...">Esto te encaja si...</h3>
+          <h3 data-en="This fits you if..." data-nl="Dit past bij jou als..." data-sv="Det här passar dig om...">Esto te encaja si...</h3>
           <div class="encaje-fila">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span data-en="Calls come in every day and you cannot answer them all.">Te entran llamadas todos los días y no puedes coger todas.</span>
+            <span data-en="Calls come in every day and you cannot answer them all." data-nl="Er komen elke dag gesprekken binnen en je kunt ze niet allemaal aannemen." data-sv="Det kommer in samtal varje dag och du hinner inte svara på alla.">Te entran llamadas todos los días y no puedes coger todas.</span>
           </div>
           <div class="encaje-fila">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span data-en="A new customer is genuinely worth the work of winning one.">Un cliente nuevo te compensa de verdad el trabajo de conseguirlo.</span>
+            <span data-en="A new customer is genuinely worth the work of winning one." data-nl="Een nieuwe klant is het werk om er een binnen te halen echt waard." data-sv="En ny kund är verkligen värd jobbet det tar att vinna en.">Un cliente nuevo te compensa de verdad el trabajo de conseguirlo.</span>
           </div>
           <div class="encaje-fila">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span data-en="Your phone already rings out of hours with nobody there to answer it.">El teléfono ya te suena fuera de horario y no hay nadie para cogerlo.</span>
+            <span data-en="Your phone already rings out of hours with nobody there to answer it." data-nl="Je telefoon gaat nu al buiten kantooruren zonder dat er iemand opneemt." data-sv="Din telefon ringer redan utanför arbetstid utan att någon svarar.">El teléfono ya te suena fuera de horario y no hay nadie para cogerlo.</span>
           </div>
         </div>
         <div class="encaje-no">
-          <h3 data-en="This does not fit you if...">Esto no te encaja si...</h3>
+          <h3 data-en="This does not fit you if..." data-nl="Dit past niet bij jou als..." data-sv="Det här passar dig inte om...">Esto no te encaja si...</h3>
           <div class="encaje-fila">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
-            <span data-en="You get two or three calls a week.">Te entran dos o tres llamadas a la semana.</span>
+            <span data-en="You get two or three calls a week." data-nl="Je krijgt twee of drie gesprekken per week." data-sv="Du får två eller tre samtal i veckan.">Te entran dos o tres llamadas a la semana.</span>
           </div>
           <div class="encaje-fila">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
-            <span data-en="You want a press-one-for-sales menu you configure yourself.">Quieres un menú de opciones que te configuras tú.</span>
+            <span data-en="You want a press-one-for-sales menu you configure yourself." data-nl="Je wilt een keuzemenu dat je zelf instelt." data-sv="Du vill ha en knappvalsmeny som du ställer in själv.">Quieres un menú de opciones que te configuras tú.</span>
           </div>
           <div class="encaje-fila">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
-            <span data-en="You are looking for the cheapest thing, not the thing that works.">Buscas lo más barato, no lo que funciona.</span>
+            <span data-en="You are looking for the cheapest thing, not the thing that works." data-nl="Je zoekt het goedkoopste, niet wat werkt." data-sv="Du letar efter det billigaste, inte det som fungerar.">Buscas lo más barato, no lo que funciona.</span>
           </div>
         </div>
       </div>
@@ -2046,62 +2084,62 @@
        ============================================ -->
   <section class="banda banda-clara aparece" id="preguntas">
     <div class="container">
-      <h2 class="rotulo" data-en="Questions">Preguntas</h2>
+      <h2 class="rotulo" data-en="Questions" data-nl="Vragen" data-sv="Frågor">Preguntas</h2>
       <div class="preguntas">
 
         <div class="pregunta">
           <button class="pregunta-btn" aria-expanded="false">
-            <span data-en="Can people tell it is not a person?">¿Se nota que no es una persona?</span>
+            <span data-en="Can people tell it is not a person?" data-nl="Merken mensen dat het geen mens is?" data-sv="Märker folk att det inte är en människa?">¿Se nota que no es una persona?</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="respuesta">
-            <div class="respuesta-txt" data-en="Almost nobody notices, and we do not think it should be hidden. It answers with the name of your business, talks normally, and does not do the press-one-for-sales thing. If someone asks outright whether they are speaking to a person, it says so: that it is the business's automated assistant, and that it can put them through to someone. Hiding it is the fastest way to lose a customer's trust, and depending on what you do, it is legally risky as well.">Casi nadie lo nota, y no creemos que haya que esconderlo. Se presenta con el nombre de tu negocio, habla con normalidad, y no hace lo del menú de opciones. Si alguien pregunta directamente si está hablando con una persona, lo dice: que es el asistente automático del negocio y que puede pasarle con alguien. Disimularlo es la forma más rápida de perder la confianza de un cliente, y según para qué, además es arriesgado legalmente.</div>
+            <div class="respuesta-txt" data-en="Almost nobody notices, and we do not think it should be hidden. It answers with the name of your business, talks normally, and does not do the press-one-for-sales thing. If someone asks outright whether they are speaking to a person, it says so: that it is the business's automated assistant, and that it can put them through to someone. Hiding it is the fastest way to lose a customer's trust, and depending on what you do, it is legally risky as well." data-nl="Bijna niemand merkt het, en wij vinden niet dat het verborgen moet worden. Ze meldt zich met de naam van jouw bedrijf, praat gewoon, en doet niet aan toets-1-voor-verkoop. Als iemand ronduit vraagt of hij met een mens spreekt, zegt ze het: dat ze de automatische assistent van het bedrijf is, en dat ze kan doorverbinden. Het verbergen is de snelste manier om het vertrouwen van een klant kwijt te raken, en afhankelijk van wat je doet is het ook juridisch riskant." data-sv="Nästan ingen märker det, och vi tycker inte att det ska döljas. Den svarar med namnet på ditt företag, pratar normalt, och håller inte på med tryck-ett-för-försäljning. Om någon frågar rakt ut om han pratar med en människa säger den det: att den är företagets automatiska assistent, och att den kan koppla vidare till någon. Att dölja det är snabbaste sättet att förlora en kunds förtroende, och beroende på vad du gör är det juridiskt riskabelt också.">Casi nadie lo nota, y no creemos que haya que esconderlo. Se presenta con el nombre de tu negocio, habla con normalidad, y no hace lo del menú de opciones. Si alguien pregunta directamente si está hablando con una persona, lo dice: que es el asistente automático del negocio y que puede pasarle con alguien. Disimularlo es la forma más rápida de perder la confianza de un cliente, y según para qué, además es arriesgado legalmente.</div>
           </div>
         </div>
 
         <div class="pregunta">
           <button class="pregunta-btn" aria-expanded="false">
-            <span data-en="What if someone asks it something it does not know?">¿Y si le preguntan algo que no sabe?</span>
+            <span data-en="What if someone asks it something it does not know?" data-nl="En als iemand iets vraagt wat ze niet weet?" data-sv="Tänk om någon frågar den något den inte vet?">¿Y si le preguntan algo que no sabe?</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="respuesta">
-            <div class="respuesta-txt" data-en="It says so, takes a note, and passes it to you. It does not make anything up. That is the most important rule in the whole system: a line that invents a price is worse than a phone that rings with nobody to answer it. When we set it up we decide with you what it can say, what it must never say, and what comes straight through to you — and anything outside that reaches you as a message, with what the customer had already explained.">Lo dice, toma nota y te lo pasa. No se lo inventa. Es la regla más importante de todo el sistema: una línea que se inventa un precio es peor que un teléfono que suena sin que nadie lo coja. En el montaje decidimos contigo qué puede decir, qué no puede decir nunca, y qué va directo a ti — y todo lo que se sale de ahí te llega como aviso, con lo que el cliente ya había contado.</div>
+            <div class="respuesta-txt" data-en="It says so, takes a note, and passes it to you. It does not make anything up. That is the most important rule in the whole system: a line that invents a price is worse than a phone that rings with nobody to answer it. When we set it up we decide with you what it can say, what it must never say, and what comes straight through to you — and anything outside that reaches you as a message, with what the customer had already explained." data-nl="Dan zegt ze dat, maakt een notitie, en geeft het aan jou door. Ze verzint niets. Dat is de belangrijkste regel in het hele systeem: een lijn die een prijs verzint is erger dan een telefoon die overgaat zonder dat er iemand opneemt. Bij het inrichten bepalen we samen met jou wat ze mag zeggen, wat ze nooit mag zeggen, en wat direct naar jou doorgaat — en alles daarbuiten bereikt jou als bericht, met wat de klant al had uitgelegd." data-sv="Då säger den det, antecknar, och lämnar över till dig. Den hittar inte på något. Det är den viktigaste regeln i hela systemet: en linje som hittar på ett pris är värre än en telefon som ringer utan att någon svarar. När vi sätter upp den bestämmer vi tillsammans med dig vad den får säga, vad den aldrig får säga, och vad som går rakt till dig — och allt utanför det når dig som ett meddelande, med det kunden redan hade förklarat.">Lo dice, toma nota y te lo pasa. No se lo inventa. Es la regla más importante de todo el sistema: una línea que se inventa un precio es peor que un teléfono que suena sin que nadie lo coja. En el montaje decidimos contigo qué puede decir, qué no puede decir nunca, y qué va directo a ti — y todo lo que se sale de ahí te llega como aviso, con lo que el cliente ya había contado.</div>
           </div>
         </div>
 
         <div class="pregunta">
           <button class="pregunta-btn" aria-expanded="false">
-            <span data-en="Does it book the job, or just take a message?">¿Coge la cita o solo toma nota?</span>
+            <span data-en="Does it book the job, or just take a message?" data-nl="Boekt ze de klus, of neemt ze alleen een bericht aan?" data-sv="Bokar den jobbet, eller tar den bara ett meddelande?">¿Coge la cita o solo toma nota?</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="respuesta">
-            <div class="respuesta-txt" data-en="It books it. It connects to your calendar, sees the gaps that are really there and writes in the appointment properly, with the time that job actually needs. Taking a message is what it does when it cannot close one, not the normal outcome — because a list of people to ring back is just a slower way of losing someone who has already rung somebody else.">La coge. Se conecta con tu calendario, ve los huecos de verdad y escribe la cita de verdad, con el tiempo que hace falta para ese trabajo. Tomar nota es lo que hace cuando no puede cerrarla, no lo normal — porque una lista de gente a la que devolver la llamada es solo una manera más lenta de perder a quien ya ha llamado a otro.</div>
+            <div class="respuesta-txt" data-en="It books it. It connects to your calendar, sees the gaps that are really there and writes in the appointment properly, with the time that job actually needs. Taking a message is what it does when it cannot close one, not the normal outcome — because a list of people to ring back is just a slower way of losing someone who has already rung somebody else." data-nl="Ze boekt hem. Ze koppelt aan je agenda, ziet de gaten die er echt zijn en zet de afspraak er netjes in, met de tijd die die klus ook echt kost. Een bericht aannemen is wat ze doet als ze het niet rond krijgt, niet de normale uitkomst — want een lijst met mensen om terug te bellen is gewoon een tragere manier om iemand kwijt te raken die al een ander heeft gebeld." data-sv="Den bokar det. Den kopplas till din kalender, ser luckorna som faktiskt finns och skriver in tiden ordentligt, med den tid jobbet verkligen tar. Att ta ett meddelande är vad den gör när den inte kan stänga affären, inte det normala utfallet — för en lista med folk att ringa upp är bara ett långsammare sätt att förlora någon som redan har ringt någon annan.">La coge. Se conecta con tu calendario, ve los huecos de verdad y escribe la cita de verdad, con el tiempo que hace falta para ese trabajo. Tomar nota es lo que hace cuando no puede cerrarla, no lo normal — porque una lista de gente a la que devolver la llamada es solo una manera más lenta de perder a quien ya ha llamado a otro.</div>
           </div>
         </div>
 
         <div class="pregunta">
           <button class="pregunta-btn" aria-expanded="false">
-            <span data-en="What about a real emergency?">¿Y una urgencia de las de verdad?</span>
+            <span data-en="What about a real emergency?" data-nl="En bij een echt spoedgeval?" data-sv="Och vid ett riktigt akutfall?">¿Y una urgencia de las de verdad?</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="respuesta">
-            <div class="respuesta-txt" data-en="You decide what counts as an emergency in your business, in your own words, when we set it up. Those calls break out of the script immediately: it recognises them, does not book them in, and either puts them through to you live or alerts you however you want. It is the part that gets tested hardest before anything goes live, and the first thing we tune.">Tú decides qué es una urgencia en tu negocio, con tus palabras, cuando lo montamos. Esas llamadas se salen del guion inmediatamente: las reconoce, no da cita, y te las pasa en directo o avisa como tú digas. Es la parte que más se prueba antes de ponerlo en marcha, y la primera que afinamos.</div>
+            <div class="respuesta-txt" data-en="You decide what counts as an emergency in your business, in your own words, when we set it up. Those calls break out of the script immediately: it recognises them, does not book them in, and either puts them through to you live or alerts you however you want. It is the part that gets tested hardest before anything goes live, and the first thing we tune." data-nl="Jij bepaalt wat een spoedgeval is in jouw bedrijf, in je eigen woorden, als we het inrichten. Die gesprekken breken meteen uit het script: ze herkent ze, boekt ze niet in, en verbindt je live door of waarschuwt je zoals jij dat wilt. Het is het onderdeel dat het hardst getest wordt voordat er iets live gaat, en het eerste dat we bijstellen." data-sv="Du bestämmer vad som är ett akutfall i ditt företag, med dina egna ord, när vi sätter upp den. De samtalen bryter sig ur manuset direkt: den känner igen dem, bokar inte in dem, och antingen kopplar den dig live eller larmar dig på det sätt du vill. Det är den del som testas hårdast innan något går live, och det första vi finjusterar.">Tú decides qué es una urgencia en tu negocio, con tus palabras, cuando lo montamos. Esas llamadas se salen del guion inmediatamente: las reconoce, no da cita, y te las pasa en directo o avisa como tú digas. Es la parte que más se prueba antes de ponerlo en marcha, y la primera que afinamos.</div>
           </div>
         </div>
 
         <div class="pregunta">
           <button class="pregunta-btn" aria-expanded="false">
-            <span data-en="What if the customer wants to speak to a person?">¿Y si el cliente quiere hablar con una persona?</span>
+            <span data-en="What if the customer wants to speak to a person?" data-nl="En als de klant een mens wil spreken?" data-sv="Tänk om kunden vill prata med en människa?">¿Y si el cliente quiere hablar con una persona?</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="respuesta">
-            <div class="respuesta-txt" data-en="They ask, and they get put through. No insisting, no runaround, and no press four to return to the main menu. It is there to pick up the calls nobody picks up today, not to put a wall between you and your customers.">Lo pide y se le pasa. Sin insistir, sin vueltas y sin pulse cuatro para volver al menú principal. Está para coger las llamadas que hoy no coge nadie, no para ponerte una pared delante de tus clientes.</div>
+            <div class="respuesta-txt" data-en="They ask, and they get put through. No insisting, no runaround, and no press four to return to the main menu. It is there to pick up the calls nobody picks up today, not to put a wall between you and your customers." data-nl="Die vraagt erom, en wordt doorverbonden. Geen aandringen, geen omweg, en geen toets vier om terug te keren naar het hoofdmenu. Ze is er om de gesprekken op te pakken die vandaag niemand opneemt, niet om een muur tussen jou en je klanten te zetten." data-sv="Han ber om det, och blir kopplad. Ingen övertalning, inget spring i cirklar, och inget tryck fyra för att komma tillbaka till huvudmenyn. Den finns för att ta samtalen som ingen tar i dag, inte för att sätta en vägg mellan dig och dina kunder.">Lo pide y se le pasa. Sin insistir, sin vueltas y sin pulse cuatro para volver al menú principal. Está para coger las llamadas que hoy no coge nadie, no para ponerte una pared delante de tus clientes.</div>
           </div>
         </div>
 
         <div class="pregunta">
           <button class="pregunta-btn" aria-expanded="false">
-            <span data-en="Does it speak English and Spanish?">¿Habla español e inglés?</span>
+            <span data-en="Does it speak English and Spanish?" data-nl="Spreekt ze Nederlands en Engels?" data-sv="Talar den svenska och engelska?">¿Habla español e inglés?</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="respuesta">
@@ -2120,27 +2158,27 @@
                  proporción sobre el negocio de quien lee es la clase de cifra
                  que el agente tiene prohibida — y si el agente no puede
                  decirla, la página tampoco debería. -->
-            <div class="respuesta-txt" data-en="Both — but each line answers in the language you set it to, and stays in it for the whole call. It does not guess halfway through: short answers are exactly what a recogniser gets wrong (&quot;vale&quot; reaches it as &quot;ballet&quot;), and being answered in the wrong language is worse than choosing once. On this page you choose with the ES/EN buttons. If you want both on the same number, or another language, that is worth going through on the call.">Las dos — pero cada línea contesta en el idioma que le pongas y se queda en él toda la llamada. No lo adivina a mitad de conversación: con respuestas cortas es justo cuando se equivoca ("vale" le llega como "ballet"), y que te contesten en el idioma que no es molesta más que elegirlo una vez. En esta página lo eliges tú con los botones ES/EN. Si quieres las dos en el mismo número, o algún otro idioma, mejor verlo en la llamada.</div>
+            <div class="respuesta-txt" data-en="Both — but each line answers in the language you set it to, and stays in it for the whole call. It does not guess halfway through: short answers are exactly what a recogniser gets wrong (&quot;vale&quot; reaches it as &quot;ballet&quot;), and being answered in the wrong language is worse than choosing once. On this page you choose with the ES/EN buttons. If you want both on the same number, or another language, that is worth going through on the call." data-nl="Allebei — maar elke lijn antwoordt in de taal die jij instelt, en blijft daar het hele gesprek in. Ze gokt niet halverwege: juist bij korte antwoorden gaat een spraakherkenner de mist in (“veertig euro of zo” komt aan zonder dat “of”), en in de verkeerde taal te woord gestaan worden is vervelender dan één keer kiezen. Op deze pagina kies je zelf, met de vlagknoppen bovenaan. Wil je allebei op hetzelfde nummer, of nog een andere taal, dan is dat iets om in het gesprek door te nemen." data-sv="Båda — men varje linje svarar på det språk du ställer in den på, och stannar där hela samtalet. Den gissar inte halvvägs: korta svar är precis vad en taligenkänning hör fel (”jo” når fram som ”yo”), och att bli besvarad på fel språk är värre än att välja en gång. Här på sidan väljer du själv, med flaggknapparna högst upp. Vill du ha båda på samma nummer, eller ytterligare ett språk, är det värt att ta på samtalet.">Las dos — pero cada línea contesta en el idioma que le pongas y se queda en él toda la llamada. No lo adivina a mitad de conversación: con respuestas cortas es justo cuando se equivoca ("vale" le llega como "ballet"), y que te contesten en el idioma que no es molesta más que elegirlo una vez. En esta página lo eliges tú con los botones ES/EN. Si quieres las dos en el mismo número, o algún otro idioma, mejor verlo en la llamada.</div>
           </div>
         </div>
 
         <div class="pregunta">
           <button class="pregunta-btn" aria-expanded="false">
-            <span data-en="How long until it is up and running?">¿Cuánto tarda en estar funcionando?</span>
+            <span data-en="How long until it is up and running?" data-nl="Hoe lang duurt het voor ze draait?" data-sv="Hur lång tid tar det innan den är igång?">¿Cuánto tarda en estar funcionando?</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="respuesta">
-            <div class="respuesta-txt" data-en="A couple of weeks from when we start. Almost none of that is technical: it is sitting down with you to get your services, your hours, your types of job and your emergency rules down properly. After that we run it alongside what you already have, so you hear real calls before it takes anything on its own. It does not go on your main line until you have heard it work.">Un par de semanas desde que empezamos. Casi nada de eso es técnico: es sentarnos contigo a recoger bien tus servicios, tus horarios, los tipos de trabajo y las reglas de urgencia. Después lo dejamos funcionando en paralelo a lo que ya tienes, para que escuches llamadas de verdad antes de que coja nada por su cuenta. No entra en tu línea principal hasta que lo hayas oído funcionar.</div>
+            <div class="respuesta-txt" data-en="A couple of weeks from when we start. Almost none of that is technical: it is sitting down with you to get your services, your hours, your types of job and your emergency rules down properly. After that we run it alongside what you already have, so you hear real calls before it takes anything on its own. It does not go on your main line until you have heard it work." data-nl="Een week of twee vanaf het moment dat we beginnen. Bijna niets daarvan is technisch: het is met jou om tafel om je diensten, je tijden, je soorten klussen en je spoedregels goed op papier te krijgen. Daarna draait ze naast wat je al hebt, zodat je echte gesprekken hoort voordat ze iets zelfstandig doet. Ze gaat niet op je hoofdnummer voordat jij haar hebt horen werken." data-sv="Ett par veckor från att vi börjar. Nästan inget av det är tekniskt: det är att sitta ner med dig och få ner dina tjänster, dina tider, dina typer av jobb och dina akutregler ordentligt. Sedan kör vi den vid sidan av det du redan har, så att du hör riktiga samtal innan den tar något på egen hand. Den går inte på ditt huvudnummer förrän du har hört den fungera.">Un par de semanas desde que empezamos. Casi nada de eso es técnico: es sentarnos contigo a recoger bien tus servicios, tus horarios, los tipos de trabajo y las reglas de urgencia. Después lo dejamos funcionando en paralelo a lo que ya tienes, para que escuches llamadas de verdad antes de que coja nada por su cuenta. No entra en tu línea principal hasta que lo hayas oído funcionar.</div>
           </div>
         </div>
 
         <div class="pregunta">
           <button class="pregunta-btn" aria-expanded="false">
-            <span data-en="What does it cost?">¿Cuánto cuesta?</span>
+            <span data-en="What does it cost?" data-nl="Wat kost het?" data-sv="Vad kostar det?">¿Cuánto cuesta?</span>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
           <div class="respuesta">
-            <div class="respuesta-txt" data-en="It depends on what you need, so we work it out once we know how you operate. We are not going to put a number on a website that will be wrong for most of the people who read it. And if we look at it and it does not add up for you, we will tell you instead of selling you something.">Depende de lo que necesites, así que lo hablamos cuando sepamos cómo trabajas. No vamos a poner en una web un número que va a estar mal para la mitad de la gente que lo lea. Y si al mirarlo vemos que a ti no te sale a cuenta, te lo decimos en vez de venderte algo.</div>
+            <div class="respuesta-txt" data-en="It depends on what you need, so we work it out once we know how you operate. We are not going to put a number on a website that will be wrong for most of the people who read it. And if we look at it and it does not add up for you, we will tell you instead of selling you something." data-nl="Dat hangt af van wat je nodig hebt, dus we rekenen het uit zodra we weten hoe jij werkt. We gaan geen bedrag op een website zetten dat voor de meeste mensen die het lezen niet klopt. En als we ernaar kijken en het loont voor jou niet, dan zeggen we dat in plaats van je iets te verkopen." data-sv="Det beror på vad du behöver, så vi räknar på det när vi vet hur du jobbar. Vi tänker inte sätta en siffra på en webbplats som blir fel för de flesta som läser den. Och om vi tittar på det och det inte går ihop för dig, säger vi det i stället för att sälja något till dig.">Depende de lo que necesites, así que lo hablamos cuando sepamos cómo trabajas. No vamos a poner en una web un número que va a estar mal para la mitad de la gente que lo lea. Y si al mirarlo vemos que a ti no te sale a cuenta, te lo decimos en vez de venderte algo.</div>
           </div>
         </div>
 
@@ -2153,7 +2191,7 @@
        ============================================ -->
   <section class="cierre aparece" id="cierre">
     <div class="container">
-      <h2 class="rotulo" data-en="Stop losing customers to whoever simply answered the phone.">Deja de perder clientes con el que simplemente cogió el teléfono.</h2>
+      <h2 class="rotulo" data-en="Stop losing customers to whoever simply answered the phone." data-nl="Raak geen klanten meer kwijt aan degene die simpelweg opnam." data-sv="Sluta förlora kunder till den som helt enkelt svarade i telefon.">Deja de perder clientes con el que simplemente cogió el teléfono.</h2>
 
       <!-- ⚠ GARANTÍA. Dan, 2026-08-06. Antes aquí ponía que no había
            garantía a propósito; ahora la hay, y es una decisión comercial
@@ -2175,8 +2213,8 @@
            cumplir nadie. Si esa línea se cae del encaje, esto hay que
            volver a mirarlo. -->
       <div class="garantia">
-        <p class="garantia-titulo" data-en="Thirty days, money back">Garantía de 30 días</p>
-        <p data-en="Thirty days. If it is not doing what I said it would, you get every euro back — no forms, and no awkward conversation about it.">Treinta días. Si no está haciendo lo que te dije que haría, te devuelvo hasta el último euro — sin formularios y sin una conversación incómoda.</p>
+        <p class="garantia-titulo" data-en="Thirty days, money back" data-nl="Dertig dagen, geld terug" data-sv="Trettio dagar, pengarna tillbaka">Garantía de 30 días</p>
+        <p data-en="Thirty days. If it is not doing what I said it would, you get every euro back — no forms, and no awkward conversation about it." data-nl="Dertig dagen. Doet ze niet wat ik gezegd heb, dan krijg je elke euro terug — geen formulieren, en geen ongemakkelijk gesprek erover." data-sv="Trettio dagar. Gör den inte det jag sa att den skulle göra får du varenda krona tillbaka — inga blanketter, och inget obekvämt samtal om saken.">Treinta días. Si no está haciendo lo que te dije que haría, te devuelvo hasta el último euro — sin formularios y sin una conversación incómoda.</p>
       </div>
 
       <!-- La otra inversión del riesgo, y la que no depende de que nadie
@@ -2187,21 +2225,21 @@
           <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" stroke-width="1.5"/>
           <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span data-en="First it runs alongside what you already have. You listen to real calls it has handled, and it does not go on your main line until you have heard it work.">Primero funciona en paralelo a lo que ya tienes. Escuchas llamadas de verdad que ha atendido, y no entra en tu línea principal hasta que lo hayas oído funcionar.</span>
+        <span data-en="First it runs alongside what you already have. You listen to real calls it has handled, and it does not go on your main line until you have heard it work." data-nl="Eerst draait ze naast wat je al hebt. Jij luistert echte gesprekken terug die ze heeft afgehandeld, en ze gaat niet op je hoofdnummer voordat jij haar hebt horen werken." data-sv="Först kör den vid sidan av det du redan har. Du lyssnar på riktiga samtal som den har hanterat, och den går inte på ditt huvudnummer förrän du har hört den fungera.">Primero funciona en paralelo a lo que ya tienes. Escuchas llamadas de verdad que ha atendido, y no entra en tu línea principal hasta que lo hayas oído funcionar.</span>
       </div>
 
       <div>
-        <button class="btn btn-primary llamar" style="font-size:18px; padding:18px 40px;" data-umami-event="demo-abrir-cierre" data-en="Hear it answer — right here, no phone needed">Escúchala contestar — aquí mismo, sin teléfono</button>
-        <a class="btn btn-primary tel-movil" style="font-size:18px; padding:18px 40px;" href="tel:+34951870630" data-umami-event="demo-llamar-cierre"><span data-en="Call it now">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
-        <p class="tel-escritorio"><span data-en="or call it on">o llámala al</span> <a href="tel:+34951870630" data-umami-event="demo-llamar-escritorio"><span class="tel-num">951 870 630</span></a></p>
+        <button class="btn btn-primary llamar" style="font-size:18px; padding:18px 40px;" data-umami-event="demo-abrir-cierre" data-en="Hear it answer — right here, no phone needed" data-nl="Hoor haar opnemen — hier meteen, geen telefoon nodig" data-sv="Hör den svara — här direkt, ingen telefon behövs">Escúchala contestar — aquí mismo, sin teléfono</button>
+        <a class="btn btn-primary tel-movil" style="font-size:18px; padding:18px 40px;" href="tel:+34951870630" data-umami-event="demo-llamar-cierre"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
+        <p class="tel-escritorio"><span data-en="or call it on" data-nl="of bel haar op" data-sv="eller ring den på">o llámala al</span> <a href="tel:+34951870630" data-umami-event="demo-llamar-escritorio"><span class="tel-num">951 870 630</span></a></p>
       </div>
 
-      <small class="letra-chica" data-en="Would you rather I talked you through it? Half an hour, no obligation, and I will tell you whether this fits your business or not. If it does not, I will say so.">¿Prefieres que te lo cuente yo? Media hora, sin compromiso, y te digo si esto le encaja a tu negocio o no. Si no le encaja, te lo digo.</small>
+      <small class="letra-chica" data-en="Would you rather I talked you through it? Half an hour, no obligation, and I will tell you whether this fits your business or not. If it does not, I will say so." data-nl="Praat ik je liever even bij? Een half uur, nergens toe verplicht, en ik zeg je of dit bij jouw bedrijf past of niet. Zo niet, dan zeg ik dat." data-sv="Vill du hellre att jag går igenom det med dig? En halvtimme, utan förpliktelser, och jag säger om det här passar ditt företag eller inte. Gör det inte det säger jag det.">¿Prefieres que te lo cuente yo? Media hora, sin compromiso, y te digo si esto le encaja a tu negocio o no. Si no le encaja, te lo digo.</small>
       <div>
-        <a class="btn btn-outline" href="https://cal.eu/prime.ai/intro-wa" data-en="Book a call with me">Reservar una llamada conmigo</a>
+        <a class="btn btn-outline" href="https://cal.eu/prime.ai/intro-wa" data-en="Book a call with me" data-nl="Plan een gesprek met mij" data-sv="Boka ett samtal med mig">Reservar una llamada conmigo</a>
       </div>
 
-      <p class="unidad" data-en="For businesses that do not let the phone ring out.">Para negocios que no dejan que el teléfono suene solo.</p>
+      <p class="unidad" data-en="For businesses that do not let the phone ring out." data-nl="Voor bedrijven die de telefoon niet laten overgaan." data-sv="För företag som inte låter telefonen ringa obesvarad.">Para negocios que no dejan que el teléfono suene solo.</p>
     </div>
   </section>
 
@@ -2229,7 +2267,7 @@
          porque sólo puede comprobar que el enlace existe, nunca qué hay al
          otro lado. Un despliegue del otro repo puede romper esto sin tocar
          este archivo. -->
-    <div class="container" data-en="Prime AI holds the recording. Want it deleted? Email &lt;a href=&quot;mailto:support@prime-ai.es&quot;&gt;support@prime-ai.es&lt;/a&gt;. &lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with it and how to ask me to delete it (in Spanish)&lt;/a&gt;. Would you rather not be recorded? Email me and we will talk anyway.">
+    <div class="container" data-en="Prime AI holds the recording. Want it deleted? Email &lt;a href=&quot;mailto:support@prime-ai.es&quot;&gt;support@prime-ai.es&lt;/a&gt;. &lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with it and how to ask me to delete it (in Spanish)&lt;/a&gt;. Would you rather not be recorded? Email me and we will talk anyway." data-nl="Prime AI bewaart de opname. Wil je hem laten wissen? Mail &lt;a href=&quot;mailto:support@prime-ai.es&quot;&gt;support@prime-ai.es&lt;/a&gt;. &lt;a href=&quot;/voice/privacidad&quot;&gt;Wat ik ermee doe en hoe je me vraagt hem te wissen (in het Spaans)&lt;/a&gt;. Word je liever niet opgenomen? Mail me, dan praten we alsnog." data-sv="Prime AI förvarar inspelningen. Vill du att den raderas? Mejla &lt;a href=&quot;mailto:support@prime-ai.es&quot;&gt;support@prime-ai.es&lt;/a&gt;. &lt;a href=&quot;/voice/privacidad&quot;&gt;Vad jag gör med den och hur du ber mig radera den (på spanska)&lt;/a&gt;. Vill du hellre inte bli inspelad? Mejla mig så pratar vi ändå.">
       La grabación la guarda Prime AI. ¿Quieres que la borre? Escríbeme a
       <a href="mailto:support@prime-ai.es">support@prime-ai.es</a>.
       <a href="/voice/privacidad">Qué hago con ella y cómo pedir que la borre</a>.
@@ -2267,14 +2305,14 @@
        ============================================ -->
   <dialog class="panel" id="panel" aria-labelledby="panel-titulo">
     <button class="cerrar" id="cerrar" aria-label="Cerrar">&times;</button>
-    <h3 id="panel-titulo" data-en="Hear it answer">Escúchala contestar</h3>
-    <p class="aviso" data-en="This is an AI, not a person — the same one that would answer your business's phone. The call is recorded, to improve it.">Es una IA, no una persona — la misma que contestaría el teléfono de tu negocio. La llamada se graba, para mejorarla.</p>
-    <p class="panel-chica" data-en="&lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with the recording and how to ask me to delete it (in Spanish)&lt;/a&gt;."><a href="/voice/privacidad">Qué hago con la grabación y cómo pedir que la borre</a>.</p>
+    <h3 id="panel-titulo" data-en="Hear it answer" data-nl="Hoor haar opnemen" data-sv="Hör den svara">Escúchala contestar</h3>
+    <p class="aviso" data-en="This is an AI, not a person — the same one that would answer your business's phone. The call is recorded, to improve it." data-nl="Dit is een AI, geen mens — dezelfde die de telefoon van jouw bedrijf zou opnemen. Het gesprek wordt opgenomen, om haar te verbeteren." data-sv="Det här är en AI, inte en människa — samma som skulle svara i ditt företags telefon. Samtalet spelas in, för att göra den bättre.">Es una IA, no una persona — la misma que contestaría el teléfono de tu negocio. La llamada se graba, para mejorarla.</p>
+    <p class="panel-chica" data-en="&lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with the recording and how to ask me to delete it (in Spanish)&lt;/a&gt;." data-nl="&lt;a href=&quot;/voice/privacidad&quot;&gt;Wat ik met de opname doe en hoe je me vraagt hem te wissen (in het Spaans)&lt;/a&gt;." data-sv="&lt;a href=&quot;/voice/privacidad&quot;&gt;Vad jag gör med inspelningen och hur du ber mig radera den (på spanska)&lt;/a&gt;."><a href="/voice/privacidad">Qué hago con la grabación y cómo pedir que la borre</a>.</p>
     <!-- data-umami-event cuenta la PULSACIÓN, no la llamada conectada: si el
          micro se deniega o el token falla, esto ya ha contado. El número de
          llamadas que de verdad arrancan sale de POST /voice/token en el log de
          nginx, y comparar los dos es justo lo que dice cuántas se caen aquí. -->
-    <button class="btn btn-primary" id="ir" data-umami-event="demo-boton-hablar" data-en="Talk to the AI (recorded)">Hablar con la IA (se graba)</button>
+    <button class="btn btn-primary" id="ir" data-umami-event="demo-boton-hablar" data-en="Talk to the AI (recorded)" data-nl="Praat met de AI (wordt opgenomen)" data-sv="Prata med AI:n (spelas in)">Hablar con la IA (se graba)</button>
     <p class="estado" id="estado" role="status" aria-live="polite"></p>
     <!-- El agente cierra apuntando a "el botón de la página" (Voice_agent/src/
          sales-agent.ts, WEB_CLOSE). Este <dialog> trae fondo oscuro, así que el
@@ -2291,7 +2329,7 @@
          su padre, y falla en cuanto cambie el orden del recorrido.
          Así queda igual que el .panel-chica de abajo, que ya guardaba su
          marcado inglés completo y escapado en el atributo. -->
-    <p class="panel-chica" data-en="&lt;a class=&quot;btn btn-outline&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Book a call with me&lt;/a&gt;"><a class="btn btn-outline" href="https://cal.eu/prime.ai/intro-wa">Reservar una llamada conmigo</a></p>
+    <p class="panel-chica" data-en="&lt;a class=&quot;btn btn-outline&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Book a call with me&lt;/a&gt;" data-nl="&lt;a class=&quot;btn btn-outline&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Plan een gesprek met mij&lt;/a&gt;" data-sv="&lt;a class=&quot;btn btn-outline&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Boka ett samtal med mig&lt;/a&gt;"><a class="btn btn-outline" href="https://cal.eu/prime.ai/intro-wa">Reservar una llamada conmigo</a></p>
     <!-- Dan, 2026-08-07: aquí ya no va su nombre. Antes esta línea era
          "Responsable de la grabación: Daniel Kooij (Prime AI), Fuengirola,
          Málaga — oscarinfo@proton.me", y presentarse como responsable delante
@@ -2358,6 +2396,43 @@
           sinMicro: 'I need the microphone — allow it and press again.',
           ocupado: "I can't right now. Email me and we will talk anyway.",
           noConecta: 'Could not connect. Try again.'
+        },
+        // NL y SV se añaden el 2026-08-23, cuando WEB NL y WEB SV ya estaban
+        // publicados en Retell. La descripción nombra el mercado propio, no
+        // Málaga: la página dice «Voor bedrijven in Nederland» arriba y una
+        // meta que dijera Málaga la contradiría en el resultado de búsqueda,
+        // que es donde se lee antes que la página.
+        nl: {
+          titulo: 'De telefoon die nooit meer overgaat zonder antwoord | Prime AI',
+          descripcion: 'Ze neemt op als jij niet kunt, spreekt Nederlands of Engels, en zet de afspraak meteen in je agenda. Voor bedrijven in Nederland.',
+          ir: 'Praat met de AI (wordt opgenomen)',
+          colgar: 'Ophangen',
+          cuentaPie: 'Ongeveer {n} gemiste oproepen per maand. We rekenen maar met een derde: natuurlijk zou niet iedereen geboekt hebben, en dat derde is onze eigen aanname, geen cijfer van jou. Tegen de prijs van het goedkoopste dat je doet. Dit is wat er vandaag langs je heen loopt, niet wat wij teruggeven.',
+          navegador: 'Open deze pagina in Chrome of Safari om te kunnen praten.',
+          pidiendo: 'Microfoon aanvragen...',
+          conectando: 'Verbinden...',
+          enLinea: 'Je bent verbonden — praat wanneer je wilt, vraag haar wat je wilt.',
+          terminada: 'Gesprek beëindigd.',
+          cortada: 'De verbinding is verbroken.',
+          sinMicro: 'Ik heb de microfoon nodig — sta hem toe en druk opnieuw.',
+          ocupado: 'Nu even niet. Mail me, dan praten we alsnog.',
+          noConecta: 'Verbinden lukte niet. Probeer het opnieuw.'
+        },
+        sv: {
+          titulo: 'Telefonen som aldrig får ringa obesvarad | Prime AI',
+          descripcion: 'Den svarar åt dig när du inte kan, talar svenska eller engelska, och lägger in jobbet direkt i din kalender. För företag i Sverige.',
+          ir: 'Prata med AI:n (spelas in)',
+          colgar: 'Lägg på',
+          cuentaPie: 'Ungefär {n} missade samtal i månaden. Vi räknar bara med en tredjedel: självklart hade inte alla bokat, och den tredjedelen är vårt eget antagande, ingen siffra från dig. Till priset på det billigaste du gör. Det här är vad som går dig förbi i dag, inte vad vi lämnar tillbaka.',
+          navegador: 'Öppna den här sidan i Chrome eller Safari för att kunna prata.',
+          pidiendo: 'Begär mikrofonen...',
+          conectando: 'Ansluter...',
+          enLinea: 'Du är framme — prata när du vill, fråga den vad som helst.',
+          terminada: 'Samtalet avslutat.',
+          cortada: 'Samtalet bröts.',
+          sinMicro: 'Jag behöver mikrofonen — tillåt den och tryck igen.',
+          ocupado: 'Jag kan inte just nu. Mejla mig så pratar vi ändå.',
+          noConecta: 'Kunde inte ansluta. Försök igen.'
         }
       };
       var idioma = 'es';
@@ -2446,16 +2521,41 @@
       var DIAS_LABORABLES = 20;
       var PROPORCION_QUE_RESERVA = 1 / 3;
 
-      function loQueSeEscapa(perdidasAlDia, precioMasBarato) {
+      /* `paso` por defecto 50 para no romper a nadie que llame a esto con dos
+         argumentos, que es como estaba hasta el 2026-08-23. En coronas el
+         redondeo a 50 no redondea nada — 50 SEK son cuatro euros — así que
+         cada moneda trae el suyo en MONEDA.paso. */
+      function loQueSeEscapa(perdidasAlDia, precioMasBarato, paso) {
+        paso = paso || 50;
         var perdidasAlMes = perdidasAlDia * DIAS_LABORABLES;
         var habrianReservado = perdidasAlMes * PROPORCION_QUE_RESERVA;
         // A la cincuentena: una cuenta con dos supuestos dentro no se
         // presenta al euro, porque esa precisión es la parte que no es
         // verdad. Redondear siempre hacia abajo mantiene la regla del
         // agente de que una suposición sólo puede hacer el número MENOR.
-        var euros = Math.floor(habrianReservado * precioMasBarato / 50) * 50;
+        var euros = Math.floor(habrianReservado * precioMasBarato / paso) * paso;
         return { perdidasAlMes: perdidasAlMes, euros: euros };
       }
+
+      /* LA CUENTA NO SE TRADUCE, SE CAMBIA DE MERCADO. Traducir la etiqueta
+         «60 €» a «700 kr» y dejar el value en 60 haría una suma sueca con
+         precios españoles, que es peor que no tener la sección: el número
+         saldría bien formateado y mal calculado.
+
+         Los precios NL son los de España a ojo de vista y medio, y los SV su
+         equivalente en coronas — la misma escala que sales-agent.ts ya fijó
+         en NETHERLANDS.roundNumber («about three thousand euros a month») y
+         SWEDEN.roundNumber («about twenty thousand kronor a month»). Si se
+         tocan aquí, se tocan allí: la agente dice esa cifra en voz alta.
+
+         El orden importa: es el orden de los <input name="precio"> en el
+         marcado, y traducir() los recorre con el mismo índice. */
+      var MONEDA = {
+        es: { loc: 'es-ES', cur: 'EUR', paso: 50,  precios: [60, 150, 400, 900] },
+        en: { loc: 'en-IE', cur: 'EUR', paso: 50,  precios: [60, 150, 400, 900] },
+        nl: { loc: 'nl-NL', cur: 'EUR', paso: 50,  precios: [90, 225, 600, 1350] },
+        sv: { loc: 'sv-SE', cur: 'SEK', paso: 500, precios: [700, 1700, 4500, 10000] }
+      };
       window.loQueSeEscapa = loQueSeEscapa;
 
       var cifra = document.getElementById('cifra');
@@ -2469,9 +2569,10 @@
         // página se ha inventado sobre su negocio.
         if (!lla || !pre) return;
 
-        var r = loQueSeEscapa(Number(lla.value), Number(pre.value));
-        cifra.textContent = new Intl.NumberFormat(idioma === 'en' ? 'en-IE' : 'es-ES', {
-          style: 'currency', currency: 'EUR', maximumFractionDigits: 0
+        var m = MONEDA[idioma];
+        var r = loQueSeEscapa(Number(lla.value), Number(pre.value), m.paso);
+        cifra.textContent = new Intl.NumberFormat(m.loc, {
+          style: 'currency', currency: m.cur, maximumFractionDigits: 0
         }).format(r.euros);
         cifraPie.textContent = T[idioma].cuentaPie.replace('{n}', r.perdidasAlMes);
       }
@@ -2596,17 +2697,33 @@
       // Va al final a propósito: necesita `viva` e `ir`, que se declaran en
       // el bloque del panel de aquí arriba.
       //
-      // El español es lo que hay en el marcado. La primera vez que se pasa a
-      // inglés se guarda el original en data-es, y a partir de ahí esto sólo
-      // intercambia dos atributos. innerHTML y no textContent porque el pie
+      // El español es lo que hay en el marcado. La primera vez que se sale de
+      // él se guarda el original en data-es, y a partir de ahí esto sólo
+      // elige un atributo. innerHTML y no textContent porque el pie
       // y la letra pequeña del panel llevan <strong> y enlaces dentro; lo
       // que se inyecta está escrito en este archivo y no viene de fuera.
+      //
+      // El selector sigue siendo [data-en] y no [data-nl], porque el inglés
+      // es el único idioma que tiene TODOS los nodos por definición: es el
+      // que se añadió a la vez que el marcado español. Un nodo con data-nl
+      // pero sin data-en sería un nodo que el bucle no visita nunca, y por
+      // eso test-palette.js exige los tres juntos.
       function traducir(nuevo) {
         idioma = nuevo;
 
         document.querySelectorAll('[data-en]').forEach(function (el) {
           if (el.dataset.es === undefined) el.dataset.es = el.innerHTML;
-          el.innerHTML = nuevo === 'en' ? el.dataset.en : el.dataset.es;
+          // El respaldo es el español y no el inglés a propósito: si algún
+          // día falta una traducción, lo que se ve es el marcado original
+          // entero, no un hueco en blanco.
+          el.innerHTML = el.dataset[nuevo] !== undefined ? el.dataset[nuevo] : el.dataset.es;
+        });
+
+        // Los precios de la calculadora, en la moneda del mercado. Va aquí y
+        // no en pintarCuenta() porque los value tienen que estar puestos
+        // ANTES de que nadie pulse un radio, no sólo antes de pintar.
+        document.querySelectorAll('input[name="precio"]').forEach(function (radio, i) {
+          radio.value = MONEDA[nuevo].precios[i];
         });
 
         document.documentElement.lang = nuevo;
@@ -2653,9 +2770,14 @@
       // que abrirse en inglés aunque quien lo abra hubiera elegido español
       // otro día. Sin ninguno de los dos no corre nada y la página se queda
       // como está en el marcado, que es española.
+      //
+      // Se comprueba contra MONEDA y no contra una lista escrita aquí: un
+      // ?lang=de tiene que caer en español, no romper el bucle de arriba con
+      // un dataset.de que no existe. Añadir un idioma es añadirlo a MONEDA y
+      // a T, y esta línea se entera sola.
       var pedido = new URLSearchParams(location.search).get('lang');
       if (!pedido) { try { pedido = localStorage.getItem('idioma'); } catch (e) {} }
-      if (pedido === 'en') traducir('en');
+      if (pedido && pedido !== 'es' && MONEDA[pedido] && T[pedido]) traducir(pedido);
     })();
   </script>
 
