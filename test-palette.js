@@ -709,6 +709,50 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
     }
   }
 
+  // ---- the mobile block owns what the mobile layout needs -------------
+  // Written after shipping the failure it catches, on 2026-08-25. A new
+  // @media (max-width: 352px) block was opened by closing the 767 one early,
+  // in the middle of it. Braces stayed balanced, every guard stayed green and
+  // the nav looked right — but .cta-movil, .banda, .alto, .llamar,
+  // .tel-movil and .letra-movil had all been swept into the narrow block, so
+  // the fixed bottom bar simply vanished on any ordinary phone. It reached
+  // production.
+  //
+  // Nesting is invisible to a linter that only counts braces and to a
+  // screenshot of the part you happened to change, which is why this reads
+  // the 767 block by walking its braces and asserts the rules that define
+  // the phone layout are INSIDE it. A rule that drifts into a narrower block
+  // stops applying between 353px and 767px — the width of almost every real
+  // phone — and nothing else here would say so.
+  {
+    // Comments stripped FIRST: several of them quote "@media (max-width: 767px)"
+    // in prose, and indexOf found the sentence instead of the at-rule — which
+    // made this guard fail against a stylesheet that was correct.
+    const hoja = es.slice(es.indexOf('<style>'), es.indexOf('</style>'))
+      .replace(/\/\*[\s\S]*?\*\//g, '');
+    const abre = hoja.indexOf('@media (max-width: 767px)');
+    if (abre === -1) {
+      fail.push('[es] no @media (max-width: 767px) block — the phone layout guard is now inert');
+    } else {
+      let i = hoja.indexOf('{', abre), prof = 0, fin = i;
+      for (; fin < hoja.length; fin++) {
+        if (hoja[fin] === '{') prof++;
+        else if (hoja[fin] === '}' && --prof === 0) break;
+      }
+      const bloque = hoja.slice(i, fin);
+      // .cta-movil first: it is the one whose absence is invisible in a
+      // screenshot of the top of the page, and the one that took the fall.
+      for (const sel of ['.cta-movil', '.banda', '.alto', '.llamar', '.tel-movil', '.letra-movil']) {
+        if (!new RegExp('\\' + sel + '\\s*[,{]').test(bloque)) {
+          fail.push(
+            `[es] ${sel} is not inside @media (max-width: 767px) — it has drifted into another block ` +
+            `and no longer applies on a normal phone (353-767px)`,
+          );
+        }
+      }
+    }
+  }
+
   // ---- the four-flag switch -------------------------------------------
   // One page, four languages: Spanish in the markup, English in data-en,
   // Dutch in data-nl, Swedish in data-sv. The

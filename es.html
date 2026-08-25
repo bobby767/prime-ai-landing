@@ -1656,59 +1656,18 @@
          y obligan a decidir cuál manda, que es justo la decisión que este
          bloque documenta.
 
-         Y el padding baja a 16 porque a 353px (Galaxy S9+, el más estrecho
-         de los medidos) no cabía: 24 de relleno de .nav-inner + 74 de
-         logotipo + 132 de banderas + 32 de huecos + 92 de botón = 354 en 353
-         de pantalla, y el borde derecho quedaba cortado. Con 16 sobran 16.
-         Medido a 320, 353, 360, 390 y 430. */
+         Sin tocar el padding: .btn-nav ya lo baja a 8/14 en el móvil unas
+         reglas más abajo, y con eso el botón mide 92px y cabe de 353 en
+         adelante. Aquí llegó a haber un `padding: 10px 16px` que no hacía
+         nada — .btn-nav es posterior en la hoja y ganaba — y cuyo comentario
+         decía que era lo que hacía que cupiera. Lo que hace que quepa por
+         debajo de 353 es el bloque @media (max-width: 352px) del final.
+         Medido en iPhone SE, Galaxy S9+, iPhone 13, Pixel 5, 14 Pro Max e
+         iPad Mini. */
       .btn-reservar {
         background: var(--accent);
         color: var(--text-on-accent);
-        padding: 10px 16px;
       }
-    }
-
-    /* ───────────────────────────────────────────────────────────────────────
-       PANTALLAS MUY ESTRECHAS (<=352px: iPhone SE de 1ª, Galaxy S9+ y los
-       Android viejos que siguen declarando 320).
-
-       Este bloque REPARA UNA REGRESIÓN PROPIA, no un fallo antiguo. Medido
-       contra f10a161: antes de meter reservar en la barra no había
-       desbordamiento a 320 ni a 344, porque el botón que había ahí era
-       "Escúchala contestar" y el flex lo ENCOGÍA — 48px a 320, 59 a 344, 68 a
-       353. "Reservar" es una sola palabra: no parte, no encoge, y se planta
-       en 88px a cualquier ancho. Resultado, 349px de contenido en 320 de
-       pantalla y scroll horizontal en toda la página.
-
-       Lo que cede es el RELLENO, no el contenido: 8px por lado en .nav-inner,
-       5 por lado en cada una de las cuatro banderas, 4 en el botón, más el
-       hueco y el borde del grupo de idioma. A 320 eso deja el contenido
-       exactamente en 320 y el desbordamiento desaparece. Las banderas siguen
-       a 15px, que es el tamaño que su propio comentario defiende ("un emoji
-       de bandera a 12px es una mancha"), y ninguna de las tres cosas de la
-       barra desaparece.
-
-       Comprobado a 320, 344, 352, 353, 360, 390, 430, 767, 768 y 1280: sin
-       scroll horizontal en ninguno y .nav a 73px en todos.
-       ─────────────────────────────────────────────────────────────────────── */
-    @media (max-width: 352px) {
-      .nav-inner {
-        padding: 12px var(--space-2);
-      }
-
-      .idioma {
-        gap: 1px;
-        padding: 1px;
-      }
-
-      .idioma-btn {
-        padding: 5px 3px;
-      }
-
-      .btn-reservar {
-        padding: 10px 12px;
-      }
-
       .banda {
         padding: var(--space-8) 0;
       }
@@ -1775,6 +1734,61 @@
 
       .btn-nav {
         padding: 8px 14px;
+      }
+    }
+
+    /* ───────────────────────────────────────────────────────────────────────
+       PANTALLAS MUY ESTRECHAS (<=352px: iPhone SE de 1ª, Galaxy S9+ y los
+       Android viejos que siguen declarando 320).
+
+       Este bloque REPARA UNA REGRESIÓN PROPIA, no un fallo antiguo. Medido
+       contra f10a161: antes de meter reservar en la barra no había
+       desbordamiento a 320 ni a 344, porque el botón que había ahí era
+       "Escúchala contestar" y el flex lo ENCOGÍA — 48px a 320, 59 a 344, 68 a
+       353. "Reservar" es una sola palabra: no parte, no encoge, y se planta
+       en 88px a cualquier ancho. Resultado, 349px de contenido en 320 de
+       pantalla y scroll horizontal en toda la página.
+
+       Lo que cede es el RELLENO, no el contenido: 8px por lado en .nav-inner,
+       5 por lado en cada una de las cuatro banderas, 2 en el botón, más el
+       hueco y el borde del grupo de idioma. A 320 eso deja el contenido
+       exactamente en 320 y el desbordamiento desaparece.
+
+       Y va FUERA del bloque de 767, no dentro. Nació dentro, cerrando el de
+       767 antes de tiempo para abrir éste, y el resultado fue que todo lo que
+       venía después —.banda, .alto, .cta-movil, .llamar, .tel-movil,
+       .letra-movil— quedó encerrado bajo 352px: la barra fija de abajo
+       desaparecía en un móvil normal. Estuvo así en producción unos minutos.
+       Se detectó porque el padding calculado del botón no era ninguno de los
+       escritos, que es la señal de que una regla está en el bloque que no es.
+       Contra ese fallo hay ahora una comprobación que no depende del ojo: se
+       renderiza esta página y la de f10a161 a 320/353/390/430/600/767 y se
+       comparan las propiedades calculadas que definen el móvil. Deben salir
+       idénticas en todos los anchos menos en lo que esta rama cambia a
+       propósito. Las banderas siguen
+       a 15px, que es el tamaño que su propio comentario defiende ("un emoji
+       de bandera a 12px es una mancha"), y ninguna de las tres cosas de la
+       barra desaparece.
+
+       Comprobado a 320, 344, 352, 353, 360, 390, 430, 767, 768 y 1280: sin
+       scroll horizontal en ninguno y .nav a 73px en todos.
+       ─────────────────────────────────────────────────────────────────────── */
+    @media (max-width: 352px) {
+      .nav-inner {
+        padding: 12px var(--space-2);
+      }
+
+      .idioma {
+        gap: 1px;
+        padding: 1px;
+      }
+
+      .idioma-btn {
+        padding: 5px 3px;
+      }
+
+      .btn-reservar {
+        padding: 10px 12px;
       }
     }
 
