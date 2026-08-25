@@ -338,6 +338,34 @@
       font-size: var(--font-sm);
     }
 
+    /* .btn-outline pinta el texto de --paper: sirve sobre ink (#cierre, el
+       panel) y es invisible sobre la barra, que va en papel. Esta es su
+       versión clara, con fichas que ya existen para fondo claro
+       (--text-primary sobre --paper está medido en test-palette.js, y
+       --surface-hover es el hover de fondo claro del resto de la página).
+       No entra ningún color nuevo.
+
+       Va en la barra porque reservar era la ÚNICA acción de la página que
+       no se podía hacer sin llegar al final del todo o sin abrir el panel de
+       la demo — es decir, sólo estaba a mano si ya querías la llamada de
+       prueba. Sigue siendo la opción callada: contorno contra el azul
+       macizo de al lado. */
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .btn-reservar {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-strong);
+    }
+
+    .btn-reservar:hover {
+      background: var(--surface-hover);
+    }
+
     /* Cuatro idiomas. Sigue siendo lo más callado de la barra: quien lo
        necesita lo encuentra, y a quien no, no se le pide decidir nada antes
        de leer el titular.
@@ -1529,6 +1557,14 @@
         --font-2xl: 27px;
       }
 
+      /* Fuera de la barra en el móvil. A 360px ya van logotipo, cuatro
+         banderas y el botón azul, y un cuarto elemento parte la barra en dos
+         líneas (el mismo desbordamiento que documenta .nav-logo). En el
+         móvil reservar se queda donde estaba: al final de #cierre. */
+      .btn-reservar {
+        display: none;
+      }
+
       .banda {
         padding: var(--space-8) 0;
       }
@@ -1728,8 +1764,19 @@
         <button type="button" class="idioma-btn" data-idioma="nl" aria-pressed="false" aria-label="Nederlands" title="Nederlands">🇳🇱</button>
         <button type="button" class="idioma-btn" data-idioma="sv" aria-pressed="false" aria-label="Svenska" title="Svenska">🇸🇪</button>
       </div>
-      <button class="btn btn-primary btn-nav llamar" data-umami-event="demo-abrir-nav" data-en="Hear it answer" data-nl="Hoor haar opnemen" data-sv="Hör den svara">Escúchala contestar</button>
-      <a class="btn btn-primary btn-nav tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-nav"><span data-en="Call" data-nl="Bellen" data-sv="Ring">Llamar</span></a>
+      <!-- Los dos botones van envueltos, y el envoltorio NO es decorativo. La
+           barra reparte con space-between: con tres hijos daba logotipo a la
+           izquierda, banderas al medio y llamada a la derecha, y al meter
+           reservar como cuarto hijo el reparto lo dejaba flotando solo en
+           mitad de la barra a 1280. Envueltos vuelven a ser tres hijos y el
+           reparto es el de siempre, con reservar pegado a su primario.
+           Sin data-en en el envoltorio: traducir() sustituye innerHTML del
+           elemento que lo lleva, y aquí dentro hay hijos con el suyo propio. -->
+      <div class="nav-cta">
+        <a class="btn btn-nav btn-reservar" href="https://cal.eu/prime.ai/intro-wa" data-umami-event="reservar-nav" data-en="Book a call" data-nl="Gesprek plannen" data-sv="Boka samtal">Reservar llamada</a>
+        <button class="btn btn-primary btn-nav llamar" data-umami-event="demo-abrir-nav" data-en="Hear it answer" data-nl="Hoor haar opnemen" data-sv="Hör den svara">Escúchala contestar</button>
+        <a class="btn btn-primary btn-nav tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-nav"><span data-en="Call" data-nl="Bellen" data-sv="Ring">Llamar</span></a>
+      </div>
     </div>
   </nav>
 
@@ -2236,7 +2283,7 @@
 
       <small class="letra-chica" data-en="Would you rather I talked you through it? Half an hour, no obligation, and I will tell you whether this fits your business or not. If it does not, I will say so." data-nl="Praat ik je liever even bij? Een half uur, nergens toe verplicht, en ik zeg je of dit bij jouw bedrijf past of niet. Zo niet, dan zeg ik dat." data-sv="Vill du hellre att jag går igenom det med dig? En halvtimme, utan förpliktelser, och jag säger om det här passar ditt företag eller inte. Gör det inte det säger jag det.">¿Prefieres que te lo cuente yo? Media hora, sin compromiso, y te digo si esto le encaja a tu negocio o no. Si no le encaja, te lo digo.</small>
       <div>
-        <a class="btn btn-outline" href="https://cal.eu/prime.ai/intro-wa" data-en="Book a call with me" data-nl="Plan een gesprek met mij" data-sv="Boka ett samtal med mig">Reservar una llamada conmigo</a>
+        <a class="btn btn-outline" style="font-size:18px; padding:18px 40px;" href="https://cal.eu/prime.ai/intro-wa" data-umami-event="reservar-cierre" data-en="Book a call with me" data-nl="Plan een gesprek met mij" data-sv="Boka ett samtal med mig">Reservar una llamada conmigo</a>
       </div>
 
       <p class="unidad" data-en="For businesses that do not let the phone ring out." data-nl="Voor bedrijven die de telefoon niet laten overgaan." data-sv="För företag som inte låter telefonen ringa obesvarad.">Para negocios que no dejan que el teléfono suene solo.</p>
@@ -2340,7 +2387,7 @@
          su padre, y falla en cuanto cambie el orden del recorrido.
          Así queda igual que el .panel-chica de abajo, que ya guardaba su
          marcado inglés completo y escapado en el atributo. -->
-    <p class="panel-chica" data-en="&lt;a class=&quot;btn btn-outline&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Book a call with me&lt;/a&gt;" data-nl="&lt;a class=&quot;btn btn-outline&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Plan een gesprek met mij&lt;/a&gt;" data-sv="&lt;a class=&quot;btn btn-outline&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Boka ett samtal med mig&lt;/a&gt;"><a class="btn btn-outline" href="https://cal.eu/prime.ai/intro-wa">Reservar una llamada conmigo</a></p>
+    <p class="panel-chica" data-en="&lt;a class=&quot;btn btn-outline&quot; data-umami-event=&quot;reservar-panel&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Book a call with me&lt;/a&gt;" data-nl="&lt;a class=&quot;btn btn-outline&quot; data-umami-event=&quot;reservar-panel&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Plan een gesprek met mij&lt;/a&gt;" data-sv="&lt;a class=&quot;btn btn-outline&quot; data-umami-event=&quot;reservar-panel&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Boka ett samtal med mig&lt;/a&gt;"><a class="btn btn-outline" data-umami-event="reservar-panel" href="https://cal.eu/prime.ai/intro-wa">Reservar una llamada conmigo</a></p>
     <!-- Dan, 2026-08-07: aquí ya no va su nombre. Antes esta línea era
          "Responsable de la grabación: Daniel Kooij (Prime AI), Fuengirola,
          Málaga — oscarinfo@proton.me", y presentarse como responsable delante
