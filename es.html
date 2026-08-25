@@ -338,32 +338,54 @@
       font-size: var(--font-sm);
     }
 
-    /* .btn-outline pinta el texto de --paper: sirve sobre ink (#cierre, el
-       panel) y es invisible sobre la barra, que va en papel. Esta es su
-       versión clara, con fichas que ya existen para fondo claro
-       (--text-primary sobre --paper está medido en test-palette.js, y
-       --surface-hover es el hover de fondo claro del resto de la página).
-       No entra ningún color nuevo.
-
-       Va en la barra porque reservar era la ÚNICA acción de la página que
-       no se podía hacer sin llegar al final del todo o sin abrir el panel de
-       la demo — es decir, sólo estaba a mano si ya querías la llamada de
-       prueba. Sigue siendo la opción callada: contorno contra el azul
-       macizo de al lado. */
     .nav-cta {
       display: inline-flex;
       align-items: center;
       gap: var(--space-2);
     }
 
+    /* .btn-outline pinta el texto de --paper: sirve sobre ink (#cierre, el
+       panel) y es invisible sobre la barra, que va en papel. Ésta es su
+       versión clara.
+
+       Va en AZUL, no en tinta sobre un filo de barro. Dan, 25-08-2026: "lo
+       veo como un botón, pero es blanco". Y tenía razón: papel sobre papel
+       con un borde --border-strong no se lee como un botón, se lee como un
+       hueco.
+
+       El azul es además la única respuesta que no abre color nuevo. La regla
+       de :root dice "blue is buttons and links, not decoration", así que un
+       segundo botón se pinta del azul que ya hay o no se pinta — y --amber,
+       que es el otro tono con trabajo en la página, se queda a 3.0 sobre
+       papel y sólo vale para texto grande, que esto no es. --accent sobre
+       --paper es par medido a 4.5 en test-palette.js, y el relleno del hover
+       es ese mismo par al revés.
+
+       Sigue siendo el secundario: la jerarquía la lleva el RELLENO, no el
+       tono. Por eso puede tener color sin disputarle la demo al macizo de
+       al lado. */
+    /* Dos etiquetas, no una. "Reservar llamada" mide más que el hueco que
+       deja la barra de móvil a 360px (logotipo ~92 + banderas ~130 + huecos),
+       así que se partía en dos líneas y subía .nav de 77 a 88px — una barra
+       fija más alta se come viewport en todas las pantallas, no sólo aquí.
+       Medido, no supuesto. Clases propias y no .letra-escritorio/.letra-movil,
+       que ya existen para esto mismo: el bloque LÍNEA MUERTA del final las
+       fuerza a escritorio en todos los anchos mientras el número esté caído,
+       así que reusarlas habría dado la etiqueta larga en el móvil igualmente
+       y se habría roto sola el día que se borre el bloque. */
+    .rsv-corto {
+      display: none;
+    }
+
     .btn-reservar {
       background: transparent;
-      color: var(--text-primary);
-      border: 1px solid var(--border-strong);
+      color: var(--accent);
+      border: 1px solid var(--accent);
     }
 
     .btn-reservar:hover {
-      background: var(--surface-hover);
+      background: var(--accent);
+      color: var(--text-on-accent);
     }
 
     /* Cuatro idiomas. Sigue siendo lo más callado de la barra: quien lo
@@ -432,7 +454,11 @@
       color: var(--paper);
     }
 
-    /* Fixed bar on phones, where the nav CTA scrolls away. */
+    /* Barra fija en el móvil. Ya NO dice "where the nav CTA scrolls away":
+       .nav es sticky y nunca se va, así que esto y la barra de arriba
+       enseñaban el mismo botón a la vez. Desde el 25-08-2026 la demo vive
+       aquí y sólo aquí en el móvil; arriba va reservar. Ver .nav .llamar en
+       @media (max-width: 767px). */
     .cta-movil {
       position: fixed;
       bottom: 0;
@@ -1557,12 +1583,57 @@
         --font-2xl: 27px;
       }
 
-      /* Fuera de la barra en el móvil. A 360px ya van logotipo, cuatro
-         banderas y el botón azul, y un cuarto elemento parte la barra en dos
-         líneas (el mismo desbordamiento que documenta .nav-logo). En el
-         móvil reservar se queda donde estaba: al final de #cierre. */
-      .btn-reservar {
+      /* En el móvil reservar SE QUEDA, y lo que se va es el duplicado.
+
+         Aquí ponía `.btn-reservar { display: none }` porque a 360px un cuarto
+         hijo parte la barra en dos líneas. El hecho es cierto; la conclusión
+         estaba mal. No hacían falta cuatro hijos, hacían falta los tres
+         correctos: "Escúchala contestar" salía DOS VECES a la vez en cada
+         pantalla de móvil, en la barra de arriba y en la fija de abajo. El
+         comentario de .cta-movil lo justificaba con "where the nav CTA scrolls
+         away", y esa frase llevaba tiempo siendo falsa — .nav es
+         position:sticky y no se va a ninguna parte. Medido a 360px con la
+         página desplazada 3000px: nav en y=12, barra en y=736, mismo texto.
+
+         Así que la demo se queda con la barra fija de abajo, que es la más
+         visible de las dos y la que tiene el pulgar al lado, y reservar hereda
+         el hueco de arriba. Ni un elemento más en la barra, ni un píxel más de
+         alto en ninguna de las dos — los 80px de .cta-movil que .alto y .pie
+         tienen presupuestados no se tocan — y las dos acciones visibles
+         siempre.
+
+         Se apagan LAS DOS acciones de llamada en la barra de arriba, .llamar
+         y .tel-movil, y con DOS clases cada una a propósito. Dos motivos, y
+         el segundo es el que importa:
+
+         1. .llamar hay que ganárselo por especificidad al
+            `.llamar { display: inline-flex }` del bloque LÍNEA MUERTA del
+            final, que va con una sola clase y por eso hoy resucita el botón
+            en el móvil. Con dos clases el intercambio sobrevive al borrado de
+            aquel bloque, que es lo que se quiere.
+         2. .tel-movil NO es de adorno. Hoy está apagado por LÍNEA MUERTA, así
+            que no se ve; el día que +34 951 870 604 (o el que sea) entre en
+            servicio y se borre el bloque, la regla de aquí arriba lo enciende
+            en la barra de arriba Y en la de abajo — otra vez el mismo botón
+            dos veces — y además NO CABE: medido a 360px, logotipo 74 +
+            banderas 132 + los dos botones 177 dan 438px de contenido en 360
+            de pantalla, con desbordamiento horizontal en toda la página. Es
+            un fallo que no se vería hasta el día de la reactivación, que es
+            justo el día en que nadie está mirando el ancho de la barra.
+
+         El móvil queda entonces con logotipo, banderas y reservar arriba, y
+         la acción de llamar —demo hoy, número el día que vuelva— abajo. */
+      .nav .llamar,
+      .nav .tel-movil {
         display: none;
+      }
+
+      .rsv-ancho {
+        display: none;
+      }
+
+      .rsv-corto {
+        display: inline;
       }
 
       .banda {
@@ -1773,7 +1844,7 @@
            Sin data-en en el envoltorio: traducir() sustituye innerHTML del
            elemento que lo lleva, y aquí dentro hay hijos con el suyo propio. -->
       <div class="nav-cta">
-        <a class="btn btn-nav btn-reservar" href="https://cal.eu/prime.ai/intro-wa" data-umami-event="reservar-nav" data-en="Book a call" data-nl="Gesprek plannen" data-sv="Boka samtal">Reservar llamada</a>
+        <a class="btn btn-nav btn-reservar" href="https://cal.eu/prime.ai/intro-wa" data-umami-event="reservar-nav"><span class="rsv-ancho" data-en="Book a call" data-nl="Gesprek plannen" data-sv="Boka samtal">Reservar llamada</span><span class="rsv-corto" data-en="Book" data-nl="Plannen" data-sv="Boka">Reservar</span></a>
         <button class="btn btn-primary btn-nav llamar" data-umami-event="demo-abrir-nav" data-en="Hear it answer" data-nl="Hoor haar opnemen" data-sv="Hör den svara">Escúchala contestar</button>
         <a class="btn btn-primary btn-nav tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-nav"><span data-en="Call" data-nl="Bellen" data-sv="Ring">Llamar</span></a>
       </div>
