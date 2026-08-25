@@ -623,6 +623,34 @@ for (const [stat, source] of [['62%', '411 Locals'], ['21x', 'Harvard Business R
   }
   const disparadores = (es.match(/class="[^"]*llamar/g) || []).length;
   if (disparadores < 3) fail.push(`[es] only ${disparadores} buttons open the call panel; expected at least 3 (nav, hero, cierre)`);
+
+  // ---- the demo funnel counts what it says it counts ------------------
+  // #ir is the ONLY dual-purpose button on the page: it starts the call and it
+  // hangs it up. data-umami-event fires on every click, so while it was on this
+  // button a hang-up was indistinguishable from a start and the funnel read at
+  // roughly double — 73 presses against 47 real token mints, 20-24 Aug 2026.
+  // Every OTHER button here carries the attribute, which is exactly why this
+  // one gets a test: putting it back looks like a consistency fix.
+  const irTag = (es.match(/<button[^>]*id="ir"[^>]*>/) || [''])[0];
+  if (/data-umami-event/.test(irTag)) {
+    fail.push('[es] #ir has data-umami-event again. That button also hangs up, so the attribute counts hang-ups as call attempts and the drop-off number silently doubles. The start is tracked from JS, after the stopCall() return — see pista().');
+  }
+  // The three points the funnel is computed from. Drop-off is
+  // hablar - en-linea - falla, so losing any one of them turns a real number
+  // into a plausible wrong one rather than an obvious gap.
+  for (const [call, why] of [
+    ["pista('demo-boton-hablar')", 'the call attempt is no longer counted'],
+    ["pista('demo-en-linea')",     'connected calls are no longer counted, so every attempt now reads as a drop-off'],
+    ["pista('demo-falla'",         'failures no longer carry a reason, so a drop-off cannot be told from a mic denial'],
+  ]) {
+    if (!es.includes(call)) fail.push(`[es] ${call} is gone from the call panel — ${why}`);
+  }
+  // pista() must stay a no-op when the tracker is blocked or has not loaded:
+  // it runs inside the click handler, so a TypeError here does not lose an
+  // event, it stops the call from ever starting.
+  if (!/function pista\([^)]*\)\s*\{\s*if \(window\.umami\)/.test(es)) {
+    fail.push('[es] pista() no longer guards on window.umami — the tracker is deferred and blockable, and an unguarded call throws inside the click handler that starts the call');
+  }
   if (!/lang="es"/.test(es)) fail.push('[es] the page does not declare lang="es"');
 
   // ---- the guarantee, the sum, and the outcome ------------------------

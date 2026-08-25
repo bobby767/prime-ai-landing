@@ -2308,11 +2308,22 @@
     <h3 id="panel-titulo" data-en="Hear it answer" data-nl="Hoor haar opnemen" data-sv="Hör den svara">Escúchala contestar</h3>
     <p class="aviso" data-en="This is an AI, not a person — the same one that would answer your business's phone. The call is recorded, to improve it." data-nl="Dit is een AI, geen mens — dezelfde die de telefoon van jouw bedrijf zou opnemen. Het gesprek wordt opgenomen, om haar te verbeteren." data-sv="Det här är en AI, inte en människa — samma som skulle svara i ditt företags telefon. Samtalet spelas in, för att göra den bättre.">Es una IA, no una persona — la misma que contestaría el teléfono de tu negocio. La llamada se graba, para mejorarla.</p>
     <p class="panel-chica" data-en="&lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with the recording and how to ask me to delete it (in Spanish)&lt;/a&gt;." data-nl="&lt;a href=&quot;/voice/privacidad&quot;&gt;Wat ik met de opname doe en hoe je me vraagt hem te wissen (in het Spaans)&lt;/a&gt;." data-sv="&lt;a href=&quot;/voice/privacidad&quot;&gt;Vad jag gör med inspelningen och hur du ber mig radera den (på spanska)&lt;/a&gt;."><a href="/voice/privacidad">Qué hago con la grabación y cómo pedir que la borre</a>.</p>
-    <!-- data-umami-event cuenta la PULSACIÓN, no la llamada conectada: si el
-         micro se deniega o el token falla, esto ya ha contado. El número de
-         llamadas que de verdad arrancan sale de POST /voice/token en el log de
-         nginx, y comparar los dos es justo lo que dice cuántas se caen aquí. -->
-    <button class="btn btn-primary" id="ir" data-umami-event="demo-boton-hablar" data-en="Talk to the AI (recorded)" data-nl="Praat met de AI (wordt opgenomen)" data-sv="Prata med AI:n (spelas in)">Hablar con la IA (se graba)</button>
+    <!-- SIN data-umami-event, a propósito. Este botón hace DOS cosas: arranca la
+         llamada y la cuelga (ver el manejador de #ir, que sale por stopCall si
+         `viva`). El atributo dispara en cada clic, así que contaba las dos como
+         si fueran intentos, y la cuenta salía a casi el doble de la real.
+         Medido el 2026-08-25: 73 pulsaciones contra 47 tokens del 20 al 24-08,
+         un desfase que NO se podía leer porque colgar y fallar el micro eran el
+         mismo evento — y colgar cerrando el panel (X, Esc, fondo) no era ninguno.
+         Ahora los eventos los emite el JS en los tres puntos que importan, con
+         pista(): demo-boton-hablar SÓLO al arrancar, demo-en-linea cuando el
+         agente ya se oye, y demo-falla con el motivo. La caída es
+         hablar - en-linea - falla, y ese resto son las que se quedan colgadas
+         en "conectando" sin error, que es el único hueco que no tiene evento
+         propio porque no hay nada que lo dispare. Todo dentro de Umami: el
+         cruce con el log de nginx que decía este comentario no valía, porque
+         nginx va en UTC y Umami en Europe/Madrid y los días no cuadran. -->
+    <button class="btn btn-primary" id="ir" data-en="Talk to the AI (recorded)" data-nl="Praat met de AI (wordt opgenomen)" data-sv="Prata med AI:n (spelas in)">Hablar con la IA (se graba)</button>
     <p class="estado" id="estado" role="status" aria-live="polite"></p>
     <!-- El agente cierra apuntando a "el botón de la página" (Voice_agent/src/
          sales-agent.ts, WEB_CLOSE). Este <dialog> trae fondo oscuro, así que el
@@ -2595,6 +2606,16 @@
 
       function di(t) { estado.textContent = t; }
 
+      // La analítica NUNCA puede ser el motivo de que la llamada no arranque.
+      // El script va con defer y cualquier filtro puede tumbarlo, así que
+      // window.umami puede no existir todavía o no existir nunca, y aquí eso
+      // tiene que ser un no-op y no un TypeError a mitad del manejador.
+      // Firma verificada contra el /s/t.js que se sirve de verdad:
+      // `umami.track(nombre, datos)` con nombre string y datos objeto.
+      function pista(nombre, datos) {
+        if (window.umami) window.umami.track(nombre, datos);
+      }
+
       function fin(aviso) {
         viva = null;
         panel.classList.remove('hablando');
@@ -2625,6 +2646,9 @@
 
       ir.addEventListener('click', function () {
         if (viva) { viva.stopCall(); return; }
+        // DESPUÉS del return de colgar: aquí arriba es donde el atributo
+        // contaba de más. Esto es un intento de llamada y nada más.
+        pista('demo-boton-hablar');
         ir.disabled = true;
         di(T[idioma].pidiendo);
 
@@ -2668,6 +2692,9 @@
           // suscriba el audio del agente, así que diría "estás en línea"
           // mientras el visitante sigue oyendo silencio.
           cliente.on('call_ready', function () {
+            // Va aquí y no en el then() de startCall por la razón de arriba:
+            // esto cuenta llamadas que el visitante YA oye.
+            pista('demo-en-linea');
             ir.disabled = false;
             ir.textContent = T[idioma].colgar;
             panel.classList.add('hablando');
@@ -2683,11 +2710,19 @@
             return cliente.startAudioPlayback();
           });
         }).catch(function (err) {
-          if (err && err.message === 'micro') {
+          // `motivo` es una lista cerrada de cuatro valores a propósito. El
+          // else pilla también lo que lance el SDK, y esos mensajes son
+          // largos y distintos cada vez: meterlos tal cual llenaría el panel
+          // de Umami de valores de uno en uno y no se podría contar nada.
+          var falla = err && err.message;
+          if (falla === 'micro') {
+            pista('demo-falla', { motivo: 'micro' });
             fin(T[idioma].sinMicro);
-          } else if (err && err.message === 'ocupado') {
+          } else if (falla === 'ocupado') {
+            pista('demo-falla', { motivo: 'ocupado' });
             fin(T[idioma].ocupado);
           } else {
+            pista('demo-falla', { motivo: falla === 'token' ? 'token' : 'otro' });
             fin(T[idioma].noConecta);
           }
         });
