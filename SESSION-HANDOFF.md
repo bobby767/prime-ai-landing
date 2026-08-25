@@ -1,115 +1,124 @@
-# Session Handoff — the landing page's phone number was dead, and buying a new one exposed what the screen cannot prove
+# Session Handoff — the demo funnel was counting hangups, and the page's own cross-check could not have caught it
 
-_Last updated: 2026-08-23_
+_Last updated: 2026-08-25_
 
 ## Where it started
 
-Dan wanted to buy a new Zadarma DID for the landing page and asked to be "100% sure" it
-could connect to a real phone before paying. Investigating that turned up the real problem:
-the number already on `/es/`, `+34 951 870 630`, had never worked — Zadarma left it in
-`status: checking` since purchase on 21-08. Dan confirmed by dialling it. The session became:
-prove the failure, get the dead number off a live public page, build the pre-purchase screen,
-buy a replacement, and be honest about the residual that no check can close.
+Dan asked why the voice agent is very quiet on his phone. That investigation ran to a
+confirmed-mechanism-but-unconfirmed-device state and stalled on a test only he can run. Two
+unrelated asks followed — the status of the replacement Zadarma DID, and visitor numbers — and
+the visitor query surfaced a real instrumentation bug, which became the session's only shipped
+change.
 
 ## Decisions locked + what shipped
 
-- **`+34 951 870 630` is dead, evidenced not assumed** — Zadarma `status: checking` while the
-  other three DIDs are `on`; its entire call log is one entry (`disposition: undefined`, 4
-  billseconds) against `answered` with normal durations on working lines. `wrongs 0` returns
-  `[]`, so no document was rejected.
-- **The number is off the live page** — `/home/ubuntu/Prime_AI/Landingpage/es.html`, one
-  `LÍNEA MUERTA` block at the end of the stylesheet, commit `954aed8`. Wins by source order,
-  not specificity; moving it up the file disables it silently. No HTML changed, every `tel:`
-  href intact, revert is one deletion. Deployed by `cp` to `/var/www/prime-ai/es/index.html`
-  and verified on `https://prime-ai.es/`. **Not pushed to GitHub.**
-- **`zadarma.ts screen <direction-id>` added** — `/home/ubuntu/Prime_AI/Voice_agent/src/zadarma.ts`,
-  commit `37e6026`. Probes every buyable DID against Retell's global registry
-  (`import-phone-number` does no ownership check, so it answers pre-purchase), deletes the
-  probe in a `finally`, shouts a copy-pasteable curl if the delete fails. `cnmc()` maps the
-  block; `pick()` rejects candidates one digit from a DID in service.
-- **Bought `+34 951 870 604`** (id `845059`), screened clean, CNMC `951#87` VOICE CLOUD
-  wholesale. **Charged €10.20 — three months upfront, not €3.40.** Balance now €9.40.
-  Currently `status: checking`. Not routed, not imported to Retell, not on the page.
-- **Zadarma ticket drafted, NOT sent** — `/home/ubuntu/Prime_AI/docs/2026-08-23-zadarma-ticket-630.md`,
-  commit `4032878`. Must go from Dan's account.
-- **Durable activation watcher** — `/home/ubuntu/Prime_AI/Voice_agent/watch-did.sh`, commit
-  `f3b10a5`, cron every 10 min, Discord once per number, sentinel in
-  `/var/tmp/zadarma-did-watch/`. **It was never armed**, fixed 2026-08-23 15:22 in commit
-  `c673f57`: the script called `bun`, cron's PATH has no `~/.bun/bin`, so every run exited
-  127 and `|| exit 0` turned that into silence. "Alarm proven end-to-end against `…551`"
-  was true only of a by-hand run in an interactive shell — a different PATH, therefore a
-  different program than the one cron executes. Now an absolute `$BUN` with an `-x` guard
-  that exits 1 loudly, and the cron line appends to `/var/tmp/zadarma-did-watch/cron.log`
-  instead of `/dev/null`. Re-proven under the captured cron environment.
-- **Two corrections made mid-session, both the agent's own.** (1) A real mobile number was
-  committed into `es.html` and deployed live ~14:44–14:50; redacted, commit amended before
-  any push. (2) That number, `+34 673 708 089`, is Dan's **own test phone**, not a member of
-  the public — it appears across `Prime_AI/docs/handoffs/`. The claim "a real visitor rang and
-  got nothing" was wrong and had reached the commit message, the page comment, memory, and the
-  Zadarma ticket. All four corrected.
+- **The demo funnel is fixed and live.** `#ir` starts the call *and* hangs it up; it carried
+  `data-umami-event`, which fires on every click, so hangups counted as attempts. Measured:
+  73 presses vs 47 `POST /voice/token` mints, 20-24 Aug. Three JS-emitted events now replace
+  it — `demo-boton-hablar` (after the `stopCall()` return, starts only), `demo-en-linea` (on
+  `call_ready`), `demo-falla` with `motivo: micro|ocupado|token|otro`. Commit `08b58a0`,
+  **not pushed**.
+- **The cross-check `es.html:2311` proposed was itself broken** — nginx logs UTC, Umami
+  buckets Europe/Madrid, so days do not line up. The whole funnel now lives in Umami;
+  drop-off is `hablar - en-linea - falla`, and the residual is calls hanging on "conectando"
+  with no error, the one failure with no event of its own.
+- **Deployed** to `/var/www/prime-ai/es/index.html`, verified by `curl` of the live site
+  (md5 `e41d17ad2903cba4c5c36d96f45e573e`). Backup at
+  `/var/backups/prime-ai/es/index.html.bak-20260825-075211`.
+- **Mobile volume: root cause narrowed, NOT confirmed.** Nothing in the stack attenuates —
+  the page has no volume code, the SDK uses `webAudioMix:false` so the agent track goes to a
+  bare `<audio>` at `volume=1` with no GainNode, and the Retell agent `volume` field is
+  deliberately unset (`build.test.ts:2644`). The source is measurably quiet: -19 to -31 dB
+  RMS, 12 dB spread, one turn peaking at -0.9 dBFS (`sales-agent.ts:956`). Leading hypothesis
+  is `echoCancellation:true` putting Android into communication mode, routing output to the
+  earpiece on the call-volume slider. **Awaiting Dan's test — see Open below.**
+- **Correction made mid-session, the agent's own.** I told Dan that Chrome on Android exposes
+  `setSinkId` so a routing fix might be possible. It does not — output routing there is
+  system-settings-only, the same dead end as iOS. There is no software reroute on either
+  platform. Dan picked "Android / Chrome" while that wrong claim was on screen; it was
+  corrected in the next turn before anything was built on it.
+- **Zadarma `+34 951 870 604` is still `checking`** (day 2 since purchase), `...630` still
+  `checking` (day 3) while `...451 / ...128 / ...551` are all `on`. Balance EUR 9.40. Nothing
+  to put on the page. `status: on` would still not be the green light — `...630` was bound in
+  Retell and returned success on order and never rang once. The ring test is the only proof.
+- **The DID watcher is genuinely armed**, re-proved rather than trusted: `watch-did.sh` run
+  under `env -i` with cron's exact PATH, and the Zadarma read succeeded. Cron fired 19:10 on
+  24 Aug; `cron.log` is 0 bytes and no sentinels exist in `/var/tmp/zadarma-did-watch/`,
+  which is correct because there has been no flip to announce.
+- **Analytics baseline established.** Self-hosted Umami. 1-4 visitors/day; 16 on 24 Aug of
+  which ~3 were Dan's own testing; 46 visitors total since tracking began 10 Aug. Week's
+  referrers: 22 direct, 2 facebook.com, 1 Instagram.
 
 ## Key files for next session
 
-- `/home/ubuntu/Prime_AI/Voice_agent/src/zadarma.ts` — the CLI driving everything; read the
-  `screen`, `order` and `wrongs` doc comments before touching a DID.
-- `/home/ubuntu/Prime_AI/docs/2026-08-23-zadarma-ticket-630.md` — unsent ticket, plus "notes
-  for me" covering the 21-11 autorenew trap on `…630`.
-- `/home/ubuntu/Prime_AI/Voice_agent/watch-did.sh` — how activation gets noticed.
-- `/home/ubuntu/Prime_AI/Landingpage/es.html` — the `LÍNEA MUERTA` block, near line 1611.
+- `/home/ubuntu/Prime_AI/Landingpage/es.html` — `pista()` sits next to `di()`; the three call
+  sites; the comment block above `#ir` (~line 2311) explains why the attribute is absent and
+  must stay absent.
+- `/home/ubuntu/Prime_AI/Landingpage/test-palette.js` — 5 new assertions in the `[es]`
+  section, each mutation-tested this session.
+- `/home/ubuntu/Prime_AI/Voice_agent/src/sales-agent.ts` lines 940-1000 — the
+  `VOICE_TEMPERATURE` docblock carrying the dB measurements and the two knobs already ruled
+  out (`volume`, `speech_normalization`). Read before touching anything about loudness.
+- `/home/ubuntu/Prime_AI/Voice_agent/public/retell.js` — vendored SDK build;
+  `echoCancellation` is hardcoded in `startCall`'s `audioCaptureDefaults`. Regeneration
+  recipe is in `Voice_agent/src/demo.ts` lines 35-44. Not in package.json by design.
+- `/home/ubuntu/Prime_AI/docs/2026-08-23-zadarma-ticket-630.md` — still unsent, must go from
+  Dan's account.
+- `/home/ubuntu/Prime_AI/Voice_agent/watch-did.sh` — how DID activation gets noticed.
 - Plan file: none.
 - Memory files touched:
-  `/home/ubuntu/.claude/projects/-home-ubuntu-Prime-AI-Landingpage/memory/landing-page-public-number.md`
-  (rewritten — `…630` marked dead, the Retell screen demoted from sufficient to
-  necessary-only, the test-phone misread recorded).
+  `/home/ubuntu/.claude/projects/-home-ubuntu-Prime-AI-Landingpage/memory/landing-page-analytics.md`
+  (new) and `MEMORY.md` (one line appended).
 
 ## Running state
 
-- Background processes: Monitor task `bdtdenu4a` was **still running** (not expired) and,
-  because cron was dead, was the only thing actually watching. Stopped 2026-08-23 15:21.
-  Cron `*/10 * * * * /home/ubuntu/Prime_AI/Voice_agent/watch-did.sh
-  >>/var/tmp/zadarma-did-watch/cron.log 2>&1` is now the sole watcher and is verified working;
-  remove with `crontab -l | grep -v watch-did | crontab -`.
-- Dev servers / ports: none. The `python3 -m http.server 8899` preview was stopped; port
-  confirmed not listening.
-- Open worktrees / branches: `warm-palette` in `/home/ubuntu/Prime_AI/Landingpage`,
-  **2 commits ahead of `origin/warm-palette`, unpushed**. `master` in `/home/ubuntu/Prime_AI`.
+- Background processes: none.
+- Dev servers / ports: none started by this session. Pre-existing services only — Umami
+  container on `127.0.0.1:3025`, voice app on `127.0.0.1:3023`.
+- Open worktrees / branches: on `warm-palette`, ahead of `origin/warm-palette` by 2
+  (`08b58a0` plus this handoff commit). Nothing pushed.
 
 ## Verification — how to confirm things still work
 
+- `cd /home/ubuntu/Prime_AI/Landingpage && node test-palette.js` — exits 0, prints
+  `OK  en: ... | es: ... | nl: ...`.
+- `curl -s https://prime-ai.es/ | md5sum` — `e41d17ad2903cba4c5c36d96f45e573e`, matching
+  `es.html`.
+- `cd /home/ubuntu/Prime_AI/Landingpage && git show HEAD:es.html | diff - /var/www/prime-ai/es/index.html`
+  — empty, i.e. live matches the commit. (Run before any redeploy: it also catches a
+  hand-edit made directly on `/var/www`, which has happened before.)
+- `node /tmp/claude-1000/-home-ubuntu-Prime-AI-Landingpage/c16d75f4-f973-4b66-9121-54a8e3389eef/scratchpad/hangup.js`
+  — prints `PASS`; start fires `demo-boton-hablar` + `demo-en-linea`, hangup fires nothing.
+  Stubs the SDK and token route so no call is billed. **That scratchpad is session-scoped and
+  may already be gone**; the test's shape is reconstructible from commit `08b58a0`'s message.
 - `cd /home/ubuntu/Prime_AI/Voice_agent && bun --env-file=/home/ubuntu/Prime_AI/outreach-engine/.env run src/zadarma.ts numbers`
-  — `…604` and `…630` show `checking`; `…451`, `…551`, `…128` show `on`.
-- `curl -s https://prime-ai.es/ | grep -c "951 870 630"` — expect **`5`**, not 0. The fix
-  is CSS-only and deliberately leaves the HTML alone, so the digits stay in the source and
-  are hidden by `display:none`. An earlier version of this line said "expect 0", which
-  would read as a regression every time. What actually proves it: the `LÍNEA MUERTA` block
-  exists **and** no later rule re-shows `.tel-movil` / `.tel-escritorio` —
-  `L=$(curl -s https://prime-ai.es/ | grep -n "LÍNEA MUERTA" | cut -d: -f1)` then check
-  nothing after line `$L` sets those classes back to a visible display.
-- `curl -s https://prime-ai.es/ | grep -c "LÍNEA MUERTA"` — expect `1`.
-- `cd /home/ubuntu/Prime_AI/Voice_agent && bun test src/zadarma.test.ts` — 9 pass.
-- Alarm test — **must run under cron's environment, not your shell**, or it proves nothing
-  (that is precisely how the dead watcher passed):
-  `env -i HOME=/home/ubuntu PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin SHELL=/bin/sh DID_WATCH=34951870551 /home/ubuntu/Prime_AI/Voice_agent/watch-did.sh && ls /var/tmp/zadarma-did-watch/`
-  — fires a real Discord ping and writes `34951870551.done`; delete that sentinel afterwards.
-- `cat /var/tmp/zadarma-did-watch/cron.log` — expect empty. Any line in it is a real fault.
+  — current status of `...604` and `...630`.
+- Rollback of the deploy, one command:
+  `sudo install -o www-data -g www-data -m 644 /var/backups/prime-ai/es/index.html.bak-20260825-075211 /var/www/prime-ai/es/index.html`
 
 ## Deferred + open questions
 
-- Deferred: routing `…604` to Retell and importing it — blocked until Zadarma reports
-  `status: on`. Order sequence is route → import/bind → **ring from a mobile** → watch
-  `zadarma.ts log` for strays → only then onto the page.
-- Deferred: `…630` autorenew is still `true` and it renews 2026-11-21. If Zadarma cannot fix
-  it, run `zadarma.ts autorenew 34951870630 off` before that date.
-- Open: **is `…604` previously used? Unknown and unprovable pre-activation.** The Retell probe
-  excludes the `…128` failure; CNMC only speaks to the block. Web search was disproven as a
-  method — the control `…128`, which provably has a prior owner, returns "no results".
-  Detection is post-activation: watch the call log for inbound calls neither Dan nor the agent
-  placed.
-- Open: the Zadarma ticket needs Dan to send it.
-- Open: whether to push `warm-palette` to GitHub.
+- **Open, and blocking the volume fix:** during a call on Dan's Android, does pressing the
+  volume rocker show a **Call** slider or a **Media** slider? Call means communication-mode
+  routing, and the only levers are level (compressor + makeup gain in `es.html`) or
+  `echoCancellation:false` in the vendored SDK — which trades echo for volume and would make
+  the agent interrupt itself on speakerphone. Media means routing is fine and the low volume
+  is purely source level.
+- Deferred: the compressor + ~10 dB makeup gain fix. Device-independent, fixes the measured
+  12 dB wander, does not clip the -0.9 dBFS peak. Not built pending the answer above. Caveat
+  to test on a real phone: piping a WebRTC remote stream into Web Audio needs the original
+  `<audio>` element kept alive and muted, or Chrome collects the stream and the result is
+  silence rather than quiet.
+- Deferred: `git push` of `08b58a0` — needs Dan's say-so.
+- Deferred: sending the Zadarma ticket for `...630`. Three days in `checking` is a stronger
+  case than one.
+- Note for whoever reads the dashboard next: historical `demo-boton-hablar` counts mixed
+  starts with hangups and are **not** comparable to counts from 25 Aug onward. Expect roughly
+  a halving — that is the fix landing, not traffic falling. Baseline is 1-4 visitors/day, so
+  allow about a week before the `motivo` split means anything.
 
 ## Pick up here
 
-Wait for the Discord ping saying `…604` left `checking`, then run route → Retell import → ring
-test; if no ping has arrived and `…630` is also still stuck, the Zadarma ticket is the
-unblocker and it is still unsent.
+Ask Dan for the volume-slider reading from his Android, then build either the compressor +
+makeup-gain fix in `es.html` or the `echoCancellation` change in the vendored SDK depending on
+the answer.
