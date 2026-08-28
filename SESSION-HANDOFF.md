@@ -1,4 +1,4 @@
-# Session Handoff — /scroll/ became the real page under a film: exit, skip, four languages; mobile fix half-done
+# Session Handoff — mobile chrome fixed and deployed; the 9:16 render is blocked on an empty Fal balance
 
 _Last updated: 2026-08-28_
 
@@ -7,8 +7,10 @@ _Last updated: 2026-08-28_
 Picked up from the previous handoff to choose among three deferred items; user chose the
 free hint fix. That led to a much larger question — whether the scroll page could carry
 the information from the live `es.html` — answered "yes, with an exit", built as option
-A, then extended with a skip control and full four-language support. Session ended
-mid-way through fixing mobile, which is **live and broken right now**.
+A, then extended with a skip control and full four-language support. A second sitting
+on 2026-08-28 finished the mobile chrome and shipped it, then started the 9:16 render
+and hit an empty Fal balance. See "Session of 2026-08-28 (second half)" below — where
+it disagrees with anything above, it is newer and it wins.
 
 ## Decisions locked + what shipped
 
@@ -76,8 +78,8 @@ mid-way through fixing mobile, which is **live and broken right now**.
   to build if the engine does not parse.
 - `/home/ubuntu/Prime_AI/Landingpage/scroll-world/world.config.js` — all film copy in
   four languages. **This is where text is edited**, not `scroll.html`.
-- `/home/ubuntu/Prime_AI/Landingpage/assets/scroll/scrub-engine.js` — **has
-  uncommitted, undeployed changes.** See Running state.
+- `/home/ubuntu/Prime_AI/Landingpage/assets/scroll/scrub-engine.js` — committed and
+  deployed as of `0fe7f92`. No longer pending.
 - `/home/ubuntu/Prime_AI/Landingpage/tests/test-scroll-page.js` — new. Four checks, all
   mutation-tested to prove they actually fail.
 - `/home/ubuntu/Prime_AI/Landingpage/scroll.html` — GENERATED. Do not hand-edit.
@@ -93,21 +95,10 @@ mid-way through fixing mobile, which is **live and broken right now**.
 - Dev servers / ports: `http://127.0.0.1:8899/scroll.html` — loopback, reachable from a
   laptop only via `ssh -L 8899:127.0.0.1:8899 ubuntu@srv1233720.hstgr.cloud`.
   Live URL: `https://prime-ai.es/scroll/`.
-- Open worktrees / branches: branch `warm-palette`, **6 commits unpushed** and never
+- Open worktrees / branches: branch `warm-palette`, **8 commits unpushed** and never
   pushed — user has not authorised a push.
-- **UNCOMMITTED + UNDEPLOYED: `assets/scroll/scrub-engine.js`.** Two half-finished
-  mobile fixes were applied when the session ended:
-  (a) `document.body.classList.add('sw-playing')` at mount +
-      `classList.toggle('sw-playing', ex < 1)` in the exit block — a host hook so the
-      page below can hide its own fixed furniture while the film is up;
-  (b) `@media (max-width:700px)` rules hiding `.sw-topcta` and `.sw-brand__name` and
-      shrinking `.sw-lang` / `.sw-skip` padding.
-  It **parses OK** but was never composed, tested, or deployed. The deployed engine
-  therefore differs from the repo.
-- **The third part was never written**: `compose.js` still needs a rule along the lines
-  of `body.sw-playing .cta-movil{display:none}` (specificity 0,2,0 beats the 0,1,0 that
-  sets `display:flex`, so no `!important`). Without it the `sw-playing` class does
-  nothing at all.
+- Engine and `scroll.html` are committed AND deployed; repo and `/var/www/` agree.
+  Deploying needs root: `sudo install -o www-data -g www-data -m 644 <src> <dst>`.
 - A Playwright browser session is open at `https://prime-ai.es/scroll/?lang=sv`, with
   the viewport still set to **390x844**.
 
@@ -133,16 +124,12 @@ mid-way through fixing mobile, which is **live and broken right now**.
 
 ## Deferred + open questions
 
-- **Mobile is live and broken.** Measured on the live page at 390x844:
-  `.sw-topcta` right edge at **611px** (off-screen, swallowed by `overflow-x:hidden`, so
-  the booking button simply does not exist on a phone); `.sw-skip` clipped at 413px;
-  the brand wraps to two lines; `es.html`'s `.cta-movil` (`position:fixed`,
-  `z-index:999`, 80px tall) floats over the film for all 14 screens and hides the scroll
-  hint; and the film is centre-cropped from a **1536x882** source to **402x869** with
-  `object-fit:cover`, losing the diorama island that is the whole concept.
-- Deferred: **native 9:16 mobile chain** — the only real fix for the crop; costs a
-  render. Alternative raised but NOT decided: do not show the film on phones at all
-  (one line, free), which would make the mobile chrome work moot.
+- ~~Mobile is live and broken~~ — the chrome half is FIXED and deployed (`0fe7f92`).
+  The crop half remains: the clip is **864x496** (not 1536x882, that was the still) and
+  `object-fit:cover` at 390x844 shows **27% of the frame width**. Decided and in
+  progress: native 9:16 chain, blocked on the Fal balance.
+- Settled: the film **stays** on phones. `/scroll/` is noindex and unlinked, so hiding
+  it there would defeat the draft's only purpose.
 - Deferred: **1080p final render** (~$50), `VRES=1080p`. Recommendation stands: settle
   the film's length first — as an intro it may want 3-4 scenes rather than 6, which
   would shrink that bill instead of spending it. Start tracking `assets/scroll/vid/` in
@@ -155,14 +142,49 @@ mid-way through fixing mobile, which is **live and broken right now**.
 - Open: **who reviews the Swedish.** Dan can read the Dutch himself (39 short lines in
   `world.config.js`). The Swedish is unreviewed — the same standard as the Swedish
   already live on `es.html`, so not a new risk, but not a verified one either.
-- Open: **six commits sit unpushed** on `warm-palette`. Push needs the user's go-ahead.
-- Open: **stills cost unmeasured** — Fal returns no cost field for `openai/gpt-image-2`;
-  7 images were generated. Read the real figure off the Fal dashboard.
+- Open: **eight commits sit unpushed** on `warm-palette`. Push needs the user's go-ahead.
+- Open: **stills cost unmeasured** — Fal returns no cost field for `openai/gpt-image-2`
+  (confirmed again this session: the response carries `content_type` and `file_name` and
+  nulls for everything else). 7 + 6 images now generated. The balance ran out during the
+  second batch, so the dashboard figure is also the answer to how much they cost.
+
+## Session of 2026-08-28 (second half)
+
+- **Mobile chrome is fixed and LIVE** (commit `0fe7f92`). The missing third part is in
+  `compose.js`, not the engine: `body.sw-playing .cta-movil{display:none}`. Verified on
+  `https://prime-ai.es/scroll/` at 390x844 — skip ends at 371 (was clipped at 413), the
+  booking CTA and brand name are hidden under 700px (the CTA's right edge had been at
+  611px on a 390px screen, swallowed by `overflow-x:hidden`), `scrollWidth` equals the
+  viewport, and `.cta-movil` is gone during the film and back at 764 once past it, both
+  by scrolling and via the skip button. 360x780 and 701x844 also checked — 701 was the
+  worst case of a band nobody had measured (CTA still shown, scene nav already hidden);
+  it ends at 666 of 701.
+- **`/scroll/` is noindex AND unlinked.** Nothing in `es.html` or nginx points at it.
+  That settles the "should the film show on phones" question: hiding it would defeat the
+  draft's only purpose. Decision: keep it, fix the crop properly.
+- **The render chain does portrait now** (commit `50f881e`) — `SFX`, `gen_still()`, and
+  two bugs found on the way: `run_dives.sh` rendered 5 of 6 (obra was never returned to
+  the script), and `encode.sh` stretched portrait posters. See `docs/scroll-deploy.md`.
+- **`object-fit:contain` is the right answer for a 9:16 clip** — not cover. Measured, and
+  written up in the doc. Do NOT ship the contain rule before the 9:16 clips exist.
+- **BLOCKED: the Fal balance is exhausted.** The 6 portrait stills went through; every
+  dive submit came back `403 "User is locked. Reason: Exhausted balance."` **Nothing was
+  rendered and nothing was billed for video.** Top up at fal.ai/dashboard/billing, then:
+
+      cd scroll-world
+      SFX=_9x16 VRATIO=9:16 bash run_dives.sh    # $6.79
+      SFX=_9x16 VRATIO=9:16 bash run_conns.sh    # $3.55
+      SFX=_9x16             bash encode.sh
+
+  Then the parts that do not exist yet: a portrait `clip`/`still` sibling per section in
+  `world.config.js`, an orientation pick at mount in the engine, and the `contain` rule.
+- Landscape 480p set verified intact by md5 after the failed run. It is gitignored and
+  cost $10.34; `SFX` exists so it cannot be overwritten.
+- Still open: **7 commits unpushed** on `warm-palette` (was 6). Push needs a go-ahead.
 
 ## Pick up here
 
-Finish the mobile chrome fix: add `body.sw-playing .cta-movil{display:none}` to
-`compose.js`, rebuild with `node scroll-world/compose.js`, verify at 390x844 that the
-skip and flags fit and the hint is clear, then deploy the engine to
-`/var/www/prime-ai/es/scroll/assets/scroll/` — **or** first ask whether the film should
-appear on phones at all, since hiding it there makes that work unnecessary.
+Top up the Fal balance, then run the three portrait commands above ($10.34 total). When
+the clips land, wire them in: a portrait sibling per section in `world.config.js`, an
+orientation pick at mount in the engine, and `object-fit:contain` under the portrait
+media query — the three pieces the doc's new "portrait (9:16) chain" section describes.
