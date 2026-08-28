@@ -260,6 +260,52 @@ is NOT a valid check for this — it renders nothing, so it costs nothing, so th
 gate lets it through with a 200 and it even reports COMPLETED. Only a job that would
 actually cost money gets refused. Read the balance instead.
 
+## Photoreal: what the model will and will not do
+
+**Seedance will not animate an identifiable face.** It will happily *generate* a
+photoreal person as a still, then refuse to move them:
+
+    content_policy_violation — "The images or videos provided may contain
+    likenesses of real people or other private information"
+
+Measured, not guessed. Same pipeline, same settings, three inputs:
+
+| input still | animates? |
+|---|---|
+| woman on the phone, face visible in profile | **REJECTED** |
+| plumber with head inside the sink cabinet, no face in frame | accepted |
+| rooftops at blue hour, no people | accepted |
+
+So photoreal is possible, but the film has to be shot the way a documentary
+cameraman shoots someone who has not signed a release: over the shoulder, from
+behind, hands only, face turned away or occluded. Write "his face is never visible
+at any point" into the prompt explicitly — it is the difference between a clip and
+a refusal.
+
+Two things that make this cheap to work with:
+
+- **A content rejection costs $0.** The job runs, fails its input check and bills
+  nothing, so probing what the filter accepts is free when the answer is no. Only
+  success costs money.
+- The rejection arrives as a COMPLETED job with `detail[].type` =
+  `content_policy_violation`, NOT as a failed status. Check the response body, not
+  the status field.
+
+**Stills cost $0.166 each** (gpt-image-2, 1536x1024), measured by balance delta.
+That figure was an open question for three sessions because the response carries no
+cost field.
+
+### The flapping 403
+
+After a top-up, `403 "User is locked. Reason: Exhausted balance."` keeps appearing
+on *some* submits while others succeed, with a healthy balance. It is stale state on
+individual nodes, not the account. Retry the SUBMIT — a failed submit has queued
+nothing, so a retry cannot duplicate work.
+
+**Retry on the output FILE existing, never on grepping the log line.** A mis-escaped
+grep for the success string cost $2.26 in duplicate renders: the check never matched,
+so the loop re-rendered a clip that had already succeeded, three times.
+
 ## Re-render at 1080p
 
 One variable. `VRES=1080p` in `fal.sh`, same prompts, same model — the model must
