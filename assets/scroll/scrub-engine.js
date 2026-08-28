@@ -211,6 +211,11 @@ function mountScrollWorld(container, config) {
   // rato, que es lo que hace de fundido.
   const EXIT_TEXT = [scrollbar, topbar, copylayer, route];
   const EXIT_IMAGE = [sky, stage];
+  // Gancho para la pagina anfitriona. Mientras la pelicula esta en pantalla, lo suyo
+  // que sea position:fixed le flota por encima: la .cta-movil de es.html (z-index
+  // 999, 80px abajo) tapaba la pista de scroll durante las 14 pantallas. El motor no
+  // sabe nada de esa clase — solo dice "estoy puesta" y que decida la pagina.
+  document.body.classList.add('sw-playing');
   const hasContentBelow = () => {
     const n = container.nextElementSibling;
     return !!n && n.offsetHeight > 0;
@@ -359,6 +364,7 @@ function mountScrollWorld(container, config) {
         const exText = clamp(ex / 0.45);
         for (const n of EXIT_TEXT)  { n.style.opacity = String(1 - exText); n.style.visibility = exText >= 1 ? 'hidden' : ''; }
         for (const n of EXIT_IMAGE) { n.style.opacity = String(1 - ex);     n.style.visibility = ex >= 1 ? 'hidden' : ''; }
+        document.body.classList.toggle('sw-playing', ex < 1);
       }
     }
     if (particles) particles.style.transform = `translate3d(0, ${-y * 0.05}px, 0)`;
@@ -524,6 +530,12 @@ function injectCSS() {
      las banderas, el salto y el CTA no lo son. Medido: a 1024px entra por 25px, por
      debajo no. */
   @media (max-width:1080px){ .sw-nav{display:none;} }
+  @media (max-width:700px){
+    .sw-topcta{display:none;}                 /* reservar sigue abajo, al salir */
+    .sw-brand__name{display:none;}            /* la marca se queda en la mota */
+    .sw-lang{padding:5px 6px;font-size:.95rem;}
+    .sw-skip{padding:7px 12px;}
+  }
   .sw-langs{display:flex;gap:2px;padding:4px;border-radius:999px;background:color-mix(in srgb,#fff 55%,transparent);backdrop-filter:blur(10px);border:1px solid color-mix(in srgb,var(--sw-accent) 16%,transparent);}
   /* Sin grayscale: en gris las banderas emoji son manchas iguales y no se distingue
      una de otra. Como la fila de banderas de es.html, a color; la inactiva solo baja

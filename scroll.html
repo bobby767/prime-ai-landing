@@ -1914,6 +1914,15 @@
       --sw-font-display: 'Space Grotesk', sans-serif;
       --sw-font-body: 'Outfit', sans-serif;
     }
+
+    /* La otra mitad del gancho body.sw-playing que pone el motor. .cta-movil es
+       lo unico position:fixed de es.html (z-index 999, 80px pegados abajo) y
+       flotaba sobre la pelicula las 14 pantallas, tapando la pista de scroll.
+       Se va mientras la pelicula esta puesta y vuelve sola al salir.
+       0,2,0 le gana al 0,1,0 del display:flex de @media (max-width:767px), asi
+       que no hace falta !important. Va aqui y no en el motor porque el motor no
+       sabe nada de es.html: el dice "estoy puesta", la pagina decide que esconde. */
+    body.sw-playing .cta-movil { display: none; }
   </style>
 </head>
 <body>
