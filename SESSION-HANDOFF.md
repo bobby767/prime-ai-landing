@@ -150,9 +150,11 @@ pivoted before the spec file was written.
 
 ## Deferred + open questions
 
-- Deferred: **the design above was never written as a spec.** Brainstorming reached an
-  approved design and grill-me answered Q1 (acceptance criteria) before the session
-  pivoted. `docs/superpowers/specs/` was never written; this file is the only record.
+- ~~Deferred: the design above was never written as a spec.~~ **DONE 2026-08-28**
+  (`982640b`) — `docs/superpowers/specs/2026-08-28-photoreal-film-design.md`. That file
+  now supersedes the design section above, and corrects two things it got wrong: the
+  cocina *still* was never refused (only the dive was, on `loc ["body","image_url"]`),
+  and `--sw-accent` is already per-scene so a blue palette needs no global edit.
 - Deferred: **`cocina` reframe untested** — the one scene written around a face. Needs
   re-shooting over-the-shoulder or from behind. Still is $0.166; the dive is $1.13 only
   if it passes, since a rejection is free.
@@ -180,8 +182,19 @@ pivoted before the spec file was written.
 
 ## Pick up here
 
-Ask the user whether the photoreal film continues at all given 2-4 visitors/day — and
-if yes, run the face-free `cocina` reframe test (free if the filter refuses, $1.13 if it
-passes), then write the agreed design above into
-`docs/superpowers/specs/2026-08-28-photoreal-film-design.md` before spending the
-remaining render budget.
+The film is **on hold by decision, not by blocker** (user, 2026-08-28): 2-4 visitors/day
+to a page that is `noindex` and unlinked does not justify a ~$20-50 re-render against a
+$42.02 balance. The design is now safely in
+`docs/superpowers/specs/2026-08-28-photoreal-film-design.md` — read that, not the
+design section above.
+
+So the film is no longer the top of the list. What is, in order:
+
+1. **Does the browser voice demo actually connect?** `.llamar` is the only way a
+   visitor can try the product, it is prominent on desktop and mobile, and end-to-end
+   was never verified. Needs a microphone — 30 seconds of the user's time.
+2. **Zadarma** — user's action on the `…630`/`…604` tickets. The `…604` re-route was
+   offered and the user declined it on 2026-08-28: they are handling Zadarma
+   themselves. Do not re-offer unasked.
+3. The film, only if `/scroll/` ever gets linked. Cheapest next step is the face-free
+   `cocina` reframe: free if refused, ~$1.30 if it passes.
