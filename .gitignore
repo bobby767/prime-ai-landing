@@ -2,3 +2,13 @@
 *.jpeg
 screenshots/
 *.png
+
+# scroll-world build intermediates (regenerable from prompts/ + the scripts)
+scroll-world/vid/
+scroll-world/still/
+scroll-world/frames/
+scroll-world/seam/
+scroll-world/*.log
+# 480p DRAFT clips — deliberately untracked so a throwaway previz does not land
+# 22MB in history. Track assets/scroll/vid/ once the 1080p final is approved.
+assets/scroll/vid/

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Prime AI — la llamada que no se perdió</title>
+  <meta name="description" content="Baja por la página y sigue una llamada perdida hasta la cita puesta. Prime AI contesta el teléfono cuando tú no puedes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Los mismos tokens que es.html — el fondo DEBE ser el fondo de las escenas
+       (#FAF8F5), o los pósters se recortan contra un color distinto y se ve el borde
+       de la isla al cargar. */
+    :root, .sw-root {
+      --sw-bg:       #FAF8F5;
+      --sw-ink:      #221D19;
+      --sw-ink-soft: #6B5F54;
+      --sw-accent:   #C2703D;
+      --sw-font-display: 'Space Grotesk', sans-serif;
+      --sw-font-body: 'Outfit', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="top"></div>
+  <div id="world"></div>
+
+  <script src="assets/scroll/scrub-engine.js"></script>
+  <script>
+    mountScrollWorld(document.getElementById('world'), {
+      brand: { name: 'Prime AI', href: '#top' },
+      cta: { label: 'Reservar una llamada', href: '#demo' },
+      hint: 'baja para entrar',
+      diveScroll: 1.3,
+      connScroll: 0.9,
+      sections: [
+        {
+          id: 'obra', label: 'La obra',
+          still: 'assets/scroll/still/obra.webp',
+          clip:  'assets/scroll/vid/obra.mp4',
+          accent: '#C2703D',
+          scroll: 1.7, linger: 0.45,
+          eyebrow: 'Martes, 10:40',
+          title: 'El teléfono suena con las manos en el sifón.',
+          body: 'No es que no quieras cogerlo. Es que no puedes.',
+          tags: ['Manos ocupadas', 'Suena cinco veces'],
+        },
+        {
+          id: 'cocina', label: 'Al otro lado',
+          still: 'assets/scroll/still/cocina.webp',
+          clip:  'assets/scroll/vid/cocina.mp4',
+          accent: '#C2703D',
+          eyebrow: 'Al otro lado',
+          title: 'No deja mensaje. Llama al siguiente.',
+          body: 'El trabajo se lo lleva quien cogió el teléfono, no quien mejor lo hace.',
+          tags: ['Sin mensaje', 'Siguiente de la lista'],
+        },
+        {
+          id: 'centralita', label: 'Lo que cambia',
+          still: 'assets/scroll/still/centralita.webp',
+          clip:  'assets/scroll/vid/centralita.mp4',
+          accent: '#C2703D',
+          scroll: 1.5, linger: 0.4,
+          eyebrow: 'Lo que cambia',
+          title: 'Contesta en dos tonos. A las tres de la mañana también.',
+          body: 'Tu número sigue siendo tu número. No tocas nada.',
+          tags: ['Dos tonos', '24 horas', 'Tu mismo número'],
+        },
+        {
+          id: 'agenda', label: 'La cita',
+          still: 'assets/scroll/still/agenda.webp',
+          clip:  'assets/scroll/vid/agenda.mp4',
+          accent: '#C2703D',
+          eyebrow: 'Mientras sigues debajo del fregadero',
+          title: 'La cita ya está puesta.',
+          body: 'Nombre, dirección, qué le pasa y a qué hora. Te llega escrito.',
+          tags: ['Hora confirmada', 'Dirección', 'Motivo'],
+        },
+        {
+          id: 'furgoneta', label: 'A la mañana siguiente',
+          still: 'assets/scroll/still/furgoneta.webp',
+          clip:  'assets/scroll/vid/furgoneta.mp4',
+          accent: '#C2703D',
+          eyebrow: 'A la mañana siguiente',
+          title: 'A las nueve estás en su portal.',
+          body: 'El mismo trabajo que ayer se habría ido a otro.',
+          tags: ['Nueve en punto'],
+        },
+        {
+          id: 'demo', label: 'Escúchala',
+          still: 'assets/scroll/still/demo.webp',
+          clip:  'assets/scroll/vid/demo.mp4',
+          accent: '#2563EB',
+          scroll: 1.8, linger: 0.5,
+          eyebrow: 'Compruébalo',
+          title: 'Escúchala contestar.',
+          body: 'Reserva quince minutos y te la enseño con tu propio caso.',
+          tags: [],
+          /* El único azul de toda la película está aquí, y es el único botón.
+             OJO: nada de tel: en esta página. Los seis tel: de es.html apuntan al
+             951 870 630, que sigue muerto y apagado por el bloque LÍNEA MUERTA;
+             copiar aquí ese patrón resucitaría un número que no contesta. */
+          cta: { primary: { label: 'Reservar una llamada conmigo',
+                            href: 'https://cal.eu/prime.ai/intro-wa' } },
+        },
+      ],
+      connectors: [
+        'assets/scroll/vid/conn_0.mp4',
+        'assets/scroll/vid/conn_1.mp4',
+        'assets/scroll/vid/conn_2.mp4',
+        'assets/scroll/vid/conn_3.mp4',
+        'assets/scroll/vid/conn_4.mp4',
+      ],
+    });
+  </script>
+</body>
+</html>
