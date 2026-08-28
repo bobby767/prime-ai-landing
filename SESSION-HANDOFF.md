@@ -1,124 +1,114 @@
-# Session Handoff — the demo funnel was counting hangups, and the page's own cross-check could not have caught it
+# Session Handoff — Directory cleanup, then a scroll-world draft page deployed to /scroll/
 
-_Last updated: 2026-08-25_
+_Last updated: 2026-08-28_
 
 ## Where it started
 
-Dan asked why the voice agent is very quiet on his phone. That investigation ran to a
-confirmed-mechanism-but-unconfirmed-device state and stalled on a test only he can run. Two
-unrelated asks followed — the status of the replacement Zadarma DID, and visitor numbers — and
-the visitor query surfaced a real instrumentation bug, which became the session's only shipped
-change.
+Two unrelated asks in sequence. First: the repo root was "too full" — 65 screenshots
+(20 MB) mixed in with the four HTML pages that actually deploy. Second: locate a skill
+in the vault from a Nate Herk note about a one-person marketing team, then implement his
+method on the landing page. The skill turned out to be `scroll-world`; the constraint
+that shaped everything after was that Higgsfield's OAuth login cannot be completed on a
+headless server, so the whole build ran on Fal.
 
 ## Decisions locked + what shipped
 
-- **The demo funnel is fixed and live.** `#ir` starts the call *and* hangs it up; it carried
-  `data-umami-event`, which fires on every click, so hangups counted as attempts. Measured:
-  73 presses vs 47 `POST /voice/token` mints, 20-24 Aug. Three JS-emitted events now replace
-  it — `demo-boton-hablar` (after the `stopCall()` return, starts only), `demo-en-linea` (on
-  `call_ready`), `demo-falla` with `motivo: micro|ocupado|token|otro`. Commit `08b58a0`,
-  **not pushed**.
-- **The cross-check `es.html:2311` proposed was itself broken** — nginx logs UTC, Umami
-  buckets Europe/Madrid, so days do not line up. The whole funnel now lives in Umami;
-  drop-off is `hablar - en-linea - falla`, and the residual is calls hanging on "conectando"
-  with no error, the one failure with no event of its own.
-- **Deployed** to `/var/www/prime-ai/es/index.html`, verified by `curl` of the live site
-  (md5 `e41d17ad2903cba4c5c36d96f45e573e`). Backup at
-  `/var/backups/prime-ai/es/index.html.bak-20260825-075211`.
-- **Mobile volume: root cause narrowed, NOT confirmed.** Nothing in the stack attenuates —
-  the page has no volume code, the SDK uses `webAudioMix:false` so the agent track goes to a
-  bare `<audio>` at `volume=1` with no GainNode, and the Retell agent `volume` field is
-  deliberately unset (`build.test.ts:2644`). The source is measurably quiet: -19 to -31 dB
-  RMS, 12 dB spread, one turn peaking at -0.9 dBFS (`sales-agent.ts:956`). Leading hypothesis
-  is `echoCancellation:true` putting Android into communication mode, routing output to the
-  earpiece on the call-volume slider. **Awaiting Dan's test — see Open below.**
-- **Correction made mid-session, the agent's own.** I told Dan that Chrome on Android exposes
-  `setSinkId` so a routing fix might be possible. It does not — output routing there is
-  system-settings-only, the same dead end as iOS. There is no software reroute on either
-  platform. Dan picked "Android / Chrome" while that wrong claim was on screen; it was
-  corrected in the next turn before anything was built on it.
-- **Zadarma `+34 951 870 604` is still `checking`** (day 2 since purchase), `...630` still
-  `checking` (day 3) while `...451 / ...128 / ...551` are all `on`. Balance EUR 9.40. Nothing
-  to put on the page. `status: on` would still not be the green light — `...630` was bound in
-  Retell and returned success on order and never rang once. The ring test is the only proof.
-- **The DID watcher is genuinely armed**, re-proved rather than trusted: `watch-did.sh` run
-  under `env -i` with cron's exact PATH, and the Zadarma read succeeded. Cron fired 19:10 on
-  24 Aug; `cron.log` is 0 bytes and no sentinels exist in `/var/tmp/zadarma-did-watch/`,
-  which is correct because there has been no flip to announce.
-- **Analytics baseline established.** Self-hosted Umami. 1-4 visitors/day; 16 on 24 Aug of
-  which ~3 were Dan's own testing; 46 visitors total since tracking began 10 Aug. Week's
-  referrers: 22 direct, 2 facebook.com, 1 Instagram.
+- **Screenshots grouped, not deleted** — 65 files into
+  `/home/ubuntu/Prime_AI/Landingpage/screenshots/{hero,card,video,lang,phone,prueba,variants,sections,full-page}/`;
+  `.gitignore` took `screenshots/` + `*.png`. Commit `1e8c722`.
+- **Test scripts moved to `tests/`** — all three read their pages through `__dirname`, so
+  each gained `/../`; runnable commands in `docs/nl-deploy.md` and this file updated. The
+  archived plan/spec under `docs/superpowers/` deliberately still say `node test-roi.js` —
+  they record what was run in August, not what to run now.
+- **New page, live one untouched** — the user chose this over editing `es.html`.
+  `/home/ubuntu/Prime_AI/Landingpage/scroll.html`.
+- **Warm clay diorama · fly-through (architecture B) · desktop-only · draft-first** — the
+  four interview answers that drove the build.
+- **Fal-only backend** — `monid` not installed, `higgsfield` not authenticated, `codex`
+  absent. Stills `openai/gpt-image-2`, chain `bytedance/seedance-2.0/image-to-video`.
+  Note both slugs take NO sub-path on submit (`/text-to-image` 404s at execution).
+- **Stayed on `seedance-2.0` at 480p rather than `-mini`** — one model across previz and
+  final so seam character doesn't shift. Cost $10.30 not the ~$8 quoted; user was told.
+- **No `tel:` link on the new page** — all six on `es.html` point at `951 870 630`, still
+  dead and still hidden by the `LÍNEA MUERTA` block. Only CTA is
+  `https://cal.eu/prime.ai/intro-wa`.
+- **Deployed** to `/var/www/prime-ai/es/scroll/`, `noindex, nofollow`, unlinked from
+  anywhere. Commits `72db511` (build) and `4613e48` (deploy + docs).
+- **nginx exact-match block added** — `location = /scroll/` in
+  `/etc/nginx/sites-available/prime-ai-demo.conf`, because the shared
+  `location / { try_files $uri @app; }` has no `$uri/` and no `index`, so the directory URL
+  404'd with the file in place. Backup in `/etc/nginx/backups/`.
+- **Draft clips stay out of git** — `assets/scroll/vid/` ignored; 22 MB about to be
+  replaced by the 1080p render.
+- `TheVault/DailyNotes/2026-08-28.md` gained one line.
 
 ## Key files for next session
 
-- `/home/ubuntu/Prime_AI/Landingpage/es.html` — `pista()` sits next to `di()`; the three call
-  sites; the comment block above `#ir` (~line 2311) explains why the attribute is absent and
-  must stay absent.
-- `/home/ubuntu/Prime_AI/Landingpage/tests/test-palette.js` — 5 new assertions in the `[es]`
-  section, each mutation-tested this session.
-- `/home/ubuntu/Prime_AI/Voice_agent/src/sales-agent.ts` lines 940-1000 — the
-  `VOICE_TEMPERATURE` docblock carrying the dB measurements and the two knobs already ruled
-  out (`volume`, `speech_normalization`). Read before touching anything about loudness.
-- `/home/ubuntu/Prime_AI/Voice_agent/public/retell.js` — vendored SDK build;
-  `echoCancellation` is hardcoded in `startCall`'s `audioCaptureDefaults`. Regeneration
-  recipe is in `Voice_agent/src/demo.ts` lines 35-44. Not in package.json by design.
-- `/home/ubuntu/Prime_AI/docs/2026-08-23-zadarma-ticket-630.md` — still unsent, must go from
-  Dan's account.
-- `/home/ubuntu/Prime_AI/Voice_agent/watch-did.sh` — how DID activation gets noticed.
+- `/home/ubuntu/Prime_AI/Landingpage/docs/scroll-deploy.md` — **read first.** Deployed
+  tree, the nginx block and why it exists, the 1080p re-render command, the seam law,
+  rollback.
+- `/home/ubuntu/Prime_AI/Landingpage/scroll.html` — the page; byte-identical to the
+  deployed `index.html`.
+- `/home/ubuntu/Prime_AI/Landingpage/scroll-world/fal.sh` — chain helpers. Holds the fixed
+  `fal_run`; its comment explains why polling URLs must come from the submit body and not
+  be rebuilt from `$FAL_MODEL`.
+- `/home/ubuntu/Prime_AI/Landingpage/scroll-world/prompts/` — preamble + 6 still + 6 dive +
+  5 connector prompts. The preamble is byte-identical across all stills on purpose.
+- `/home/ubuntu/Prime_AI/Landingpage/scroll-world/{run_dives.sh,run_conns.sh,encode.sh}`
+- `/home/ubuntu/TheVault/Research/Nate Herk/Nate Herk - Claude as a One Person Marketing Team.md`
+  — source note for the method.
 - Plan file: none.
-- Memory files touched:
-  `/home/ubuntu/.claude/projects/-home-ubuntu-Prime-AI-Landingpage/memory/landing-page-analytics.md`
-  (new) and `MEMORY.md` (one line appended).
+- Memory files touched: none.
 
 ## Running state
 
-- Background processes: none.
-- Dev servers / ports: none started by this session. Pre-existing services only — Umami
-  container on `127.0.0.1:3025`, voice app on `127.0.0.1:3023`.
-- Open worktrees / branches: on `warm-palette`, ahead of `origin/warm-palette` by 2
-  (`08b58a0` plus this handoff commit). Nothing pushed.
+- Background processes: `python3 -m http.server 8899 --bind 127.0.0.1` — **PID 4021569**,
+  serving `/home/ubuntu/Prime_AI/Landingpage`, bound to VPS loopback only.
+  Kill: `kill 4021569` (or `pkill -f "http.server 8899"`). No longer needed now that the
+  page is deployed.
+- Dev servers / ports: `http://127.0.0.1:8899/scroll.html` — VPS loopback, reachable from a
+  laptop only via `ssh -L 8899:127.0.0.1:8899 ubuntu@srv1233720.hstgr.cloud`.
+  Live URL: `https://prime-ai.es/scroll/`.
+- Open worktrees / branches: branch `warm-palette`, three commits ahead and **not pushed** —
+  `1e8c722`, `72db511`, `4613e48`.
+- A Playwright browser session is open at `https://prime-ai.es/scroll/`.
 
 ## Verification — how to confirm things still work
 
-- `cd /home/ubuntu/Prime_AI/Landingpage && node tests/test-palette.js` — exits 0, prints
-  `OK  en: ... | es: ... | nl: ...`.
-- `curl -s https://prime-ai.es/ | md5sum` — `e41d17ad2903cba4c5c36d96f45e573e`, matching
-  `es.html`.
-- `cd /home/ubuntu/Prime_AI/Landingpage && git show HEAD:es.html | diff - /var/www/prime-ai/es/index.html`
-  — empty, i.e. live matches the commit. (Run before any redeploy: it also catches a
-  hand-edit made directly on `/var/www`, which has happened before.)
-- `node /tmp/claude-1000/-home-ubuntu-Prime-AI-Landingpage/c16d75f4-f973-4b66-9121-54a8e3389eef/scratchpad/hangup.js`
-  — prints `PASS`; start fires `demo-boton-hablar` + `demo-en-linea`, hangup fires nothing.
-  Stubs the SDK and token route so no call is billed. **That scratchpad is session-scoped and
-  may already be gone**; the test's shape is reconstructible from commit `08b58a0`'s message.
-- `cd /home/ubuntu/Prime_AI/Voice_agent && bun --env-file=/home/ubuntu/Prime_AI/outreach-engine/.env run src/zadarma.ts numbers`
-  — current status of `...604` and `...630`.
-- Rollback of the deploy, one command:
-  `sudo install -o www-data -g www-data -m 644 /var/backups/prime-ai/es/index.html.bak-20260825-075211 /var/www/prime-ai/es/index.html`
+- `cd /home/ubuntu/Prime_AI/Landingpage && node tests/test-palette.js` — `OK` on en/es/nl,
+  3 pages.
+- `node tests/test-roi.js` — `OK`.
+- `node tests/test-nl-ready.js` — exits 1 with its 5 documented blockers (expected; it
+  gates the undeployed NL page).
+- `git show HEAD:es.html | diff - /var/www/prime-ai/es/index.html` — empty; live Spanish
+  page unchanged.
+- `diff scroll.html /var/www/prime-ai/es/scroll/index.html` — empty.
+- `curl -sS -o /dev/null -w "%{http_code}\n" https://prime-ai.es/scroll/` — 200.
+  Also `/` 200, `/en/` 302, `/es/` 301.
+- `curl -sS -r 0-99 -o /dev/null -w "%{http_code}\n" https://prime-ai.es/scroll/assets/scroll/vid/obra.mp4`
+  — 206 (nginx serves byte ranges).
 
 ## Deferred + open questions
 
-- **Open, and blocking the volume fix:** during a call on Dan's Android, does pressing the
-  volume rocker show a **Call** slider or a **Media** slider? Call means communication-mode
-  routing, and the only levers are level (compressor + makeup gain in `es.html`) or
-  `echoCancellation:false` in the vendored SDK — which trades echo for volume and would make
-  the agent interrupt itself on speakerphone. Media means routing is fine and the low volume
-  is purely source level.
-- Deferred: the compressor + ~10 dB makeup gain fix. Device-independent, fixes the measured
-  12 dB wander, does not clip the -0.9 dBFS peak. Not built pending the answer above. Caveat
-  to test on a real phone: piping a WebRTC remote stream into Web Audio needs the original
-  `<audio>` element kept alive and muted, or Chrome collects the stream and the result is
-  silence rather than quiet.
-- Deferred: `git push` of `08b58a0` — needs Dan's say-so.
-- Deferred: sending the Zadarma ticket for `...630`. Three days in `checking` is a stronger
-  case than one.
-- Note for whoever reads the dashboard next: historical `demo-boton-hablar` counts mixed
-  starts with hangups and are **not** comparable to counts from 25 Aug onward. Expect roughly
-  a halving — that is the fix landing, not traffic falling. Baseline is 1-4 visitors/day, so
-  allow about a week before the `motivo` split means anything.
+- Deferred: **1080p final render** — `VRES=1080p` in `fal.sh`, same prompts, same model,
+  ~$50. Start tracking `assets/scroll/vid/` in git at that point.
+- Deferred: **native 9:16 mobile chain** — user chose desktop-only. On a phone the 16:9
+  film centre-crops and loses the diorama island, which is most of the concept. Roughly
+  another chain's cost.
+- Deferred: the `baja para entrar` hint is illegible against the light island edge — one
+  CSS line.
+- Deferred: `prefers-reduced-motion` fallback never observed working; the harness doesn't
+  expose emulation for it. Not claimed as working.
+- Open: **which of the three comes next** — 1080p, mobile chain, or hint fix. Asked, not
+  answered.
+- Open: **stills cost is unmeasured** — Fal returns no cost field for `openai/gpt-image-2`;
+  7 images were generated (6 + one `agenda` re-roll). Read the real figure off the Fal
+  dashboard rather than estimating it.
+- Open: three commits sit unpushed on `warm-palette`.
 
 ## Pick up here
 
-Ask Dan for the volume-slider reading from his Android, then build either the compressor +
-makeup-gain fix in `es.html` or the `echoCancellation` change in the vendored SDK depending on
-the answer.
+Ask which of the three deferred items to do; if told "1080p": set `VRES=1080p` in
+`/home/ubuntu/Prime_AI/Landingpage/scroll-world/fal.sh`, run `run_dives.sh` →
+`run_conns.sh` → `encode.sh`, re-verify the seams, redeploy to
+`/var/www/prime-ai/es/scroll/`, and start tracking `assets/scroll/vid/`.
