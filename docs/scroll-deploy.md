@@ -242,9 +242,23 @@ as a small rounded island ... centered composition", which is format-agnostic �
 | | | | **$10.34** at 480p |
 
 Billing is `w*h*duration*24/1024/1000*rate` — pure pixel count. So 9:16 costs the SAME
-as 16:9 at the same tier, and 1080p is ~4.9x either way (~$50). Stills return no cost
-field at all; `gpt-image-2` gives you `content_type` and `file_name` and nulls for the
-rest. The only real figure is on the Fal dashboard.
+as 16:9 at the same tier, and 1080p is ~4.9x either way (~$50).
+
+Stills return no cost field at all; `gpt-image-2` gives you `content_type` and
+`file_name` and nulls for the rest. **But the balance is readable**, which is how you
+price anything Fal will not itemise — take it before and after and subtract:
+
+    curl -sS -H "Authorization: Key $FAL_KEY" https://rest.alpha.fal.ai/billing/user_balance
+
+Plain number, USD, and it goes **negative** when the account is overdrawn. Worth
+checking BEFORE a run: a locked account rejects paid submits with
+
+    403 {"detail":"User is locked. Reason: Exhausted balance."}
+
+and the failure looks like a code problem when it is not. Note that an empty-body submit
+is NOT a valid check for this — it renders nothing, so it costs nothing, so the balance
+gate lets it through with a 200 and it even reports COMPLETED. Only a job that would
+actually cost money gets refused. Read the balance instead.
 
 ## Re-render at 1080p
 
