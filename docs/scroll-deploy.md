@@ -4,15 +4,70 @@ _Status 2026-08-28: **deployed** at <https://prime-ai.es/scroll/> as a 480p draf
 `noindex, nofollow`, unlinked from anywhere. Not the finished thing._
 
 The page is `scroll.html`: six clay-diorama scenes joined into one continuous
-camera flight, scrubbed by scroll position. Built with the `scroll-world` skill.
-It is a **separate page** — it does not touch `es.html`, and the live
+camera flight, scrubbed by scroll position, **and then the whole of `es.html`
+underneath it**. Built with the `scroll-world` skill. It is still a **separate
+page** — it does not touch `es.html`, and the live
 `/var/www/prime-ai/es/index.html` is unchanged by any of this.
+
+## scroll.html se GENERA — no se edita
+
+```bash
+node scroll-world/compose.js     # es.html + world.config.js -> scroll.html
+node tests/test-scroll-page.js   # comprueba que scroll.html es reproducible
+```
+
+`es.html` es la pagina viva y cambia; una copia pegada de sus 170 KB se quedaria
+vieja el mismo dia. Por eso hay dos fuentes y un compositor:
+
+| fuente | que hay dentro |
+|---|---|
+| `es.html` | todo el marketing: calculadora, demo en directo, precios, 4 idiomas |
+| `scroll-world/world.config.js` | la copia de las 6 escenas de la pelicula |
+| `scroll-world/compose.js` | las junta y escribe `scroll.html` |
+
+Editar `scroll.html` a mano no sirve de nada: el siguiente `compose.js` se lo lleva.
+`tests/test-scroll-page.js` falla si alguien lo intenta.
+
+## El relevo (la pelicula se aparta)
+
+Todas las capas del motor son `position:fixed`, asi que sin nada mas la pelicula
+se queda pegada a la pantalla para siempre y tapa la pagina de debajo — comprobado:
+la seccion esta en el viewport y no se ve. El motor ahora se desvanece en el ultimo
+`vh` del track y entrega la pagina.
+
+Dos reglas que cuestan caras si se tocan:
+
+1. **El contenido tiene que ser el hermano SIGUIENTE de `#world`.** Asi es como el
+   motor detecta que hay pagina debajo (`nextElementSibling`). Si se mete algo en
+   medio, no se aparta y tapa la pagina entera. Solo se activa si hay algo debajo:
+   una pagina que sea nada mas la pelicula sigue terminando en su ultimo fotograma.
+2. **`overflow-x` va en el `<body>` y nunca en el `<html>`.** Cualquier valor que no
+   sea `visible` en la raiz cambia el scrollport y despega el `nav` sticky de
+   `es.html`. `clip` tampoco vale. Medido en el navegador: con la regla en la raiz
+   `navTop=-1800`, sin ella `navTop=0`.
+
+El fundido va a dos velocidades: el texto de la pelicula se va en el primer 45% del
+relevo y la imagen aguanta hasta el final, porque a media opacidad se leian a la vez
+el titular de la pelicula y el de la pagina, uno encima del otro.
+
+Los fondos empalman sin parpadeo: `--sw-bg` (#FAF8F5) y el `--paper` de `es.html`
+(`oklch(0.9798 0.0045 78.3)`) dan los dos `rgb(250,248,245)` exactos, medido en el
+navegador. Si alguien toca uno, tiene que tocar el otro.
+
+## Lo que NO habla cuatro idiomas
+
+`es.html` cambia a EN/NL/SV con `traducir()` sobre atributos `data-en`. El motor se
+construye su propio DOM desde un objeto JS, asi que `traducir()` no lo alcanza: al
+pulsar la bandera inglesa **la pagina se traduce y la pelicula se queda en espanol**.
+Comprobado. Escribir esa copia es trabajo de redaccion, no de codigo — y la NL/SV sin
+revisar por un nativo esta vetada por `tests/test-nl-ready.js`, asi que no se traduce
+a maquina.
 
 ## What is deployed where
 
 ```
 /var/www/prime-ai/es/scroll/
-├── index.html                        # byte-identical to repo scroll.html
+├── index.html                        # byte-identical to repo scroll.html (GENERADO)
 └── assets/scroll/
     ├── scrub-engine.js
     ├── still/*.webp                  # 6 posters, from the clips' ACTUAL first frames

@@ -1,20 +1,1911 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Prime AI — la llamada que no se perdió</title>
-  <meta name="description" content="Baja por la página y sigue una llamada perdida hasta la cita puesta. Prime AI contesta el teléfono cuando tú no puedes." />
-  <!-- Borrador en producción bajo /scroll/. Sin indexar: no puede aparecer en Google
-       al lado de la página real mientras siga siendo un previz de 480p. -->
-  <meta name="robots" content="noindex, nofollow" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El teléfono que nunca se queda sin contestar | Prime AI</title>
+  <meta name="description" content="Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario. Para negocios de Málaga.">
+  <!-- ============================================
+       LA PÁGINA ESPAÑOLA. Read this before editing.
+
+       WHO IT IS FOR — any Málaga business that lives off its phone. Dan,
+       2026-08-06, widened from "trades (fontaneros, reformas)" of 08-05.
+       Still NOT clinics: /en/ is clinic-framed, so that page and this one
+       are different verticals and NOT translations of each other. Say
+       "cliente" here and "patient" there.
+
+       NO OCCUPATION IS NAMED ANYWHERE. That is now a rule, not an
+       accident, and it took two passes to make true. The meta description
+       used to end "Para fontaneros, reformas y negocios de Málaga"; it now
+       ends "Para negocios de Málaga", verbatim the marbete in the ALTO
+       section, so the search snippet and the first thing under the fold
+       say the same words. Three description strings move together — the
+       static meta above (what a no-JavaScript visitor gets) and
+       T.es/T.en.descripcion below.
+
+       Then Dan found the rest, which the first pass had missed: the
+       "llamadas que hoy se pierden" list opened with hands inside "una
+       avería" / "a leak", the next line drove to the "siguiente aviso",
+       and the emergency FAQ said "en tu oficio" / "in your trade". Those
+       are now "un trabajo que no puedes dejar a medias" / "a job you
+       can't walk away from", "siguiente trabajo", and "en tu negocio" /
+       "in your business".
+
+       Two things to keep in mind before writing a new line here:
+
+       — The vividness lives in the MOMENT, not the occupation. "Hands
+         deep in a job you can't walk away from" is interrupted, committed
+         and unable to stop, and none of that needed a plumber. Write the
+         moment; if a trade name is doing the work, the line is weaker
+         than it looks.
+
+       — English translations narrow without anyone deciding to. "Avería"
+         covers electricians, aircon, appliance repair, mechanics and pool
+         maintenance; "a leak" covers plumbers. The Spanish was broader
+         than its own English for months. When you add a data-en, check it
+         has not quietly picked a trade the Spanish left open.
+
+       TWO LANGUAGES, ONE VERTICAL. Dan, 2026-08-06: this page carries its
+       own English, in data-en attributes, and the ES/EN switch in the nav
+       swaps them in place. That English is THIS page's pitch in English —
+       for the English-speaking owner on this coast — and it is still not
+       /en/, which sells to clinics. Two different things are
+       now called "the English page", so be exact about which: /en/ is a
+       different vertical, this toggle is a different language.
+
+       Spanish is what is in the markup and English is what is in the
+       attributes, never the other way round. That is load-bearing, not a
+       coin flip: a visitor who never touches the switch gets the Spanish
+       page with no JavaScript having run, which is what the default has
+       to be when nginx sends the bare domain here. Every string added to
+       this page therefore needs its data-en in the same edit, or the
+       switch silently leaves a Spanish sentence in an English page.
+
+       ⚠ NO PRICES, NO PERCENTAGES, NO GUARANTEES — IN BOTH LANGUAGES.
+
+       THE FRAME — the missed call, never the person who answers the
+       phone. Same rule as /en/: nothing may invite the owner to picture
+       replacing anyone. Ported from the old /voice page, which was
+       written this way from the start: "el teléfono que nunca se queda
+       sin contestar", "contesta por ti cuando no puedes cogerlo".
+
+       Not a style preference. sales-agent.ts's HARD RULES forbid the
+       agent from quoting a price, promising a percentage or a timeline,
+       and inventing any figure about the prospect's business. A visitor
+       presses the button below and is talking to that agent thirty
+       seconds later, so a page that claims what the call must refuse to
+       repeat is worse than a plainer one (demo.ts:263). The old /voice
+       page was held to this by build.test.ts; this page is held to it by
+       test-palette.js — ONE guard for both pages, not the separate
+       test-palette-es.js an earlier version of this comment named, which
+       has never existed. It fails on a euro sign, a percentage, an
+       English "guarantee" or a Spanish "garantiz" anywhere in the body,
+       and the body it scans includes the data-en attributes, so the
+       English copy is bound by exactly the same rule as the Spanish. That
+       is also why there is no ROI calculator here and no stats bar: both
+       exist on /en/ and both output figures this page may not assert.
+
+       ONE PAGE. The demo call runs here, in the panel at the bottom of
+       this file — no phone number and nothing to navigate to. It imports
+       /voice/retell.js and mints through POST /voice/token, same origin,
+       so nginx has to serve /es/ off prime-ai.es and NOT off a separate
+       host. /voice/privacidad is the second disclosure layer and it is
+       already in Spanish, which is the one thing this page gets for free
+       that /en/ does not — and the one thing the English side does NOT
+       get: switch to EN and that link still lands on a Spanish privacy
+       page. The first disclosure layer is translated and sits next to the
+       button, so the consent itself is readable; the detail behind it is
+       not, until /voice/privacidad grows an English version. Known gap,
+       not an oversight.
+       ============================================ -->
+  <!-- Inline data URI, not a file: this page deploys as a single self-contained
+       HTML file, and a /favicon.ico request 404s against the static location.
+       A "P" on ink, not the old ring-and-dot: at the 16px a favicon is actually
+       drawn at, a 2px ring around a 5px dot collapses into a smudge, and the
+       cyan it was drawn in no longer exists anywhere on either page.
+       The font-family is a best-effort list on purpose — an SVG favicon does
+       NOT load the page's webfonts, so this renders in whatever the browser
+       has. A bold "P" survives that; anything relying on Space Grotesk's
+       shapes would not. -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23221D19'/%3E%3Ctext x='16' y='23.5' text-anchor='middle' font-family='Space Grotesk,Segoe UI,Helvetica,Arial,sans-serif' font-size='22' font-weight='700' fill='%23FAF8F5'%3EP%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Los mismos tokens que es.html — el fondo DEBE ser el fondo de las escenas
-       (#FAF8F5), o los pósters se recortan contra un color distinto y se ve el borde
-       de la isla al cargar. */
+    :root {
+      /* Copied verbatim from receptionist.html so both pages are graded by the
+         same palette rules. Every oklch carries its hex in a comment because the
+         guards check contrast without an oklch conversion library, and each one
+         round-trips to its stated hex exactly. Do not edit one without the
+         other: the browser renders the oklch, the guard measures the comment,
+         and a mismatch means the guard is grading a colour the page never shows. */
+      --paper:     oklch(0.9798 0.0045 78.3);  /* #FAF8F5 */
+      --shell:     oklch(0.9593 0.0103 81.8);  /* #F5F1EA */
+      --sand:      oklch(0.9241 0.0137 78.3);  /* #EBE5DC */
+      --clay:      oklch(0.8792 0.0185 78.2);  /* #DED6CA */
+
+      /* El suelo del degradado del héroe, y la única ficha por debajo de
+         barro. Existe porque papel, concha, arena y barro viven todas entre
+         0.88 y 0.98 de luminosidad: una rampa de 10 puntos no da profundidad
+         visible por mucho que se reordene. Se midió — el lavado anterior movía
+         el fondo 37 niveles y Dan no lo veía; éste mueve 90.
+
+         Sobre la regla de "un tono usado una sola vez es un accidente", que
+         está escrita más abajo para el cian del logotipo — aquélla era un azul
+         FRÍO de marca sin trabajo en ninguna parte. Ésta continúa la rampa
+         cálida que ya existe hacia abajo y tiene un trabajo estructural. Si
+         aun así sobra, la alternativa probada es terminar el viñeteado en
+         barro — funciona y no necesita ficha nueva, pero se queda en 60
+         niveles en vez de 90.
+
+         NO escribir "--ficha" seguida de dos puntos dentro de un comentario
+         de :root. El lector de fichas corta en el primer punto y coma y no
+         se para en el salto de línea, así que se traga la declaración
+         siguiente entera: la ficha real queda pisada, la siguiente nunca se
+         registra, y sus comprobaciones de contraste se saltan en silencio
+         con el guardián en verde. Pasó aquí con este mismo comentario. */
+      --terra:     oklch(0.8100 0.0330 68.0);  /* #D0BDAB */
+      --ink:       oklch(0.2351 0.0108 60.9);  /* #221D19 */
+      --ink-deep:  oklch(0.1905 0.0089 59.1);  /* #171310 */
+
+      /* Text-safe on ink at any size; on paper/shell only at >=24px or
+         >=18.66px bold; never as type on sand (2.95:1). */
+      --amber:     oklch(0.6266 0.1229 50.7);  /* #C2703D */
+
+      /* --logo-cyan (#0891B2) lived here and is GONE, 2026-08-06. It was the
+         only colour on the page carved out of the palette — its own comment
+         called it "an exempt brand mark, not part of the palette" — and it was
+         the only cold hue on a page that is otherwise entirely warm. Nothing
+         else was ever allowed to use it, which is what made it read as a
+         leftover rather than a brand. The wordmark now carries itself on ink
+         and weight. Do not reintroduce a colour here without giving it a job
+         somewhere else too; a hue used exactly once is an accident. */
+
+      /* Blue is buttons and links. Not decoration. */
+      --accent:       #2563EB;
+      --accent-hover: #1D4ED8;
+      /* Text sitting ON the accent colour. Must not follow --text-primary,
+         or blue buttons end up with dark text. */
+      --text-on-accent: var(--paper);
+
+      --text-primary:   oklch(0.2351 0.0108 60.9);  /* #221D19 */
+      --text-secondary: oklch(0.4937 0.0231 64.8);  /* #6B5F54 */
+      --text-on-ink:    oklch(0.7491 0.0216 62.8);  /* #B8ABA0 */
+
+      --border-subtle: var(--clay);
+      --border-strong: oklch(0.8016 0.0266 73.1);   /* #C9BCAC */
+      --surface-hover: oklch(0.2351 0.0108 60.9 / 0.04);
+
+      /* Written without the literal rgba pattern: the guard bans it and would
+         count this comment as a violation of itself. */
+      --tint-on-ink: oklch(0.9798 0.0045 78.3 / 0.07);
+
+      --shadow-sm:   0 1px 2px oklch(0.2351 0.0108 60.9 / 0.05), 0 1px 3px oklch(0.2351 0.0108 60.9 / 0.07);
+      --shadow-md:   0 4px 12px oklch(0.2351 0.0108 60.9 / 0.07), 0 2px 4px oklch(0.2351 0.0108 60.9 / 0.05);
+      --shadow-lift: 0 12px 32px oklch(0.2351 0.0108 60.9 / 0.12);
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-body: 'Outfit', sans-serif;
+      /* Fewer steps than receptionist.html declares: this page has no stats
+         bar, no calculator and no bonus card, so the sizes those used are not
+         carried over. The guard fails on a declared-but-unused token. */
+      --font-base: 16px;
+      --font-sm: 14px;
+      --font-md: 20px;
+      --font-2xl: 39px;
+      --font-hero: 60px;
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 32px;
+      --space-5: 40px;
+      --space-6: 48px;
+      --space-8: 64px;
+      --space-10: 80px;
+      --space-12: 96px;
+      --max-width: 1200px;
+      --radius: 8px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: var(--font-base);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text-primary);
+      background: var(--paper);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .nav-logo {
+      font-family: var(--font-heading);
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-3);
+    }
+
+    /* ============================================
+       BOTONES
+       ============================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: var(--font-base);
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 48px;
+      min-width: 48px;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--text-on-accent);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--paper);
+      border: 1px solid var(--border-strong);
+    }
+
+    .btn-outline:hover {
+      background: var(--tint-on-ink);
+    }
+
+    /* ============================================
+       NAV
+       ============================================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: var(--paper);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 12px var(--space-3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .nav-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: var(--font-md);
+      color: var(--text-primary);
+      text-decoration: none;
+      /* El conmutador ES/EN dejó al logo con 92px a 360px de ancho, y
+         "Prime AI" se partía en dos líneas, que subía la barra a 88px.
+         Con nowrap el flex reparte el recorte por otro lado y no hay
+         desbordamiento horizontal. Sigue haciendo falta sin el icono:
+         el ancho que sobra es menor, pero el punto de ruptura es el mismo. */
+      white-space: nowrap;
+      /* Igual que h1/h2/h3. El logo llevaba el mismo tipo que los titulares
+         pero no su tracking, así que a 20px se veía más suelto que todo lo
+         demás en Space Grotesk. */
+      letter-spacing: -0.02em;
+    }
+
+    /* "AI" retrocede por PESO, no por color. En cian partía el nombre en dos
+       mitades sin relación y ponía el énfasis en la mitad menos distintiva:
+       todos son "algo AI", la palabra propia es Prime. Peso, no color,
+       también significa que sigue siendo una sola tinta sobre crema y sobre
+       ink, sin segunda variante que mantener. */
+    .logo-ai {
+      font-weight: 500;
+    }
+
+    .btn-nav {
+      padding: 10px 20px;
+      font-size: var(--font-sm);
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    /* .btn-outline pinta el texto de --paper: sirve sobre ink (#cierre, el
+       panel) y es invisible sobre la barra, que va en papel. Ésta es su
+       versión clara.
+
+       Va en AZUL, no en tinta sobre un filo de barro. Dan, 25-08-2026: "lo
+       veo como un botón, pero es blanco". Y tenía razón: papel sobre papel
+       con un borde --border-strong no se lee como un botón, se lee como un
+       hueco.
+
+       El azul es además la única respuesta que no abre color nuevo. La regla
+       de :root dice "blue is buttons and links, not decoration", así que un
+       segundo botón se pinta del azul que ya hay o no se pinta — y --amber,
+       que es el otro tono con trabajo en la página, se queda a 3.0 sobre
+       papel y sólo vale para texto grande, que esto no es. --accent sobre
+       --paper es par medido a 4.5 en test-palette.js, y el relleno del hover
+       es ese mismo par al revés.
+
+       Sigue siendo el secundario: la jerarquía la lleva el RELLENO, no el
+       tono. Por eso puede tener color sin disputarle la demo al macizo de
+       al lado. */
+    /* Dos etiquetas, no una. "Reservar llamada" mide más que el hueco que
+       deja la barra de móvil a 360px (logotipo ~92 + banderas ~130 + huecos),
+       así que se partía en dos líneas y subía .nav de 77 a 88px — una barra
+       fija más alta se come viewport en todas las pantallas, no sólo aquí.
+       Medido, no supuesto. Clases propias y no .letra-escritorio/.letra-movil,
+       que ya existen para esto mismo: el bloque LÍNEA MUERTA del final las
+       fuerza a escritorio en todos los anchos mientras el número esté caído,
+       así que reusarlas habría dado la etiqueta larga en el móvil igualmente
+       y se habría roto sola el día que se borre el bloque. */
+    .rsv-corto {
+      display: none;
+    }
+
+    .btn-reservar {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .btn-reservar:hover {
+      background: var(--accent);
+      color: var(--text-on-accent);
+    }
+
+    /* Cuatro idiomas. Sigue siendo lo más callado de la barra: quien lo
+       necesita lo encuentra, y a quien no, no se le pide decidir nada antes
+       de leer el titular.
+
+       AHORA SÍ SON BANDERAS, y el motivo es que ha cambiado el hecho, no el
+       gusto. Aquí ponía "no flags — a flag names a country, and the English
+       here is for people living in this one", y era verdad mientras las dos
+       opciones fueran el idioma de un mismo sitio. Desde 2026-08-23 hay
+       cuatro agentes publicados (WEB ES, WEB EN, WEB NL, WEB SV) y cada uno
+       habla para un mercado con su moneda y sus cifras: la bandera nombra
+       exactamente lo que se elige. Cuatro pares de letras a 12px en una
+       barra ya cargada era además la versión ilegible.
+
+       Sin :hover que agrande el emoji: en el móvil no hay hover y la barra
+       fija de abajo ya compite por el pulgar. */
+    .idioma {
+      display: inline-flex;
+      gap: 2px;
+      padding: 2px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+    }
+
+    .idioma-btn {
+      font-family: var(--font-body);
+      /* 15px, no 12: un emoji de bandera a 12px es una mancha. El padding
+         baja a 5/8 para que las cuatro quepan en el mismo ancho que ocupaban
+         ES y EN. line-height:1 porque el emoji arrastra su propia métrica. */
+      font-size: 15px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 5px 8px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .idioma-btn:hover {
+      color: var(--text-primary);
+    }
+
+    /* 320px, que es el iPhone SE de primera generación y el suelo real de la
+       web. MEDIDO, no supuesto: con dos idiomas el grupo ocupaba 105px y la
+       barra cerraba justo; con cuatro pasó a 155px y empujó el botón de la
+       demo a 333px sobre un viewport de 320, o sea fuera. Bajar el padding a
+       4/5 devuelve 24px y con eso vuelve a caber.
+
+       El emoji NO se encoge aquí: a 15px ya es lo justo para reconocer una
+       bandera, y una bandera que no se distingue es peor que no tenerla. Lo
+       que se recorta es el aire, que es lo que sobra. */
+    @media (max-width: 360px) {
+      .idioma-btn {
+        padding: 4px 5px;
+      }
+    }
+
+    /* aria-pressed carries the state for a screen reader; this carries it
+       for everyone else. Both are set by the same line of JS. */
+    .idioma-btn[aria-pressed="true"] {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    /* Barra fija en el móvil. Ya NO dice "where the nav CTA scrolls away":
+       .nav es sticky y nunca se va, así que esto y la barra de arriba
+       enseñaban el mismo botón a la vez. Desde el 25-08-2026 la demo vive
+       aquí y sólo aquí en el móvil; arriba va reservar. Ver .nav .llamar en
+       @media (max-width: 767px). */
+    .cta-movil {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background: var(--accent);
+      padding: var(--space-2);
+      display: none;
+      justify-content: center;
+    }
+
+    .cta-movil .btn {
+      width: 100%;
+      background: transparent;
+      color: var(--text-on-accent);
+      font-weight: 700;
+      padding: 14px;
+    }
+
+    /* El número, sólo en móvil. Ahí llamar es un toque y ya tiene la app de
+       teléfono delante; en escritorio nadie marca un +34 desde un portátil, así
+       que manda el botón de siempre. Los dos van en el HTML y decide el ancho.
+
+       El corte es el mismo 767 que ya usa .cta-movil a propósito: dos puntos de
+       ruptura distintos dejarían un ancho donde la barra fija está puesta pero
+       su contenido no, que es una franja naranja vacía pegada abajo. */
+    .tel-movil {
+      display: none;
+      gap: 8px;
+    }
+
+    /* Tabular para que los tres grupos midan lo mismo, y nowrap porque
+       "951 870 / 630" partido en dos líneas dentro de la barra fija se lee como
+       dos números. */
+    .tel-num {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    /* ============================================
+       ALTO (hero)
+       ============================================ */
+    /* La portada era papel liso, y a 92vh eso es una pantalla entera de
+       blanco antes de que empiece nada. Dan, 2026-08-07: "está
+       completamente blanca, dale algo de vida".
+
+       Lo que hay es un lavado diagonal entre tres tonos que ya existen —
+       concha arriba a la izquierda, papel por el medio, arena abajo a la
+       derecha. Nada de color nuevo: los tres son fichas del sistema y los
+       tres están medidos contra el texto en test-palette.js, así que la
+       portada se calienta sin abrir un caso de contraste nuevo.
+
+       Sin transparencias a propósito. Un degradado que termina en
+       "transparent" termina en negro transparente, y sobre un fondo cálido
+       eso se ve como un halo gris; entre fichas opacas no puede pasar. */
+    /* 92vh dejaba la portada ocupando la pantalla entera y la banda de
+       cifras justo por debajo del corte, así que lo primero que se veía era
+       una pantalla de blanco y nada más. A 80vh asoman los números, que es
+       el único color de esa zona, y además se ve que la página sigue. */
+    .alto {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-10) var(--space-3) var(--space-8);
+      position: relative;
+      overflow: hidden;
+      /* Viñeteado, no lavado en diagonal: profundo en los BORDES y claro en
+         el centro, que es justo donde se apoya el texto. El orden importa y
+         es el arreglo de un error medido — ver el comentario de ::before. */
+      background:
+        radial-gradient(ellipse 78% 72% at 50% 44%,
+          var(--paper) 0%,
+          var(--paper) 42%,
+          var(--sand) 74%,
+          var(--terra) 100%),
+        linear-gradient(166deg, var(--shell) 0%, var(--sand) 100%);
+    }
+
+    /* Este halo ACLARA. Antes oscurecía, y ése era el error.
+
+       La versión anterior ponía barro — la ficha más profunda que había —
+       en el CENTRO, justo detrás del titular, y dejaba claros los bordes.
+       Daba calor y hundía el texto a la vez: medido sobre los píxeles ya
+       pintados, la letra chica quedaba en 4.48:1, por debajo del 4.5 de AA.
+       Nadie lo vio porque PAIRS compara fichas contra fichas, y un degradado
+       con un halo desenfocado encima produce colores compuestos que no son
+       ninguna ficha. El guardián no puede verlos; sólo el píxel pintado.
+
+       Invertido: la profundidad se va a los bordes (el fondo de .alto) y el
+       centro se aclara, así que el texto se apoya siempre en papel/concha.
+       El resultado no sólo deja de romper — mejora lo que ya había:
+       marbete 4.98 -> 5.70, entrada 5.00 -> 5.67, letra chica 4.48 -> 4.69.
+
+       Termina en transparent, no en papel: el fondo de abajo ya no es plano,
+       y rellenar con papel dibujaría un disco claro sobre el viñeteado.
+       Decorativo y aria-hidden por construcción: un ::before sin contenido. */
+    .alto::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 42%;
+      width: 78vw;
+      height: 78vw;
+      max-width: 980px;
+      max-height: 980px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, var(--paper) 0%, var(--shell) 46%, transparent 74%);
+      opacity: 0.9;
+      filter: blur(50px);
+      pointer-events: none;
+    }
+
+    .alto-dentro {
+      max-width: 820px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Entrada escalonada: lo único que se mueve al cargar, y por eso es lo
+       que se nota. CSS puro, sin JavaScript — termina visible, así que el
+       visitante que llega con los scripts caídos ve la portada entera
+       igual. "backwards" mantiene el elemento oculto durante su espera; sin
+       él aparecería y volvería a saltar. */
+    .alto-dentro > * {
+      animation: subir 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    .alto-dentro > *:nth-child(1) { animation-delay: 0.05s; }
+    .alto-dentro > *:nth-child(2) { animation-delay: 0.14s; }
+    .alto-dentro > *:nth-child(3) { animation-delay: 0.23s; }
+    .alto-dentro > *:nth-child(4) { animation-delay: 0.32s; }
+    .alto-dentro > *:nth-child(5) { animation-delay: 0.41s; }
+
+    @keyframes subir {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* El bloque global de reduced-motion de abajo acorta la DURACIÓN pero no
+       la espera, y una espera sin animación es un elemento que aparece tarde
+       de golpe: peor que no animar. */
+    @media (prefers-reduced-motion: reduce) {
+      .alto-dentro > * { animation-delay: 0s !important; }
+    }
+
+    /* ============================================
+       LA LLAMADA — el objeto de la primera pantalla
+
+       Por qué existe, porque no es decoración: la primera pantalla era texto
+       sobre un fondo vacío, y dos intentos de calentar ese fondo fracasaron
+       midiendo bien y viéndose igual. En L* (perceptual, 0-100) el centro del
+       héroe se movió 6.1 con el primer lavado y 1.3 con el segundo; por debajo
+       de ~2 no se nota. La causa no era la paleta sino el sitio: cualquier
+       fondo lo bastante oscuro para verse cae DEBAJO del texto y le rompe el
+       contraste — la versión que sí se notaba (-11.8) suspendió las tres
+       comprobaciones de texto.
+
+       La salida no es teñir, es poner un objeto. Una tarjeta de tinta sobre
+       papel da un salto local de ~60 puntos de L* sin tocar el suelo del
+       texto, porque la tarjeta trae el suyo. Y papel-sobre-tinta ya es un par
+       vigilado en PAIRS, así que no estrena riesgo de contraste.
+
+       Lo que dice está deliberadamente limitado. NO lleva una frase
+       entrecomillada de la agente: sería afirmar en la página lo que la
+       llamada tendría que repetir, y el prompt de ES_AGENT_ID está sin
+       verificar (ver el handoff). "Contestado — de día, de noche o en
+       domingo" es palabra por palabra lo que ya vive en #cifras, o sea
+       superficie de afirmación nueva: cero. */
+    .llamada {
+      width: min(400px, 100%);
+      margin: var(--space-5) auto 0;
+      padding: var(--space-3) var(--space-4);
+      background: var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lift);
+      text-align: left;
+    }
+
+    .llamada-fila {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .llamada-punto {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--amber);
+      flex: none;
+      animation: latido 1.6s ease-in-out infinite;
+    }
+
+    .llamada-estado {
+      font-size: var(--font-sm);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--paper);
+    }
+
+    /* Las barras descansan ARRIBA y se hunden a la mitad, no al revés. El
+       bloque global de prefers-reduced-motion pone iteration-count:1, que
+       deja al elemento congelado en su fotograma del 100%: con el reposo en
+       scaleY(1) eso es una onda estática correcta, y con el reposo abajo
+       serían catorce astillas. El caso accesible sale bien sin código extra. */
+    .onda {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2px;
+      height: 26px;
+      margin: var(--space-3) 0 var(--space-2);
+    }
+
+    /* flex:1 con max-width, no un ancho fijo: las barras se quedan finas y el
+       sobrante lo reparte space-between, así que la onda ocupa la tarjeta
+       entera a cualquier ancho sin tocar el número de barras. Con flex:1 solo
+       se ensanchaban a ~24px cada una y aquello eran bloques, no una onda. */
+    .onda i {
+      flex: 1;
+      max-width: 5px;
+      background: var(--amber);
+      border-radius: 2px;
+      transform-origin: center bottom;
+      animation: onda 1.05s ease-in-out infinite;
+    }
+
+    @keyframes onda {
+      0%, 100% { transform: scaleY(1); }
+      50%      { transform: scaleY(0.28); }
+    }
+
+    .onda i:nth-child(14n+1)  { height: 30%; animation-delay: -0.90s; }
+    .onda i:nth-child(14n+2)  { height: 55%; animation-delay: -0.15s; }
+    .onda i:nth-child(14n+3)  { height: 80%; animation-delay: -0.60s; }
+    .onda i:nth-child(14n+4)  { height: 45%; animation-delay: -0.35s; }
+    .onda i:nth-child(14n+5)  { height: 95%; animation-delay: -0.75s; }
+    .onda i:nth-child(14n+6)  { height: 65%; animation-delay: -0.05s; }
+    .onda i:nth-child(14n+7)  { height: 100%; animation-delay: -0.50s; }
+    .onda i:nth-child(14n+8)  { height: 40%; animation-delay: -0.95s; }
+    .onda i:nth-child(14n+9)  { height: 75%; animation-delay: -0.25s; }
+    .onda i:nth-child(14n+10) { height: 50%; animation-delay: -0.70s; }
+    .onda i:nth-child(14n+11) { height: 88%; animation-delay: -0.40s; }
+    .onda i:nth-child(14n+12) { height: 35%; animation-delay: -0.85s; }
+    .onda i:nth-child(14n+13) { height: 60%; animation-delay: -0.20s; }
+    .onda i:nth-child(14n) { height: 25%; animation-delay: -0.55s; }
+
+    .llamada-pie {
+      font-size: var(--font-sm);
+      color: var(--text-on-ink);
+    }
+
+    /* ============================================
+       CIFRAS
+       La barra de /en/ (#stats), con la mitad fuera.
+
+       /en/ lleva cuatro tarjetas y dos son estadísticas publicadas: 62% con
+       su fuente y 21x con la suya. Aquí no pueden estar: ES_BANS de
+       test-palette.js prohíbe el carácter "%" en esta página entera, y esa
+       decisión es de Dan, no mía.
+
+       Las otras dos sí, y son justo las que /en/ ya había reescrito por este
+       mismo motivo — el comentario de receptionist.html:1719 cuenta que esa
+       tarjeta tuvo antes un sueldo y luego 13.125 €/mes, y que las dos
+       versiones estaban mal porque una cifra en una tarjeta se lee como un
+       hecho y el agente no puede repetirla treinta segundos después. Lo que
+       quedó es un hecho del producto, comprobable apretando el botón de
+       arriba. Eso viaja a esta página sin discusión.
+
+       Va sobre arena: papel arriba, arena aquí, tinta en "las llamadas que
+       hoy se pierden" justo debajo. Dos bandas oscuras seguidas se leerían
+       como una sola, que es lo que ya advierte el comentario de .banda-oscura.
+       El número va en azul y no en ámbar: ámbar sobre arena da 2.95:1 y no
+       vale ni para texto grande — el guard lo comprueba a propósito. */
+    .cifras {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: var(--space-4);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .cifra {
+      text-align: center;
+      padding: var(--space-3) var(--space-2);
+    }
+
+    /* tabular-nums para que el número no cambie de ancho mientras sube y
+       arrastre la línea de debajo con él. */
+    .cifra-num {
+      font-family: var(--font-heading);
+      font-size: var(--font-2xl);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      margin-bottom: var(--space-1);
+    }
+
+    .cifra-que {
+      color: var(--text-primary);
+      font-size: var(--font-base);
+      line-height: 1.5;
+    }
+
+    .cifra-fuente {
+      margin-top: var(--space-2);
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+
+    .marbete {
+      font-size: var(--font-sm);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-2);
+    }
+
+    .titular {
+      font-size: var(--font-hero);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-4);
+    }
+
+    .entrada {
+      font-size: var(--font-md);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: var(--space-5);
+      max-width: 620px;
+      /* Load-bearing: the reset above wipes the auto margin, and without it this
+         narrower box sits flush left under a wider headline and reads crooked.
+         Same bug as .hero-sub in receptionist.html. */
+      margin-inline: auto;
+    }
+
+    .alto .btn {
+      font-size: 18px;
+      padding: 18px 36px;
+    }
+
+    .letra-chica {
+      display: block;
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-top: var(--space-2);
+      max-width: 560px;
+      margin-inline: auto;
+    }
+
+    /* DEBAJO de .letra-chica a propósito: las dos reglas son de una clase, así
+       que gana la última, y puesta arriba el `display: block` de .letra-chica la
+       pisaba y salían los dos textos a la vez en escritorio. */
+    .letra-movil {
+      display: none;
+    }
+
+    /* El número EN ESCRITORIO, debajo del botón y no en su lugar.
+       Un portátil no marca, pero eso no es razón para esconderlo: enseñarlo
+       dice "hay un negocio de verdad en Málaga" en una página que vende
+       precisamente que el teléfono se coge. Se ocultó hasta el 21-08-2026 y el
+       efecto fue que en un portátil el número no salía por ningún lado.
+       Sigue siendo un tel: — abre Skype o FaceTime donde los haya, y donde no
+       los haya no hace nada. */
+    .tel-escritorio {
+      margin-top: var(--space-2);
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Hereda el color en vez de ponerse azul de enlace: el número es un dato
+       que se lee, no una llamada a la acción compitiendo con el botón que
+       tiene justo encima. El subrayado basta para que se vea pulsable. */
+    .tel-escritorio a {
+      color: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+      white-space: nowrap;
+    }
+
+    /* ============================================
+       BANDAS
+       ============================================ */
+    .banda {
+      padding: var(--space-12) 0;
+    }
+
+    .banda-clara {
+      background: var(--shell);
+    }
+
+    .banda-arena {
+      background: var(--sand);
+    }
+
+    /* ============================================
+       VÍDEO
+       El póster pesa 35 KB y el vídeo 23 MB, así que preload="none": quien
+       no le dé al play no se descarga nada. width/height + aspect-ratio
+       reservan el hueco antes de que llegue el póster, para que la portada
+       no dé un salto al cargar.
+
+       ⚠ El data-en va SÓLO en el pie, nunca en un padre del <video>:
+       traducir() hace innerHTML sobre cada [data-en], y envolver el vídeo
+       lo destruiría y volvería a crearlo al cambiar de idioma — perdiendo
+       la reproducción y volviendo a bajar los 23 MB.
+
+       Los rótulos van quemados en inglés dentro del vídeo y no se pueden
+       cambiar por idioma. Dan lo decidió así el 2026-08-14: se ve en las
+       dos versiones hasta que exista un montaje en español.
+       ============================================ */
+    .video-marco {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .video-pieza {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius);
+      background: var(--ink);
+      box-shadow: var(--shadow-md);
+      margin-bottom: var(--space-3);
+    }
+
+    .video-pie {
+      font-size: var(--font-md);
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    /* ============================================
+       BANDAS OSCURAS (anclas)
+       El diagnóstico del 2026-08-05 sobre la página inglesa valía igual
+       aquí: once secciones repartidas entre dos tonos separados por un 2%
+       de luminosidad no se leen como secciones, se leen como una sola
+       sábana clara. Lo que faltaba era profundidad, no color.
+       El ritmo aprobado es claro con anclas oscuras, y esta página tenía
+       las anclas sólo al final (.cierre y .pie), así que todo el medio
+       iba plano. Ahora hay tres: las llamadas que se pierden, la cuenta,
+       y el cierre.
+       ============================================ */
+    .banda-oscura {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    /* El ámbar es lo que lleva el dinero, y sobre tinta va a 4.51:1, que
+       pasa AA en texto normal. Sobre papel se queda en 3.49:1 (sólo texto
+       grande) y sobre arena en 2.95:1, donde no vale ni para texto grande.
+       Por eso las cifras viven en las bandas oscuras y no en las claras:
+       no es una preferencia, es dónde el ámbar es legible. */
+    .banda-oscura .rotulo {
+      color: var(--paper);
+    }
+
+    .banda-oscura .lista li {
+      background: var(--tint-on-ink);
+      border-color: oklch(0.9798 0.0045 78.3 / 0.18);
+      box-shadow: none;
+      color: var(--paper);
+    }
+
+    /* Azul sobre tinta cae a 3.23:1 y falla AA, igual que en el pie. */
+    .banda-oscura a:not(.btn) {
+      color: var(--amber);
+    }
+
+    .rotulo {
+      font-size: var(--font-2xl);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: var(--space-6);
+      text-align: center;
+    }
+
+    /* ============================================
+       LO QUE SE PIERDE
+       ============================================ */
+    .lista {
+      list-style: none;
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .lista li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      background: var(--paper);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: var(--space-3);
+      box-shadow: var(--shadow-sm);
+      font-size: var(--font-base);
+    }
+
+    .lista svg {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      color: var(--amber);
+      margin-top: 2px;
+    }
+
+    /* ============================================
+       PASOS
+       ============================================ */
+    .pasos {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .paso {
+      background: var(--paper);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: var(--space-5) var(--space-4);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .paso-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--text-on-accent);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+    }
+
+    .paso h3 {
+      font-size: var(--font-md);
+      margin-bottom: var(--space-1);
+    }
+
+    .paso p {
+      color: var(--text-secondary);
+      font-size: var(--font-base);
+    }
+
+    /* ============================================
+       NO SUSTITUYE A NADIE
+       ============================================ */
+    .nadie {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .nadie p {
+      color: var(--text-secondary);
+      font-size: var(--font-base);
+      line-height: 1.75;
+    }
+
+    .nadie p + p {
+      margin-top: var(--space-3);
+    }
+
+    /* ============================================
+       PRUEBA
+       Casi todo esto ya existía: la tarjeta es .paso
+       y el círculo con la inicial es .paso-num, los
+       dos del apartado "Cómo funciona". Aquí sólo se
+       añade lo que no había — la cita, la firma y los
+       países — para no mantener dos tarjetas que se
+       parecen. Va sobre arena, no sobre concha, para
+       que no se junte con la banda clara de encima:
+       dos claras seguidas se leen como una sola, que
+       es justo lo que dice el comentario de .banda-oscura.
+       ============================================ */
+    .prueba {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .prueba p {
+      color: var(--text-secondary);
+      font-size: var(--font-base);
+      line-height: 1.75;
+    }
+
+    .prueba p + p {
+      margin-top: var(--space-3);
+    }
+
+    /* La cita sube a texto primario: es lo único aquí que
+       se lee como dicho en voz alta y no como contado.
+       Va como "p.prueba-cita" y no como ".prueba-cita" a
+       secas porque ".prueba p" de arriba lleva clase +
+       etiqueta y le gana en especificidad; escrito sin la
+       p la regla no se aplica nunca y la cita se queda del
+       mismo gris que el resto. */
+    p.prueba-cita {
+      color: var(--text-primary);
+    }
+
+    .prueba-firma {
+      font-size: var(--font-sm);
+    }
+
+    .prueba .paso {
+      margin-top: var(--space-8);
+      text-align: left;
+    }
+
+    .prueba-paises {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+    }
+
+    .prueba-paises span {
+      padding: 4px 12px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+
+    /* ============================================
+       ENCAJE
+       ============================================ */
+    .encaje {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .encaje-si,
+    .encaje-no {
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+
+    .encaje-si {
+      background: var(--paper);
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* The third surface, a step down from paper: the "not for you" column
+       should read as the quieter one without needing a colour that means
+       "wrong". Both columns keep --text-secondary above 4.5:1 on it. */
+    .encaje-no {
+      background: var(--sand);
+    }
+
+    .encaje h3 {
+      font-size: var(--font-md);
+      margin-bottom: var(--space-3);
+    }
+
+    .encaje-fila {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: var(--space-2);
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+    }
+
+    .encaje-fila svg {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 3px;
+    }
+
+    .encaje-si .encaje-fila svg {
+      color: var(--accent);
+    }
+
+    .encaje-no .encaje-fila svg {
+      color: var(--text-secondary);
+    }
+
+    /* ============================================
+       PREGUNTAS
+       ============================================ */
+    .preguntas {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pregunta {
+      background: var(--paper);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .pregunta-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: var(--font-base);
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: left;
+      padding: var(--space-3);
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .pregunta-btn:hover {
+      background: var(--surface-hover);
+    }
+
+    .pregunta-btn svg {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .pregunta.abierta .pregunta-btn svg {
+      transform: rotate(180deg);
+    }
+
+    .respuesta {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .pregunta.abierta .respuesta {
+      max-height: 640px;
+    }
+
+    .respuesta-txt {
+      padding: 0 var(--space-3) var(--space-3);
+      color: var(--text-secondary);
+      font-size: var(--font-base);
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       EL RESULTADO
+       El agente tiene una regla que se llama "siempre el resultado, nunca
+       el mecanismo". Esta sección es esa regla en la página: lo que se
+       compra no es una IA que coge el teléfono, son clientes que hoy
+       llaman y se van a otro. Sin número: prometer una cantidad de citas
+       es exactamente lo que el agente no puede repetir.
+       ============================================ */
+    .resultado {
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .resultado-grande {
+      font-family: var(--font-heading);
+      font-size: var(--font-2xl);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-3);
+    }
+
+    .resultado p {
+      color: var(--text-secondary);
+      font-size: var(--font-md);
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       LA CUENTA
+       Misma aritmética que hace el agente en voz alta (sales-agent.ts,
+       PITCH_STATE): llamadas perdidas al día × 20 días, luego UN TERCIO
+       de ésas, al precio de lo MÁS BARATO que reserva un cliente. Si la
+       página sacara un número más gordo que el que saca la llamada treinta
+       segundos después, el prospecto pilla la contradicción y con razón.
+       Los tres datos los pone él. La página no afirma ni una cifra sobre
+       su negocio: multiplica las suyas.
+       ============================================ */
+    .calc {
+      max-width: 620px;
+      margin: 0 auto;
+      background: var(--tint-on-ink);
+      border: 1px solid oklch(0.9798 0.0045 78.3 / 0.18);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+
+    .calc-campo {
+      margin-bottom: var(--space-3);
+    }
+
+    .calc-campo label {
+      display: block;
+      font-size: var(--font-sm);
+      color: var(--text-on-ink);
+      margin-bottom: 10px;
+    }
+
+    .calc-ops {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Botones de radio de verdad debajo: el navegador trae el grupo, las
+       flechas del teclado y el foco sin que haya que reimplementarlos. */
+    .calc-ops input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .calc-ops label {
+      margin: 0;
+      cursor: pointer;
+      font-size: var(--font-sm);
+      font-weight: 600;
+      color: var(--paper);
+      padding: 10px 16px;
+      border: 1px solid oklch(0.9798 0.0045 78.3 / 0.28);
+      border-radius: 999px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .calc-ops label:hover {
+      background: oklch(0.9798 0.0045 78.3 / 0.1);
+    }
+
+    .calc-ops input:checked + label {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: var(--ink);
+    }
+
+    /* El anillo del navegador se pierde en un input de 0px, así que el
+       foco se pinta sobre la etiqueta, que es lo que se ve. */
+    .calc-ops input:focus-visible + label {
+      outline: 2px solid var(--paper);
+      outline-offset: 2px;
+    }
+
+    .calc-salida {
+      margin-top: var(--space-4);
+      padding-top: var(--space-3);
+      border-top: 1px solid oklch(0.9798 0.0045 78.3 / 0.18);
+      text-align: center;
+    }
+
+    .calc-cifra {
+      font-family: var(--font-heading);
+      font-size: var(--font-hero);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--amber);
+      letter-spacing: -0.02em;
+    }
+
+    .calc-pie {
+      font-size: var(--font-sm);
+      color: var(--text-on-ink);
+      line-height: 1.6;
+      margin-top: 10px;
+      max-width: 460px;
+      margin-inline: auto;
+    }
+
+    /* ============================================
+       CIERRE + PIE (bandas oscuras)
+       ============================================ */
+    .cierre,
+    .pie {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .cierre {
+      padding: var(--space-12) 0;
+      text-align: center;
+    }
+
+    .cierre .rotulo {
+      max-width: 720px;
+      margin-inline: auto;
+    }
+
+    .aval {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 12px;
+      text-align: left;
+      background: var(--tint-on-ink);
+      border: 1px solid oklch(0.9798 0.0045 78.3 / 0.18);
+      border-radius: var(--radius);
+      padding: var(--space-2) var(--space-3);
+      margin-bottom: var(--space-4);
+      font-size: var(--font-sm);
+      color: var(--paper);
+      max-width: 620px;
+    }
+
+    .aval svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ============================================
+       GARANTÍA
+       Sobre tinta, que es donde el ámbar pasa AA en texto normal (4.51:1).
+       En una banda clara este bloque tendría que ser todo texto grande o
+       cambiar de color, así que vive aquí y no en otro sitio.
+       ============================================ */
+    .garantia {
+      max-width: 620px;
+      margin: 0 auto var(--space-4);
+      border: 1px solid var(--amber);
+      border-radius: var(--radius);
+      padding: var(--space-3);
+      text-align: center;
+    }
+
+    /* Anidado a propósito: es un <p>, así que .garantia p lo pisaba y el
+       título salía blanco. Dos clases, no !important. */
+    .garantia .garantia-titulo {
+      font-family: var(--font-heading);
+      font-size: var(--font-md);
+      font-weight: 700;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+
+    .garantia p {
+      color: var(--paper);
+      font-size: var(--font-base);
+      line-height: 1.6;
+    }
+
+    .cierre .letra-chica,
+    .pie {
+      color: var(--text-on-ink);
+    }
+
+    .cierre .btn-outline {
+      margin-top: var(--space-3);
+    }
+
+    .unidad {
+      font-size: var(--font-sm);
+      color: var(--text-on-ink);
+      margin-top: var(--space-5);
+    }
+
+    /* A step darker than .cierre, so the legal footer reads as a different
+       register from the pitch above it rather than as more of it. */
+    .pie {
+      background: var(--ink-deep);
+      padding: var(--space-6) 0;
+      font-size: var(--font-sm);
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    /* Amber, not blue: blue drops to 3.23:1 on ink and fails AA. */
+    .pie a,
+    .cierre a:not(.btn) {
+      color: var(--amber);
+    }
+
+    /* El icono y la palabra en la misma línea, sin subrayado que corte el SVG.
+       El color lo hereda de .pie a — ámbar sobre --ink-deep es 4.99:1, por
+       encima de AA, y de hecho más holgado que el par --amber/--ink (4.51:1)
+       que ya vigila test-palette.js, así que queda cubierto por transitividad
+       y no hace falta un par nuevo. */
+    .pie-social {
+      margin-top: var(--space-3);
+    }
+
+    /* El padding vertical no es estético: sin él el enlace mide 23.8px de alto
+       y el mínimo de WCAG 2.2 para un objetivo táctil es 24x24. Medido en el
+       navegador, no calculado a ojo. Con 4px arriba y abajo pasa a ~32px. */
+    .pie-social a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      padding: 4px 8px;
+    }
+
+    /* ============================================
+       PANEL DE LLAMADA
+       Native <dialog>: it brings the backdrop, the focus trap and Esc
+       for free. Same component as receptionist.html, Spanish strings.
+       ============================================ */
+    .panel {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--text-primary);
+      padding: var(--space-4);
+      width: min(440px, calc(100vw - var(--space-4)));
+      box-shadow: var(--shadow-lift);
+      font-family: inherit;
+      /* Load-bearing. The UA centres dialog[open] with margin:auto and the
+         `* { margin: 0 }` reset wipes it, pinning the panel to the top-left. */
+      margin: auto;
+    }
+
+    .panel::backdrop {
+      background: oklch(0.1905 0.0089 59.1 / 0.72);
+    }
+
+    .panel h3 {
+      font-size: var(--font-md);
+      margin-bottom: var(--space-2);
+    }
+
+    /* El consentimiento, no decoración. Va ENCIMA del botón. */
+    .aviso {
+      background: var(--shell);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: var(--space-2);
+      font-size: var(--font-sm);
+      font-weight: 500;
+      margin-bottom: var(--space-3);
+    }
+
+    .panel .btn {
+      width: 100%;
+    }
+
+    .estado {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      min-height: 1.6em;
+      margin-top: var(--space-2);
+      text-align: center;
+    }
+
+    .panel.hablando .estado {
+      color: var(--accent);
+      font-weight: 600;
+      animation: latido 1.6s ease-in-out infinite;
+    }
+
+    @keyframes latido {
+      50% { opacity: 0.45; }
+    }
+
+    .panel-chica {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-top: var(--space-3);
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .panel-chica a {
+      color: var(--accent);
+    }
+
+    .cerrar {
+      position: absolute;
+      top: var(--space-1);
+      right: var(--space-1);
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: var(--font-md);
+      cursor: pointer;
+      border-radius: var(--radius);
+    }
+
+    .cerrar:hover {
+      background: var(--surface-hover);
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 767px) {
+      :root {
+        --font-hero: 34px;
+        --font-2xl: 27px;
+      }
+
+      /* En el móvil reservar SE QUEDA, y lo que se va es el duplicado.
+
+         Aquí ponía `.btn-reservar { display: none }` porque a 360px un cuarto
+         hijo parte la barra en dos líneas. El hecho es cierto; la conclusión
+         estaba mal. No hacían falta cuatro hijos, hacían falta los tres
+         correctos: "Escúchala contestar" salía DOS VECES a la vez en cada
+         pantalla de móvil, en la barra de arriba y en la fija de abajo. El
+         comentario de .cta-movil lo justificaba con "where the nav CTA scrolls
+         away", y esa frase llevaba tiempo siendo falsa — .nav es
+         position:sticky y no se va a ninguna parte. Medido a 360px con la
+         página desplazada 3000px: nav en y=12, barra en y=736, mismo texto.
+
+         Así que la demo se queda con la barra fija de abajo, que es la más
+         visible de las dos y la que tiene el pulgar al lado, y reservar hereda
+         el hueco de arriba. Ni un elemento más en la barra, ni un píxel más de
+         alto en ninguna de las dos — los 80px de .cta-movil que .alto y .pie
+         tienen presupuestados no se tocan — y las dos acciones visibles
+         siempre.
+
+         Se apagan LAS DOS acciones de llamada en la barra de arriba, .llamar
+         y .tel-movil, y con DOS clases cada una a propósito. Dos motivos, y
+         el segundo es el que importa:
+
+         1. .llamar hay que ganárselo por especificidad al
+            `.llamar { display: inline-flex }` del bloque LÍNEA MUERTA del
+            final, que va con una sola clase y por eso hoy resucita el botón
+            en el móvil. Con dos clases el intercambio sobrevive al borrado de
+            aquel bloque, que es lo que se quiere.
+         2. .tel-movil NO es de adorno. Hoy está apagado por LÍNEA MUERTA, así
+            que no se ve; el día que +34 951 870 604 (o el que sea) entre en
+            servicio y se borre el bloque, la regla de aquí arriba lo enciende
+            en la barra de arriba Y en la de abajo — otra vez el mismo botón
+            dos veces — y además NO CABE: medido a 360px, logotipo 74 +
+            banderas 132 + los dos botones 177 dan 438px de contenido en 360
+            de pantalla, con desbordamiento horizontal en toda la página. Es
+            un fallo que no se vería hasta el día de la reactivación, que es
+            justo el día en que nadie está mirando el ancho de la barra.
+
+         El móvil queda entonces con logotipo, banderas y reservar arriba, y
+         la acción de llamar —demo hoy, número el día que vuelva— abajo. */
+      .nav .llamar,
+      .nav .tel-movil {
+        display: none;
+      }
+
+      .rsv-ancho {
+        display: none;
+      }
+
+      .rsv-corto {
+        display: inline;
+      }
+
+      /* MACIZO en el móvil, y contorno sólo en escritorio. Dan, 25-08-2026,
+         segunda vez: "en el móvil sigo sin ver el botón de reservar". Estaba
+         puesto — medido en la página en vivo sobre iPhone 13, 14 Pro Max,
+         Pixel 5 y Galaxy S9+, siempre presente y siempre en pantalla — pero
+         un contorno de 14px arriba a la derecha, en una pantalla cuyo peso
+         visual entero está en la barra azul de abajo, es un botón que existe
+         y no se ve. Que haga falta medirlo para saber que está ahí ya es la
+         respuesta.
+
+         Arriba puede ir macizo sin discutirle nada a la demo porque en el
+         móvil la demo NO está en esta barra: tiene los 80px de ancho completo
+         de .cta-movil abajo, junto al pulgar. Son dos regiones distintas, no
+         dos botones compitiendo en la misma. En escritorio sí comparten
+         barra, y allí sigue siendo contorno.
+
+         El relleno hace además de aviso: si algún día vuelve a la barra de
+         arriba una acción de llamada en el móvil, dos macizos juntos cantan
+         y obligan a decidir cuál manda, que es justo la decisión que este
+         bloque documenta.
+
+         Sin tocar el padding: .btn-nav ya lo baja a 8/14 en el móvil unas
+         reglas más abajo, y con eso el botón mide 92px y cabe de 353 en
+         adelante. Aquí llegó a haber un `padding: 10px 16px` que no hacía
+         nada — .btn-nav es posterior en la hoja y ganaba — y cuyo comentario
+         decía que era lo que hacía que cupiera. Lo que hace que quepa por
+         debajo de 353 es el bloque @media (max-width: 352px) del final.
+         Medido en iPhone SE, Galaxy S9+, iPhone 13, Pixel 5, 14 Pro Max e
+         iPad Mini. */
+      .btn-reservar {
+        background: var(--accent);
+        color: var(--text-on-accent);
+      }
+      .banda {
+        padding: var(--space-8) 0;
+      }
+
+      /* El padding de ARRIBA baja de space-6 a space-3, y esto es lo que hace
+         sitio para la tarjeta. Subir el de abajo no servía y se probó: con la
+         tarjeta dentro, la altura de .alto ya no la manda min-height (675) sino
+         el contenido (794), así que el relleno de abajo se limita a alargar la
+         sección hacia abajo y no sube el contenido ni un píxel. La barra fija
+         .cta-movil ocupa los últimos 80px del viewport y la tarjeta se metía 27
+         por debajo; los 24 de aquí más los 16 que suelta su propio margen dan
+         los 40 que hacen falta. */
+      .alto {
+        padding: var(--space-3) var(--space-3) var(--space-8);
+      }
+
+      .llamada {
+        margin-top: var(--space-3);
+      }
+
+      .cta-movil {
+        display: flex;
+      }
+
+      /* El cambio de canal, y el único sitio donde ocurre. .llamar abre el
+         panel de voz del navegador; .tel-movil marca. Va aquí y no en JS
+         porque lo que decide es el aparato, no el visitante. */
+      .llamar {
+        display: none;
+      }
+
+      .tel-movil {
+        display: inline-flex;
+      }
+
+      .letra-escritorio {
+        display: none;
+      }
+
+      .letra-movil {
+        display: block;
+      }
+
+      /* En móvil sobra: el botón grande ES el número. */
+      .tel-escritorio {
+        display: none;
+      }
+
+      /* --space-10 (80px) estaba calculado para la barra .cta-movil, que mide
+         80px y es fixed. Al añadir el enlace de LinkedIn debajo del aviso, el
+         pie creció ~56px por dentro y ese margen se lo comió: medido al final
+         del documento, el enlace quedaba a 4px de la barra. Sube a --space-10 +
+         --space-8 para recuperar la holgura. Aquí sumar padding-bottom SÍ
+         funciona, al revés que en .alto: el pie es lo último del documento, así
+         que el espacio de más se convierte en scroll y sube el enlace respecto
+         al borde inferior de la ventana. */
+      .pie {
+        padding-bottom: calc(var(--space-10) + var(--space-8));
+      }
+
+      .cierre {
+        padding-bottom: var(--space-10);
+      }
+
+      .btn-nav {
+        padding: 8px 14px;
+      }
+    }
+
+    /* ───────────────────────────────────────────────────────────────────────
+       PANTALLAS MUY ESTRECHAS (<=352px: iPhone SE de 1ª, Galaxy S9+ y los
+       Android viejos que siguen declarando 320).
+
+       Este bloque REPARA UNA REGRESIÓN PROPIA, no un fallo antiguo. Medido
+       contra f10a161: antes de meter reservar en la barra no había
+       desbordamiento a 320 ni a 344, porque el botón que había ahí era
+       "Escúchala contestar" y el flex lo ENCOGÍA — 48px a 320, 59 a 344, 68 a
+       353. "Reservar" es una sola palabra: no parte, no encoge, y se planta
+       en 88px a cualquier ancho. Resultado, 349px de contenido en 320 de
+       pantalla y scroll horizontal en toda la página.
+
+       Lo que cede es el RELLENO, no el contenido: 8px por lado en .nav-inner,
+       5 por lado en cada una de las cuatro banderas, 2 en el botón, más el
+       hueco y el borde del grupo de idioma. A 320 eso deja el contenido
+       exactamente en 320 y el desbordamiento desaparece.
+
+       Y va FUERA del bloque de 767, no dentro. Nació dentro, cerrando el de
+       767 antes de tiempo para abrir éste, y el resultado fue que todo lo que
+       venía después —.banda, .alto, .cta-movil, .llamar, .tel-movil,
+       .letra-movil— quedó encerrado bajo 352px: la barra fija de abajo
+       desaparecía en un móvil normal. Estuvo así en producción unos minutos.
+       Se detectó porque el padding calculado del botón no era ninguno de los
+       escritos, que es la señal de que una regla está en el bloque que no es.
+       Contra ese fallo hay ahora una comprobación que no depende del ojo: se
+       renderiza esta página y la de f10a161 a 320/353/390/430/600/767 y se
+       comparan las propiedades calculadas que definen el móvil. Deben salir
+       idénticas en todos los anchos menos en lo que esta rama cambia a
+       propósito. Las banderas siguen
+       a 15px, que es el tamaño que su propio comentario defiende ("un emoji
+       de bandera a 12px es una mancha"), y ninguna de las tres cosas de la
+       barra desaparece.
+
+       Comprobado a 320, 344, 352, 353, 360, 390, 430, 767, 768 y 1280: sin
+       scroll horizontal en ninguno y .nav a 73px en todos.
+       ─────────────────────────────────────────────────────────────────────── */
+    @media (max-width: 352px) {
+      .nav-inner {
+        padding: 12px var(--space-2);
+      }
+
+      .idioma {
+        gap: 1px;
+        padding: 1px;
+      }
+
+      .idioma-btn {
+        padding: 5px 3px;
+      }
+
+      .btn-reservar {
+        padding: 10px 12px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .pasos {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .encaje {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* ============================================
+       APARICIÓN AL BAJAR
+       ============================================ */
+    .aparece {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .aparece.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .aparece {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* ───────────────────────────────────────────────────────────────────────
+       LÍNEA MUERTA — 23-08-2026. BORRAR ESTE BLOQUE ENTERO cuando +34 951 870
+       630 vuelva a estar `on`.
+
+       El DID se quedó en `status: checking` en Zadarma desde que se compró el
+       21-08. Comprado, pagado, atado en Retell, y sin poder recibir una sola
+       llamada. En toda su vida el log de Zadarma registra UNA entrada, y fue
+       una llamada de prueba nuestra el 22-08: `disposition: undefined`, 4
+       segundos, mientras las dos líneas que sí funcionan registran `answered`
+       con duraciones normales. Que no conste ningún visitante real no quiere
+       decir que no lo hubiera: quien marca y no oye nada no deja rastro en
+       ningún sitio, y el número llevaba dos días en la página.
+
+       Los números de quien llama no se escriben aquí. Esto se sirve a
+       cualquiera que abra la página; su sitio es el log de Zadarma y el ticket
+       interno.
+       Las otras tres líneas del mismo grupo contestan normal. Dan lo marcó a
+       mano el 23-08: no da señal.
+
+       Así que el número se retira de la página, en móvil y en escritorio. No se
+       toca el HTML: los `tel:` siguen ahí y vuelven solos al borrar esto.
+       Mientras tanto el móvil recupera .llamar, que es el demo WebRTC del
+       navegador y funciona hoy — un visitante de móvil pasa de un número muerto
+       a una demo que sí contesta, que es mejor que esconder el CTA y dejarlo
+       sin nada.
+
+       Va al final de la hoja a propósito: todas estas reglas son de una sola
+       clase, igual que las de @media (max-width: 767px), así que lo único que
+       las hace ganar es ir después. Mover este bloque hacia arriba lo desactiva
+       en silencio. Lo mismo que ya documenta .letra-movil más arriba.
+       ─────────────────────────────────────────────────────────────────────── */
+    .llamar {
+      display: inline-flex;
+    }
+
+    .tel-movil {
+      display: none;
+    }
+
+    .tel-escritorio {
+      display: none;
+    }
+
+    /* La letra de móvil dice "llámala y pídele una cita"; sin número que marcar
+       eso miente. Vuelve la de escritorio, que habla de la demo en la página. */
+    .letra-escritorio {
+      display: block;
+    }
+
+    .letra-movil {
+      display: none;
+    }
+
+  </style>
+
+  <!--
+    ANALÍTICA — Umami, alojado en este mismo servidor. Sin cookies, sin
+    huella digital, sin datos personales: por eso no hay banner de consentimiento
+    y por eso no hace falta pedir permiso bajo el RGPD.
+
+    /s/t.js y /s/api/send son ESTA misma web (nginx los reenvía al contenedor en
+    127.0.0.1:3025 — ver prime-ai-demo.conf). No es un tercero: la petición nunca
+    sale de prime-ai.es. Un script servido desde un dominio con "analytics" en el
+    nombre lo bloquea cualquier filtro, y entonces no se cuenta a nadie.
+
+    defer: la página no debe esperar nunca a la analítica para pintarse. Si el
+    script falla o lo bloquean, aquí no se rompe nada.
+  -->
+  <script defer src="/s/t.js" data-website-id="dd0fa268-a3be-4a04-8dd2-ba5daafba0cf" data-host-url="https://prime-ai.es/s"></script>
+  <!-- GENERADO por scroll-world/compose.js — no editar scroll.html a mano. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    /* Mismos valores que --paper de es.html. Ver la cabecera de compose.js. */
     :root, .sw-root {
       --sw-bg:       #FAF8F5;
       --sw-ink:      #221D19;
@@ -26,95 +1917,1247 @@
   </style>
 </head>
 <body>
+
   <div id="top"></div>
+  <!-- El contenido normal de es.html empieza justo despues de #world y NO debe
+       separarse de el: el motor mira nextElementSibling para saber que hay pagina
+       debajo. -->
   <div id="world"></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span>Prime <span class="logo-ai">AI</span></span>
+      </a>
+      <!-- Cuatro banderas, una por agente publicado. El comentario de .idioma
+           en el CSS explica por qué ahora sí son banderas y antes no.
+           aria-label en el idioma propio: quien busca su lengua la reconoce
+           antes leyéndola que traducida. En Windows el emoji de bandera no
+           se pinta y salen las letras del país (ES, GB, NL, SE), que es una
+           degradación legible y por eso no se le pone respaldo. -->
+      <div class="idioma" role="group" aria-label="Idioma / Language / Taal / Språk">
+        <button type="button" class="idioma-btn" data-idioma="es" aria-pressed="true" aria-label="Español" title="Español">🇪🇸</button>
+        <button type="button" class="idioma-btn" data-idioma="en" aria-pressed="false" aria-label="English" title="English">🇬🇧</button>
+        <button type="button" class="idioma-btn" data-idioma="nl" aria-pressed="false" aria-label="Nederlands" title="Nederlands">🇳🇱</button>
+        <button type="button" class="idioma-btn" data-idioma="sv" aria-pressed="false" aria-label="Svenska" title="Svenska">🇸🇪</button>
+      </div>
+      <!-- Los dos botones van envueltos, y el envoltorio NO es decorativo. La
+           barra reparte con space-between: con tres hijos daba logotipo a la
+           izquierda, banderas al medio y llamada a la derecha, y al meter
+           reservar como cuarto hijo el reparto lo dejaba flotando solo en
+           mitad de la barra a 1280. Envueltos vuelven a ser tres hijos y el
+           reparto es el de siempre, con reservar pegado a su primario.
+           Sin data-en en el envoltorio: traducir() sustituye innerHTML del
+           elemento que lo lleva, y aquí dentro hay hijos con el suyo propio. -->
+      <div class="nav-cta">
+        <a class="btn btn-nav btn-reservar" href="https://cal.eu/prime.ai/intro-wa" data-umami-event="reservar-nav"><span class="rsv-ancho" data-en="Book a call" data-nl="Gesprek plannen" data-sv="Boka samtal">Reservar llamada</span><span class="rsv-corto" data-en="Book" data-nl="Plannen" data-sv="Boka">Reservar</span></a>
+        <button class="btn btn-primary btn-nav llamar" data-umami-event="demo-abrir-nav" data-en="Hear it answer" data-nl="Hoor haar opnemen" data-sv="Hör den svara">Escúchala contestar</button>
+        <a class="btn btn-primary btn-nav tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-nav"><span data-en="Call" data-nl="Bellen" data-sv="Ring">Llamar</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="cta-movil">
+    <button class="btn llamar" data-umami-event="demo-abrir-movil" data-en="Hear it answer — no phone needed" data-nl="Hoor haar opnemen — geen telefoon nodig" data-sv="Hör den svara — ingen telefon behövs">Escúchala contestar — sin teléfono</button>
+    <a class="btn tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-movil"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
+  </div>
+
+  <!-- ============================================
+       ALTO
+       ============================================ -->
+  <section class="alto">
+    <div class="alto-dentro">
+      <p class="marbete" data-en="For businesses in Málaga" data-nl="Voor bedrijven in Nederland" data-sv="För företag i Sverige">Para negocios de Málaga</p>
+      <h1 class="titular" data-en="The phone that never goes unanswered." data-nl="De telefoon die nooit meer overgaat zonder antwoord." data-sv="Telefonen som aldrig får ringa obesvarad.">El teléfono que nunca se queda sin contestar.</h1>
+      <!-- "cuando no puedes cogerlo" es todo el posicionamiento, en cuatro
+           palabras: contesta contigo, no en lugar de nadie. En inglés lo
+           carga "when you can't pick up", y test-palette.js exige las dos:
+           es la frase que no se puede perder al traducir. -->
+      <p class="entrada" data-en="It answers for you when you can't pick up, speaks English or Spanish, and puts the job straight in your calendar." data-nl="Ze neemt op als jij niet kunt, spreekt Nederlands of Engels, en zet de afspraak meteen in je agenda." data-sv="Den svarar åt dig när du inte kan, talar svenska eller engelska, och lägger in jobbet direkt i din kalender.">Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario.</p>
+      <button class="btn btn-primary llamar" data-umami-event="demo-abrir-portada" data-en="Call it now — right here, no phone needed" data-nl="Bel haar nu — hier meteen, geen telefoon nodig" data-sv="Ring den nu — här direkt, ingen telefon behövs">Llámala ahora — aquí mismo, sin teléfono</button>
+      <a class="btn btn-primary tel-movil" href="tel:+34951870630" data-umami-event="demo-llamar-portada"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
+      <!-- data-en va en el SPAN, nunca en el <p>: traducir() asigna innerHTML y
+           traducir el envoltorio se llevaría por delante el enlace con el número. -->
+      <p class="tel-escritorio"><span data-en="or call it on" data-nl="of bel haar op" data-sv="eller ring den på">o llámala al</span> <a href="tel:+34951870630" data-umami-event="demo-llamar-escritorio"><span class="tel-num">951 870 630</span></a></p>
+      <small class="letra-chica letra-escritorio" data-en="I won't tell you about it, you'll hear it. Talk to it on this page and ask it to book you in. Takes a minute." data-nl="Ik vertel het je niet, je hoort het. Praat met haar op deze pagina en vraag om een proefafspraak. Kost een minuut." data-sv="Jag berättar det inte, du hör det. Prata med den här på sidan och be om en provtid. Tar en minut.">No te lo cuento, lo escuchas. Habla con ella en esta misma página y pídele una cita de prueba. Un minuto.</small>
+      <!-- La de escritorio dice "en esta misma página", que en móvil es falso:
+           ahí el botón marca un número y la llamada se va de la página. Dos
+           textos, no uno con la frase quitada — lo que sustituye a "sin
+           teléfono" es "contesta en domingo", y eso hay que decirlo. -->
+      <small class="letra-chica letra-movil" data-en="I won't tell you about it, you'll hear it. Ring it and ask it to book you a slot — it answers day, night or Sunday. Takes a minute, and the call is recorded." data-nl="Ik vertel het je niet, je hoort het. Bel haar en vraag om een proefafspraak — ze neemt op overdag, 's nachts en op zondag. Kost een minuut, en het gesprek wordt opgenomen." data-sv="Jag berättar det inte, du hör det. Ring den och be om en provtid — den svarar på dagen, på natten och på söndagen. Tar en minut, och samtalet spelas in.">No te lo cuento, lo escuchas. Llámala y pídele una cita de prueba — contesta de día, de noche o en domingo. Un minuto, y la llamada se graba.</small>
+
+      <!-- La onda va aria-hidden porque es forma, no información: lo que
+           significa ya lo dicen las dos líneas de al lado. El texto NO va
+           aria-hidden — se lee, y se lee una sola vez. -->
+      <div class="llamada">
+        <div class="llamada-fila">
+          <span class="llamada-punto"></span>
+          <span class="llamada-estado" data-en="On the line" data-nl="Aan de lijn" data-sv="På linjen">Al teléfono</span>
+        </div>
+        <div class="onda" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <p class="llamada-pie" data-en="Answered — day, night, or Sunday" data-nl="Opgenomen — overdag, 's nachts of op zondag" data-sv="Besvarat — på dagen, på natten eller på söndagen">Contestado — de día, de noche o en domingo</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       VÍDEO
+       Va aquí, justo debajo de la portada: lo eligió Dan el 2026-08-14.
+       Sin JavaScript sigue siendo correcto — el <video> es marcado, no
+       se inyecta, y el enlace de descarga del final vale de recambio si
+       el navegador no sabe reproducirlo.
+       ============================================ -->
+  <section class="banda banda-clara aparece" id="video">
+    <div class="container">
+      <div class="video-marco">
+        <video
+          class="video-pieza"
+          controls
+          playsinline
+          preload="none"
+          poster="demo-call-poster.jpg"
+          width="1920" height="1080"
+          data-umami-event="video-demo-play">
+          <source src="demo-call.mp4" type="video/mp4">
+          <a href="demo-call.mp4">Descarga el vídeo</a> (23 MB).
+        </video>
+        <p class="video-pie" data-en="What a missed call really costs — 33 seconds" data-nl="Wat een gemiste oproep echt kost — 33 seconden" data-sv="Vad ett missat samtal faktiskt kostar — 33 sekunder">Lo que cuesta de verdad una llamada perdida — 33 segundos</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CIFRAS
+       Las dos tarjetas de /en/ que son hechos del producto y no
+       estadísticas. Las otras dos (62% y 21x) se quedan allí: ES_BANS
+       prohíbe el "%" en esta página, y eso lo decide Dan.
+
+       ⚠ El número va ENTERO en el marcado, no en cero como en /en/.
+       receptionist.html pone <div data-target="2">0 rings</div>, así que
+       quien llegue sin JavaScript lee "0 rings and someone has picked up",
+       que es la frase contraria a la que se quería. Aquí el marcado ya dice
+       la verdad y el contador sólo la anima desde cero. Misma regla que el
+       español del resto de la página: sin scripts tiene que seguir siendo
+       correcta, no sólo verse.
+       ============================================ -->
+  <section class="banda banda-arena aparece" id="cifras">
+    <div class="container">
+      <div class="cifras">
+        <div class="cifra">
+          <div class="cifra-num" data-en="2 rings" data-nl="2 keer overgaan" data-sv="2 signaler">2 tonos</div>
+          <div class="cifra-que" data-en="and someone has picked up — day, night, or Sunday" data-nl="en er heeft iemand opgenomen — overdag, 's nachts of op zondag" data-sv="och någon har svarat — på dagen, på natten eller på söndagen">y alguien ha cogido el teléfono — de día, de noche o en domingo</div>
+          <div class="cifra-fuente" data-en="Not a statistic. Press the button above and count them." data-nl="Geen statistiek. Druk op de knop hierboven en tel ze zelf." data-sv="Ingen statistik. Tryck på knappen ovan och räkna dem själv.">No es una estadística. Dale al botón de arriba y cuéntalos.</div>
+        </div>
+        <div class="cifra">
+          <div class="cifra-num" data-en="168 hrs" data-nl="168 uur" data-sv="168 tim">168 horas</div>
+          <div class="cifra-que" data-en="a week with your phone answered — evenings, Sundays and your lunch break" data-nl="per week een telefoon die opgenomen wordt — 's avonds, op zondag en tijdens je lunch" data-sv="i veckan med en telefon som blir besvarad — kvällar, söndagar och din lunchrast">a la semana con el teléfono cogido — tardes, domingos y la hora de comer</div>
+          <div class="cifra-fuente" data-en="Not a statistic. Just a calendar." data-nl="Geen statistiek. Gewoon de kalender." data-sv="Ingen statistik. Bara en kalender.">No es una estadística. Es el calendario.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       LAS LLAMADAS QUE HOY SE PIERDEN
+       Los tres momentos de la página /voice, más los dos que Dan nombró:
+       la que suena mientras hablas con otro cliente, y la que se pierde
+       porque quien coge el teléfono no podía cogerla.
+       ============================================ -->
+  <section class="banda banda-oscura aparece" id="perdidas">
+    <div class="container">
+      <h2 class="rotulo" data-en="The calls you are losing today" data-nl="De gesprekken die je vandaag kwijtraakt" data-sv="Samtalen du förlorar i dag">Las llamadas que hoy se pierden</h2>
+      <ul class="lista">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span data-en="It rings while your hands are deep in a job you can't walk away from." data-nl="Hij gaat terwijl je handen in een klus zitten waar je niet zomaar uit stapt." data-sv="Den ringer medan du har händerna i ett jobb du inte kan lämna halvfärdigt.">Suena mientras tienes las manos metidas en un trabajo que no puedes dejar a medias.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span data-en="It rings at nine at night, long after you've shut — and the firm down the road answers theirs." data-nl="Hij gaat om negen uur 's avonds, ver na sluitingstijd — en de zaak verderop neemt de zijne wel op." data-sv="Den ringer klockan nio på kvällen, långt efter stängning — och firman längre ner på gatan svarar i sin.">Suena a las nueve de la noche, cuando ya has cerrado — y el de al lado sí lo coge.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span data-en="It rings while you're on with another customer, and the second one doesn't leave a message: they ring the next name on the list." data-nl="Hij gaat terwijl je een andere klant aan de lijn hebt, en die tweede spreekt niets in: die belt de volgende op de lijst." data-sv="Den ringer medan du pratar med en annan kund, och den andre lämnar inget meddelande: han ringer nästa namn på listan.">Suena mientras estás hablando con otro cliente, y el segundo no deja mensaje: llama al siguiente.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span data-en="It rings while you're driving to the next job, and by the time you've parked you can't remember who it was." data-nl="Hij gaat terwijl je naar de volgende klus rijdt, en tegen de tijd dat je geparkeerd staat weet je niet meer wie het was." data-sv="Den ringer medan du kör till nästa jobb, och när du har parkerat minns du inte längre vem det var.">Suena mientras conduces al siguiente trabajo, y cuando aparcas ya no te acuerdas de quién era.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.35"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <!-- Sin adjetivo con género: "ocupada" u "ocupado" da por hecho quién
+               coge el teléfono en un negocio que no conocemos. -->
+          <span data-en="Whoever answers your phone is on another call, at lunch, or left at six — and the phone rings anyway." data-nl="Wie bij jou de telefoon opneemt zit in een ander gesprek, is aan het lunchen, of is om zes uur naar huis — en de telefoon gaat toch." data-sv="Den som svarar i din telefon sitter i ett annat samtal, är på lunch, eller gick hem klockan sex — och telefonen ringer ändå.">Quien te coge el teléfono está con otra llamada, comiendo, o ya se ha ido a las seis — y el teléfono suena igual.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CÓMO FUNCIONA
+       El paso 1 es la frase más importante de la página: no cambias de
+       línea ni de teléfono. Si no cambia nada, no hay nada que sustituir.
+       Va primero por eso, antes que cualquier cosa sobre la IA.
+       ============================================ -->
+  <section class="banda aparece" id="como">
+    <div class="container">
+      <h2 class="rotulo" data-en="How it works" data-nl="Hoe het werkt" data-sv="Så fungerar det">Cómo funciona</h2>
+      <div class="pasos">
+        <div class="paso">
+          <div class="paso-num">1</div>
+          <h3 data-en="You change nothing" data-nl="Jij verandert niets" data-sv="Du ändrar ingenting">No cambias nada</h3>
+          <!-- "Ni línea nueva, ni aparato nuevo" / "No new line, no new
+               handset" es la frase que hace que no haya nada que sustituir.
+               test-palette.js la exige en los dos idiomas. -->
+          <p data-en="Your own number rings, on your own phone. No new line, no new handset, and nobody's job. It sits behind what you already have and picks up what you can't: you carry on answering exactly the same calls you answer today." data-nl="Je eigen nummer gaat over, op je eigen toestel. Geen nieuwe lijn, geen nieuw apparaat, en niemands baan. Ze zit achter wat je al hebt en pakt op wat jij niet kunt: jij blijft precies dezelfde gesprekken aannemen als vandaag." data-sv="Ditt eget nummer ringer, i din egen telefon. Ingen ny linje, ingen ny lur, och ingens jobb. Den sitter bakom det du redan har och tar det du inte hinner: du fortsätter svara på exakt samma samtal som du svarar på i dag.">Suena tu mismo número, en tu mismo teléfono. Ni línea nueva, ni aparato nuevo, ni el puesto de nadie. Está detrás de lo que ya tienes y coge lo que tú no puedes: tú sigues cogiendo exactamente las mismas llamadas que hoy.</p>
+        </div>
+        <div class="paso">
+          <div class="paso-num">2</div>
+          <h3 data-en="It answers on the second ring" data-nl="Ze neemt op na twee keer overgaan" data-sv="Den svarar på andra signalen">Contesta en dos tonos</h3>
+          <p data-en="Trained on your services, your hours and your rules: what counts as an emergency and what doesn't. It talks like a person, in English or Spanish, and real emergencies come through to you instead of being booked in." data-nl="Getraind op jouw diensten, jouw tijden en jouw regels: wat een spoedgeval is en wat niet. Ze praat als een mens, in het Nederlands of Engels, en echte spoedgevallen zet ze naar jou door in plaats van er een afspraak van te maken." data-sv="Tränad på dina tjänster, dina tider och dina regler: vad som är ett akutfall och vad som inte är det. Den pratar som en människa, på svenska eller engelska, och riktiga akutfall kopplar den till dig i stället för att boka in dem.">Entrenada con tus servicios, tus horarios y tus reglas: qué es una urgencia y qué no lo es. Habla como una persona, en español o en inglés, y las urgencias de verdad te las pasa a ti en vez de darles cita.</p>
+        </div>
+        <div class="paso">
+          <div class="paso-num">3</div>
+          <h3 data-en="The job is already in the diary" data-nl="De klus staat al in de agenda" data-sv="Jobbet står redan i kalendern">La cita ya está puesta</h3>
+          <p data-en="By the time you look at your calendar it is already there, with a note on who rang and what they wanted. We listen to the calls and tune it every week. There is no software for you to learn." data-nl="Tegen de tijd dat jij in je agenda kijkt staat het er al, met een notitie van wie er belde en wat diegene wilde. Wij luisteren de gesprekken terug en stellen haar elke week bij. Er is geen programma dat jij moet leren." data-sv="När du tittar i kalendern står det redan där, med en notering om vem som ringde och vad han ville. Vi lyssnar på samtalen och finjusterar den varje vecka. Det finns inget program som du behöver lära dig.">Cuando mires el calendario ya está ahí, con una nota de quién ha llamado y qué quería. Escuchamos las llamadas y la afinamos cada semana. No hay ningún programa que aprender.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       EL RESULTADO
+       "Siempre el resultado, nunca el mecanismo" es una regla del agente
+       (sales-agent.ts), y ésta es esa regla escrita en la página. Sin
+       cifras a propósito: prometer una cantidad de clientes es de las
+       cuatro cosas que el agente tiene prohibido decir, y aquí lo que
+       hace falta es el resultado, no un número.
+       ============================================ -->
+  <section class="banda banda-arena aparece" id="resultado">
+    <div class="container">
+      <div class="resultado">
+        <h2 class="rotulo" data-en="What you actually end up with: more customers" data-nl="Waar het uiteindelijk om gaat: meer klanten" data-sv="Vad det här faktiskt ger dig: fler kunder">Para qué es todo esto: más clientes</h2>
+        <p class="resultado-grande" data-en="What you are buying is not an AI that answers the phone. It is the customers who ring you today and end up going to somebody else." data-nl="Wat je koopt is niet een AI die de telefoon opneemt. Het zijn de klanten die je vandaag bellen en uiteindelijk naar een ander gaan." data-sv="Det du köper är inte en AI som svarar i telefon. Det är kunderna som ringer dig i dag och slutar hos någon annan.">Lo que compras no es una IA que coge el teléfono. Son los clientes que hoy te llaman y acaban yéndose a otro.</p>
+        <p data-en="Someone who cannot get hold of you does not try again later. They ring the next name on the list, and that one gets the work. A phone that gets answered is the only thing standing between those two outcomes — and it is the whole reason this is worth paying for." data-nl="Wie jou niet te pakken krijgt probeert het later niet nog eens. Die belt de volgende op de lijst, en die krijgt het werk. Een telefoon die opgenomen wordt is het enige dat tussen die twee uitkomsten staat — en het is de hele reden dat dit de moeite waard is." data-sv="Den som inte får tag i dig försöker inte igen senare. Han ringer nästa namn på listan, och den får jobbet. En telefon som blir besvarad är det enda som skiljer de två utfallen åt — och det är hela skälet till att det här är värt att betala för.">Quien no consigue hablar contigo no lo vuelve a intentar más tarde. Llama al siguiente de la lista, y ése se queda el trabajo. Un teléfono que se coge es lo único que separa una cosa de la otra — y es la razón entera por la que esto merece la pena.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       LA CUENTA
+       ⚠ La aritmética es la MISMA que hace el agente en voz alta
+       (sales-agent.ts, PITCH_STATE): perdidas al día × 20 días laborables,
+       un TERCIO de ésas, al precio de lo MÁS BARATO que reserva un
+       cliente. No se toca sin tocar la otra: el visitante oye al agente
+       hacer esta cuenta treinta segundos después de leerla, y dos números
+       distintos a partir de los mismos datos es lo peor que puede pasar
+       aquí.
+
+       Las dos cifras las pone él y no hay valores por defecto: hasta que
+       elige, la salida es una raya. La página no afirma NADA sobre su
+       negocio — multiplica lo que él ha dicho. Ésa es justamente la
+       regla del agente ("nunca inventes una cifra que no te han dado").
+
+       Y el marco es "esto es lo que se te está escapando", nunca "esto es
+       lo que te vas a ahorrar": el agente tiene prohibido dar a entender
+       que Prime AI recupera ese dinero. Lo que se puede demostrar con sus
+       propios números es lo que pasa de largo hoy.
+       ============================================ -->
+  <section class="banda banda-oscura aparece" id="cuenta">
+    <div class="container">
+      <h2 class="rotulo" data-en="What is walking past you" data-nl="Wat er langs je heen loopt" data-sv="Det som går dig förbi">Lo que se te está escapando</h2>
+      <div class="calc">
+
+        <div class="calc-campo">
+          <label id="lbl-llamadas" data-en="How many calls do you miss on a normal day?" data-nl="Hoeveel gesprekken mis je op een normale dag?" data-sv="Hur många samtal missar du en vanlig dag?">¿Cuántas llamadas se te escapan en un día normal?</label>
+          <div class="calc-ops" role="radiogroup" aria-labelledby="lbl-llamadas">
+            <input type="radio" name="llamadas" id="ll-1" value="1"><label for="ll-1" data-en="1 a day" data-nl="1 per dag" data-sv="1 om dagen">1 al día</label>
+            <input type="radio" name="llamadas" id="ll-3" value="3"><label for="ll-3" data-en="3 a day" data-nl="3 per dag" data-sv="3 om dagen">3 al día</label>
+            <input type="radio" name="llamadas" id="ll-5" value="5"><label for="ll-5" data-en="5 a day" data-nl="5 per dag" data-sv="5 om dagen">5 al día</label>
+            <input type="radio" name="llamadas" id="ll-10" value="10"><label for="ll-10" data-en="10 or more" data-nl="10 of meer" data-sv="10 eller fler">10 o más</label>
+          </div>
+        </div>
+
+        <div class="calc-campo">
+          <label id="lbl-precio" data-en="What does the cheapest thing a customer books cost?" data-nl="Wat kost het goedkoopste dat een klant bij je boekt?" data-sv="Vad kostar det billigaste en kund bokar hos dig?">¿Cuánto cuesta lo más barato que te reserva un cliente?</label>
+          <div class="calc-ops" role="radiogroup" aria-labelledby="lbl-precio">
+            <input type="radio" name="precio" id="pr-60" value="60"><label for="pr-60" data-en="€60" data-nl="€90" data-sv="700 kr">60 €</label>
+            <input type="radio" name="precio" id="pr-150" value="150"><label for="pr-150" data-en="€150" data-nl="€225" data-sv="1 700 kr">150 €</label>
+            <input type="radio" name="precio" id="pr-400" value="400"><label for="pr-400" data-en="€400" data-nl="€600" data-sv="4 500 kr">400 €</label>
+            <input type="radio" name="precio" id="pr-900" value="900"><label for="pr-900" data-en="€900 or more" data-nl="€1.350 of meer" data-sv="10 000 kr eller mer">900 € o más</label>
+          </div>
+        </div>
+
+        <div class="calc-salida">
+          <div class="calc-cifra" id="cifra" role="status" aria-live="polite">—</div>
+          <p class="calc-pie" id="cifra-pie" data-en="Pick your two numbers and the sum is done on them, not on anyone else's." data-nl="Kies je twee cijfers en de som wordt met die van jou gemaakt, niet met die van iemand anders." data-sv="Välj dina två siffror så görs räkningen på dem, inte på någon annans.">Elige tus dos cifras y la cuenta se hace con ellas, no con las de nadie más.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       NO SUSTITUYE A NADIE
+       El equivalente español del FAQ "ya tengo quien coge el teléfono".
+       Aquí es una sección y no una pregunta escondida, porque en un
+       negocio pequeño quien coge el teléfono suele ser de la familia.
+       ============================================ -->
+  <section class="banda banda-clara aparece" id="nadie">
+    <div class="container">
+      <div class="nadie">
+        <h2 class="rotulo" data-en="It is not here to take anyone's place" data-nl="Ze komt niemands plek innemen" data-sv="Den är inte här för att ta någons plats">No viene a quitarle el sitio a nadie</h2>
+        <p data-en="If someone already answers the phone in your business, this does not replace them: it picks up what that person cannot. While they are on with one caller, the second one hears ringing. While they are at lunch, on a day off, away on holiday, the phone rings just the same. That is arithmetic, not a criticism." data-nl="Als er bij jou al iemand de telefoon opneemt, vervangt dit die persoon niet: ze pakt op wat diegene niet kan. Terwijl hij of zij met de ene beller in gesprek is, hoort de tweede de telefoon overgaan. Tijdens de lunch, op een vrije dag, in de vakantie gaat de telefoon net zo goed. Dat is rekenwerk, geen kritiek." data-sv="Om någon redan svarar i telefonen hos dig ersätter det här inte den personen: den tar det som personen inte hinner. Medan hon pratar med en som ringer hör nästa bara signaler. Medan hon är på lunch, ledig eller på semester ringer telefonen precis lika mycket. Det är matematik, inte kritik.">Si ya hay alguien cogiendo el teléfono en tu negocio, esto no lo sustituye: coge lo que esa persona no puede coger. Mientras habla con uno, el segundo oye tonos. Mientras come, mientras libra, mientras está de vacaciones, el teléfono suena igual. Eso es aritmética, no una crítica.</p>
+        <p data-en="What usually happens is that it takes pressure off, not work away: the same calls as always — “are you open on Saturday?”, “what do you charge to come and look?” — stop interrupting, and anyone who genuinely needs a person gets one sooner, with what they have already explained written down." data-nl="Wat er meestal gebeurt is dat het druk wegneemt, geen werk: de gesprekken van altijd — “zijn jullie zaterdag open?”, “wat kost het als jullie komen kijken?” — houden op met storen, en wie echt een mens nodig heeft krijgt die eerder, met wat hij al verteld heeft opgeschreven." data-sv="Det som brukar hända är att det tar bort press, inte arbete: samma samtal som alltid — ”är ni öppna på lördag?”, ”vad kostar det att ni kommer och tittar?” — slutar avbryta, och den som verkligen behöver en människa får en snabbare, med det han redan har förklarat nedskrivet.">Lo que suele pasar es que quita presión, no trabajo: las llamadas de siempre — «¿abrís el sábado?», «¿cuánto cuesta que lo miréis?» — dejan de interrumpir, y quien de verdad necesita hablar con una persona la tiene antes, con lo que ha contado ya recogido.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PRUEBA
+       Portada de /en/ (#proof) el 2026-08-06. La página española pedía
+       media hora de teléfono sin haber dicho nunca quién hay detrás,
+       que es mucho pedir a alguien que no te conoce de nada.
+
+       Tres cosas cambiaron al traerla, y ninguna es de estilo:
+
+       — "clinics and trades" se cae. La página dejó de nombrar oficios
+         hoy mismo; volver a meterlos aquí sería deshacerlo en la sección
+         de al lado. Ahora es "negocios de aquí".
+       — El "Clinic and trade results coming soon" de /en/ no se trae.
+         Un resultado prometido para más adelante no prueba nada, y roza
+         la promesa que test-palette.js prohíbe.
+       — Las cifras que quedan (dos años, cinco países) son sobre mí, no
+         sobre quien lee. Ésa es la línea del guard: prohibida la cifra
+         afirmada SOBRE EL VISITANTE, no la cifra a secas. Sin euros y
+         sin porcentajes, que es lo que el agente tampoco puede repetir.
+       ============================================ -->
+  <section class="banda banda-arena aparece" id="prueba">
+    <div class="container">
+      <div class="prueba">
+        <h2 class="rotulo" data-en="Built by someone who has done this before" data-nl="Gebouwd door iemand die dit eerder heeft gedaan" data-sv="Byggd av någon som har gjort det här förut">Esto lo ha montado alguien que ya lo ha hecho antes</h2>
+        <div class="paso-num" aria-hidden="true">D</div>
+        <p data-en="I spent two years building AI systems for a football academy that operates across five countries: qualifying leads, instant response, automated follow-up, call scoring. I watched it fill intake after intake. Then I started phoning businesses around here to ask how they handled their phone, and most of the time &lt;em&gt;nobody picked up.&lt;/em&gt; That was the whole business case. I built Prime AI so that call gets answered." data-nl="Ik heb twee jaar AI-systemen gebouwd voor een voetbalacademie die in vijf landen actief is: leads kwalificeren, direct reageren, automatische opvolging, gesprekken scoren. Ik zag hoe het lichting na lichting vol kreeg. Daarna ging ik bedrijven bellen om te vragen hoe zij hun telefoon regelden, en meestal &lt;em&gt;nam er niemand op.&lt;/em&gt; Dat was de hele businesscase. Ik heb Prime AI gebouwd zodat dat gesprek wel wordt opgenomen." data-sv="Jag har lagt två år på att bygga AI-system åt en fotbollsakademi som finns i fem länder: kvalificera leads, svara direkt, automatisk uppföljning, poängsätta samtal. Jag såg det fylla kull efter kull. Sedan började jag ringa företag för att fråga hur de skötte sin telefon, och för det mesta &lt;em&gt;svarade ingen.&lt;/em&gt; Det var hela affärsidén. Jag byggde Prime AI för att det samtalet ska bli besvarat.">Me he pasado dos años montando sistemas de IA para una academia de fútbol que trabaja en cinco países: calificar contactos, responder al momento, seguimiento automático, puntuar llamadas. Los vi llenar convocatoria tras convocatoria. Después me puse a llamar a negocios de aquí para preguntarles cómo llevaban el teléfono, y la mayoría de las veces <em>no me lo cogió nadie.</em> Ése fue todo el estudio de mercado. Monté Prime AI para que esa llamada se coja.</p>
+        <p class="prueba-cita" data-en="&lt;em&gt;“You and I are both tired of ‘AI solutions’ that turn out to be a chatbot with a nice dashboard. This one answers the phone, and we run it for you.”&lt;/em&gt;" data-nl="&lt;em&gt;“Jij en ik zijn allebei klaar met ‘AI-oplossingen’ die een chatbot met een mooi dashboard blijken te zijn. Deze neemt de telefoon op, en wij draaien hem voor je.”&lt;/em&gt;" data-sv="&lt;em&gt;”Du och jag är lika trötta på ’AI-lösningar’ som visar sig vara en chatbot med en snygg instrumentpanel. Den här svarar i telefon, och vi sköter den åt dig.”&lt;/em&gt;"><em>«Tú y yo estamos igual de hartos de las “soluciones con IA” que acaban siendo un chatbot con un panel bonito. Ésta coge el teléfono, y te la llevamos nosotros.»</em></p>
+        <p class="prueba-firma" data-en="Dan — Full-stack AI engineer. Cybersecurity background. Production systems running in five countries." data-nl="Dan — Full-stack AI-engineer. Achtergrond in cybersecurity. Productiesystemen draaiend in vijf landen." data-sv="Dan — Full-stack AI-ingenjör. Bakgrund inom cybersäkerhet. Produktionssystem i drift i fem länder.">Dan — Ingeniero de IA full-stack. Vengo de ciberseguridad. Sistemas en producción en cinco países.</p>
+
+        <div class="paso">
+          <h3 data-en="The same system, already proven at scale" data-nl="Hetzelfde systeem, al bewezen op schaal" data-sv="Samma system, redan bevisat i stor skala">El mismo sistema, ya probado en grande</h3>
+          <p data-en="I built a whole AI lead pipeline — qualification, WhatsApp follow-up, booked calls, call scoring — running across five countries. Same architecture. Now pointed at your phone." data-nl="Ik heb een complete AI-leadpijplijn gebouwd — kwalificatie, WhatsApp-opvolging, ingeplande gesprekken, gespreksscores — draaiend in vijf landen. Dezelfde architectuur. Nu op jouw telefoon gericht." data-sv="Jag byggde en komplett AI-pipeline för leads — kvalificering, uppföljning på WhatsApp, bokade samtal, samtalspoäng — i drift i fem länder. Samma arkitektur. Nu riktad mot din telefon.">Monté un sistema entero de captación con IA — calificación, seguimiento por WhatsApp, llamadas reservadas, puntuación de llamadas — funcionando en cinco países. La misma arquitectura. Ahora apuntando a tu teléfono.</p>
+          <div class="prueba-paises">
+            <span data-en="Mexico" data-nl="Mexico" data-sv="Mexiko">México</span>
+            <span data-en="UAE" data-nl="VAE" data-sv="Förenade Arabemiraten">Emiratos Árabes Unidos</span>
+            <span data-en="Saudi Arabia" data-nl="Saoedi-Arabië" data-sv="Saudiarabien">Arabia Saudí</span>
+            <span data-en="Canada" data-nl="Canada" data-sv="Kanada">Canadá</span>
+            <span data-en="France" data-nl="Frankrijk" data-sv="Frankrike">Francia</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       ENCAJE
+       ============================================ -->
+  <section class="banda aparece" id="encaje">
+    <div class="container">
+      <div class="encaje">
+        <div class="encaje-si">
+          <h3 data-en="This fits you if..." data-nl="Dit past bij jou als..." data-sv="Det här passar dig om...">Esto te encaja si...</h3>
+          <div class="encaje-fila">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-en="Calls come in every day and you cannot answer them all." data-nl="Er komen elke dag gesprekken binnen en je kunt ze niet allemaal aannemen." data-sv="Det kommer in samtal varje dag och du hinner inte svara på alla.">Te entran llamadas todos los días y no puedes coger todas.</span>
+          </div>
+          <div class="encaje-fila">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-en="A new customer is genuinely worth the work of winning one." data-nl="Een nieuwe klant is het werk om er een binnen te halen echt waard." data-sv="En ny kund är verkligen värd jobbet det tar att vinna en.">Un cliente nuevo te compensa de verdad el trabajo de conseguirlo.</span>
+          </div>
+          <div class="encaje-fila">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-en="Your phone already rings out of hours with nobody there to answer it." data-nl="Je telefoon gaat nu al buiten kantooruren zonder dat er iemand opneemt." data-sv="Din telefon ringer redan utanför arbetstid utan att någon svarar.">El teléfono ya te suena fuera de horario y no hay nadie para cogerlo.</span>
+          </div>
+        </div>
+        <div class="encaje-no">
+          <h3 data-en="This does not fit you if..." data-nl="Dit past niet bij jou als..." data-sv="Det här passar dig inte om...">Esto no te encaja si...</h3>
+          <div class="encaje-fila">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span data-en="You get two or three calls a week." data-nl="Je krijgt twee of drie gesprekken per week." data-sv="Du får två eller tre samtal i veckan.">Te entran dos o tres llamadas a la semana.</span>
+          </div>
+          <div class="encaje-fila">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span data-en="You want a press-one-for-sales menu you configure yourself." data-nl="Je wilt een keuzemenu dat je zelf instelt." data-sv="Du vill ha en knappvalsmeny som du ställer in själv.">Quieres un menú de opciones que te configuras tú.</span>
+          </div>
+          <div class="encaje-fila">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span data-en="You are looking for the cheapest thing, not the thing that works." data-nl="Je zoekt het goedkoopste, niet wat werkt." data-sv="Du letar efter det billigaste, inte det som fungerar.">Buscas lo más barato, no lo que funciona.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PREGUNTAS
+       Ni precios, ni porcentajes, ni garantías: el agente al que van a
+       oír treinta segundos después no puede decir ninguna de las tres.
+       ============================================ -->
+  <section class="banda banda-clara aparece" id="preguntas">
+    <div class="container">
+      <h2 class="rotulo" data-en="Questions" data-nl="Vragen" data-sv="Frågor">Preguntas</h2>
+      <div class="preguntas">
+
+        <div class="pregunta">
+          <button class="pregunta-btn" aria-expanded="false">
+            <span data-en="Can people tell it is not a person?" data-nl="Merken mensen dat het geen mens is?" data-sv="Märker folk att det inte är en människa?">¿Se nota que no es una persona?</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="respuesta">
+            <div class="respuesta-txt" data-en="Almost nobody notices, and we do not think it should be hidden. It answers with the name of your business, talks normally, and does not do the press-one-for-sales thing. If someone asks outright whether they are speaking to a person, it says so: that it is the business's automated assistant, and that it can put them through to someone. Hiding it is the fastest way to lose a customer's trust, and depending on what you do, it is legally risky as well." data-nl="Bijna niemand merkt het, en wij vinden niet dat het verborgen moet worden. Ze meldt zich met de naam van jouw bedrijf, praat gewoon, en doet niet aan toets-1-voor-verkoop. Als iemand ronduit vraagt of hij met een mens spreekt, zegt ze het: dat ze de automatische assistent van het bedrijf is, en dat ze kan doorverbinden. Het verbergen is de snelste manier om het vertrouwen van een klant kwijt te raken, en afhankelijk van wat je doet is het ook juridisch riskant." data-sv="Nästan ingen märker det, och vi tycker inte att det ska döljas. Den svarar med namnet på ditt företag, pratar normalt, och håller inte på med tryck-ett-för-försäljning. Om någon frågar rakt ut om han pratar med en människa säger den det: att den är företagets automatiska assistent, och att den kan koppla vidare till någon. Att dölja det är snabbaste sättet att förlora en kunds förtroende, och beroende på vad du gör är det juridiskt riskabelt också.">Casi nadie lo nota, y no creemos que haya que esconderlo. Se presenta con el nombre de tu negocio, habla con normalidad, y no hace lo del menú de opciones. Si alguien pregunta directamente si está hablando con una persona, lo dice: que es el asistente automático del negocio y que puede pasarle con alguien. Disimularlo es la forma más rápida de perder la confianza de un cliente, y según para qué, además es arriesgado legalmente.</div>
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <button class="pregunta-btn" aria-expanded="false">
+            <span data-en="What if someone asks it something it does not know?" data-nl="En als iemand iets vraagt wat ze niet weet?" data-sv="Tänk om någon frågar den något den inte vet?">¿Y si le preguntan algo que no sabe?</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="respuesta">
+            <div class="respuesta-txt" data-en="It says so, takes a note, and passes it to you. It does not make anything up. That is the most important rule in the whole system: a line that invents a price is worse than a phone that rings with nobody to answer it. When we set it up we decide with you what it can say, what it must never say, and what comes straight through to you — and anything outside that reaches you as a message, with what the customer had already explained." data-nl="Dan zegt ze dat, maakt een notitie, en geeft het aan jou door. Ze verzint niets. Dat is de belangrijkste regel in het hele systeem: een lijn die een prijs verzint is erger dan een telefoon die overgaat zonder dat er iemand opneemt. Bij het inrichten bepalen we samen met jou wat ze mag zeggen, wat ze nooit mag zeggen, en wat direct naar jou doorgaat — en alles daarbuiten bereikt jou als bericht, met wat de klant al had uitgelegd." data-sv="Då säger den det, antecknar, och lämnar över till dig. Den hittar inte på något. Det är den viktigaste regeln i hela systemet: en linje som hittar på ett pris är värre än en telefon som ringer utan att någon svarar. När vi sätter upp den bestämmer vi tillsammans med dig vad den får säga, vad den aldrig får säga, och vad som går rakt till dig — och allt utanför det når dig som ett meddelande, med det kunden redan hade förklarat.">Lo dice, toma nota y te lo pasa. No se lo inventa. Es la regla más importante de todo el sistema: una línea que se inventa un precio es peor que un teléfono que suena sin que nadie lo coja. En el montaje decidimos contigo qué puede decir, qué no puede decir nunca, y qué va directo a ti — y todo lo que se sale de ahí te llega como aviso, con lo que el cliente ya había contado.</div>
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <button class="pregunta-btn" aria-expanded="false">
+            <span data-en="Does it book the job, or just take a message?" data-nl="Boekt ze de klus, of neemt ze alleen een bericht aan?" data-sv="Bokar den jobbet, eller tar den bara ett meddelande?">¿Coge la cita o solo toma nota?</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="respuesta">
+            <div class="respuesta-txt" data-en="It books it. It connects to your calendar, sees the gaps that are really there and writes in the appointment properly, with the time that job actually needs. Taking a message is what it does when it cannot close one, not the normal outcome — because a list of people to ring back is just a slower way of losing someone who has already rung somebody else." data-nl="Ze boekt hem. Ze koppelt aan je agenda, ziet de gaten die er echt zijn en zet de afspraak er netjes in, met de tijd die die klus ook echt kost. Een bericht aannemen is wat ze doet als ze het niet rond krijgt, niet de normale uitkomst — want een lijst met mensen om terug te bellen is gewoon een tragere manier om iemand kwijt te raken die al een ander heeft gebeld." data-sv="Den bokar det. Den kopplas till din kalender, ser luckorna som faktiskt finns och skriver in tiden ordentligt, med den tid jobbet verkligen tar. Att ta ett meddelande är vad den gör när den inte kan stänga affären, inte det normala utfallet — för en lista med folk att ringa upp är bara ett långsammare sätt att förlora någon som redan har ringt någon annan.">La coge. Se conecta con tu calendario, ve los huecos de verdad y escribe la cita de verdad, con el tiempo que hace falta para ese trabajo. Tomar nota es lo que hace cuando no puede cerrarla, no lo normal — porque una lista de gente a la que devolver la llamada es solo una manera más lenta de perder a quien ya ha llamado a otro.</div>
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <button class="pregunta-btn" aria-expanded="false">
+            <span data-en="What about a real emergency?" data-nl="En bij een echt spoedgeval?" data-sv="Och vid ett riktigt akutfall?">¿Y una urgencia de las de verdad?</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="respuesta">
+            <div class="respuesta-txt" data-en="You decide what counts as an emergency in your business, in your own words, when we set it up. Those calls break out of the script immediately: it recognises them, does not book them in, and either puts them through to you live or alerts you however you want. It is the part that gets tested hardest before anything goes live, and the first thing we tune." data-nl="Jij bepaalt wat een spoedgeval is in jouw bedrijf, in je eigen woorden, als we het inrichten. Die gesprekken breken meteen uit het script: ze herkent ze, boekt ze niet in, en verbindt je live door of waarschuwt je zoals jij dat wilt. Het is het onderdeel dat het hardst getest wordt voordat er iets live gaat, en het eerste dat we bijstellen." data-sv="Du bestämmer vad som är ett akutfall i ditt företag, med dina egna ord, när vi sätter upp den. De samtalen bryter sig ur manuset direkt: den känner igen dem, bokar inte in dem, och antingen kopplar den dig live eller larmar dig på det sätt du vill. Det är den del som testas hårdast innan något går live, och det första vi finjusterar.">Tú decides qué es una urgencia en tu negocio, con tus palabras, cuando lo montamos. Esas llamadas se salen del guion inmediatamente: las reconoce, no da cita, y te las pasa en directo o avisa como tú digas. Es la parte que más se prueba antes de ponerlo en marcha, y la primera que afinamos.</div>
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <button class="pregunta-btn" aria-expanded="false">
+            <span data-en="What if the customer wants to speak to a person?" data-nl="En als de klant een mens wil spreken?" data-sv="Tänk om kunden vill prata med en människa?">¿Y si el cliente quiere hablar con una persona?</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="respuesta">
+            <div class="respuesta-txt" data-en="They ask, and they get put through. No insisting, no runaround, and no press four to return to the main menu. It is there to pick up the calls nobody picks up today, not to put a wall between you and your customers." data-nl="Die vraagt erom, en wordt doorverbonden. Geen aandringen, geen omweg, en geen toets vier om terug te keren naar het hoofdmenu. Ze is er om de gesprekken op te pakken die vandaag niemand opneemt, niet om een muur tussen jou en je klanten te zetten." data-sv="Han ber om det, och blir kopplad. Ingen övertalning, inget spring i cirklar, och inget tryck fyra för att komma tillbaka till huvudmenyn. Den finns för att ta samtalen som ingen tar i dag, inte för att sätta en vägg mellan dig och dina kunder.">Lo pide y se le pasa. Sin insistir, sin vueltas y sin pulse cuatro para volver al menú principal. Está para coger las llamadas que hoy no coge nadie, no para ponerte una pared delante de tus clientes.</div>
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <button class="pregunta-btn" aria-expanded="false">
+            <span data-en="Does it speak English and Spanish?" data-nl="Spreekt ze Nederlands en Engels?" data-sv="Talar den svenska och engelska?">¿Habla español e inglés?</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="respuesta">
+            <!-- Decía que detecta solo cuál habla quien llama, y eso ya no es
+                 verdad: el 2026-08-08 el agente inglés se pasó al español a
+                 mitad de llamada (call_c46d9b05a82d3dce7204580ddbe, un solo
+                 turno inaudible bastó) y los dos agentes quedaron fijados a un
+                 idioma cada uno — Voice_agent/src/sales-agent.ts, EN_LANG y
+                 ES_LANG. Los botones ES/EN de esta misma página son ahora lo
+                 que elige, así que la respuesta dice lo que la página hace.
+                 "vale" -> "ballet" es real y está en el prompt del agente: es el
+                 fallo con respuestas cortas, y contarlo vende mejor que
+                 esconderlo.
+                 La fracción "la mitad de los clientes extranjeros" se cayó de
+                 las dos versiones. Iba solo en español porque afirmar una
+                 proporción sobre el negocio de quien lee es la clase de cifra
+                 que el agente tiene prohibida — y si el agente no puede
+                 decirla, la página tampoco debería. -->
+            <div class="respuesta-txt" data-en="Both — but each line answers in the language you set it to, and stays in it for the whole call. It does not guess halfway through: short answers are exactly what a recogniser gets wrong (&quot;vale&quot; reaches it as &quot;ballet&quot;), and being answered in the wrong language is worse than choosing once. On this page you choose with the ES/EN buttons. If you want both on the same number, or another language, that is worth going through on the call." data-nl="Allebei — maar elke lijn antwoordt in de taal die jij instelt, en blijft daar het hele gesprek in. Ze gokt niet halverwege: juist bij korte antwoorden gaat een spraakherkenner de mist in (“veertig euro of zo” komt aan zonder dat “of”), en in de verkeerde taal te woord gestaan worden is vervelender dan één keer kiezen. Op deze pagina kies je zelf, met de vlagknoppen bovenaan. Wil je allebei op hetzelfde nummer, of nog een andere taal, dan is dat iets om in het gesprek door te nemen." data-sv="Båda — men varje linje svarar på det språk du ställer in den på, och stannar där hela samtalet. Den gissar inte halvvägs: korta svar är precis vad en taligenkänning hör fel (”jo” når fram som ”yo”), och att bli besvarad på fel språk är värre än att välja en gång. Här på sidan väljer du själv, med flaggknapparna högst upp. Vill du ha båda på samma nummer, eller ytterligare ett språk, är det värt att ta på samtalet.">Las dos — pero cada línea contesta en el idioma que le pongas y se queda en él toda la llamada. No lo adivina a mitad de conversación: con respuestas cortas es justo cuando se equivoca ("vale" le llega como "ballet"), y que te contesten en el idioma que no es molesta más que elegirlo una vez. En esta página lo eliges tú con los botones ES/EN. Si quieres las dos en el mismo número, o algún otro idioma, mejor verlo en la llamada.</div>
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <button class="pregunta-btn" aria-expanded="false">
+            <span data-en="How long until it is up and running?" data-nl="Hoe lang duurt het voor ze draait?" data-sv="Hur lång tid tar det innan den är igång?">¿Cuánto tarda en estar funcionando?</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="respuesta">
+            <div class="respuesta-txt" data-en="A couple of weeks from when we start. Almost none of that is technical: it is sitting down with you to get your services, your hours, your types of job and your emergency rules down properly. After that we run it alongside what you already have, so you hear real calls before it takes anything on its own. It does not go on your main line until you have heard it work." data-nl="Een week of twee vanaf het moment dat we beginnen. Bijna niets daarvan is technisch: het is met jou om tafel om je diensten, je tijden, je soorten klussen en je spoedregels goed op papier te krijgen. Daarna draait ze naast wat je al hebt, zodat je echte gesprekken hoort voordat ze iets zelfstandig doet. Ze gaat niet op je hoofdnummer voordat jij haar hebt horen werken." data-sv="Ett par veckor från att vi börjar. Nästan inget av det är tekniskt: det är att sitta ner med dig och få ner dina tjänster, dina tider, dina typer av jobb och dina akutregler ordentligt. Sedan kör vi den vid sidan av det du redan har, så att du hör riktiga samtal innan den tar något på egen hand. Den går inte på ditt huvudnummer förrän du har hört den fungera.">Un par de semanas desde que empezamos. Casi nada de eso es técnico: es sentarnos contigo a recoger bien tus servicios, tus horarios, los tipos de trabajo y las reglas de urgencia. Después lo dejamos funcionando en paralelo a lo que ya tienes, para que escuches llamadas de verdad antes de que coja nada por su cuenta. No entra en tu línea principal hasta que lo hayas oído funcionar.</div>
+          </div>
+        </div>
+
+        <div class="pregunta">
+          <button class="pregunta-btn" aria-expanded="false">
+            <span data-en="What does it cost?" data-nl="Wat kost het?" data-sv="Vad kostar det?">¿Cuánto cuesta?</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="respuesta">
+            <div class="respuesta-txt" data-en="It depends on what you need, so we work it out once we know how you operate. We are not going to put a number on a website that will be wrong for most of the people who read it. And if we look at it and it does not add up for you, we will tell you instead of selling you something." data-nl="Dat hangt af van wat je nodig hebt, dus we rekenen het uit zodra we weten hoe jij werkt. We gaan geen bedrag op een website zetten dat voor de meeste mensen die het lezen niet klopt. En als we ernaar kijken en het loont voor jou niet, dan zeggen we dat in plaats van je iets te verkopen." data-sv="Det beror på vad du behöver, så vi räknar på det när vi vet hur du jobbar. Vi tänker inte sätta en siffra på en webbplats som blir fel för de flesta som läser den. Och om vi tittar på det och det inte går ihop för dig, säger vi det i stället för att sälja något till dig.">Depende de lo que necesites, así que lo hablamos cuando sepamos cómo trabajas. No vamos a poner en una web un número que va a estar mal para la mitad de la gente que lo lea. Y si al mirarlo vemos que a ti no te sale a cuenta, te lo decimos en vez de venderte algo.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CIERRE
+       ============================================ -->
+  <section class="cierre aparece" id="cierre">
+    <div class="container">
+      <h2 class="rotulo" data-en="Stop losing customers to whoever simply answered the phone." data-nl="Raak geen klanten meer kwijt aan degene die simpelweg opnam." data-sv="Sluta förlora kunder till den som helt enkelt svarade i telefon.">Deja de perder clientes con el que simplemente cogió el teléfono.</h2>
+
+      <!-- ⚠ GARANTÍA. Dan, 2026-08-06. Antes aquí ponía que no había
+           garantía a propósito; ahora la hay, y es una decisión comercial
+           suya, no una de esta página.
+
+           Lo que NO cambia: sigue sin poder haber un precio, un
+           porcentaje, ni una cantidad de citas prometida. Una garantía de
+           devolución es una condición comercial, no la promesa de un
+           resultado, y ésa es exactamente la línea por la que pasa.
+
+           Va acompañada del agente: sales-agent.ts la lleva ahora en los
+           hechos que SÍ puede confirmar, porque el visitante le pregunta
+           por ella treinta segundos después de leerla aquí y un "eso te lo
+           cuenta Dan" a estas alturas se lee como un cambiazo.
+
+           Y va deliberadamente junto a "esto no te encaja si te entran dos
+           o tres llamadas a la semana", que es la puerta de cualificación:
+           una garantía a un negocio sin llamadas entrando no la puede
+           cumplir nadie. Si esa línea se cae del encaje, esto hay que
+           volver a mirarlo. -->
+      <div class="garantia">
+        <p class="garantia-titulo" data-en="Thirty days, money back" data-nl="Dertig dagen, geld terug" data-sv="Trettio dagar, pengarna tillbaka">Garantía de 30 días</p>
+        <p data-en="Thirty days. If it is not doing what I said it would, you get every euro back — no forms, and no awkward conversation about it." data-nl="Dertig dagen. Doet ze niet wat ik gezegd heb, dan krijg je elke euro terug — geen formulieren, en geen ongemakkelijk gesprek erover." data-sv="Trettio dagar. Gör den inte det jag sa att den skulle göra får du varenda krona tillbaka — inga blanketter, och inget obekvämt samtal om saken.">Treinta días. Si no está haciendo lo que te dije que haría, te devuelvo hasta el último euro — sin formularios y sin una conversación incómoda.</p>
+      </div>
+
+      <!-- La otra inversión del riesgo, y la que no depende de que nadie
+           cumpla nada: antes de entrar en su línea, ya lo ha oído funcionar. -->
+      <div class="aval">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor" opacity="0.2"/>
+          <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span data-en="First it runs alongside what you already have. You listen to real calls it has handled, and it does not go on your main line until you have heard it work." data-nl="Eerst draait ze naast wat je al hebt. Jij luistert echte gesprekken terug die ze heeft afgehandeld, en ze gaat niet op je hoofdnummer voordat jij haar hebt horen werken." data-sv="Först kör den vid sidan av det du redan har. Du lyssnar på riktiga samtal som den har hanterat, och den går inte på ditt huvudnummer förrän du har hört den fungera.">Primero funciona en paralelo a lo que ya tienes. Escuchas llamadas de verdad que ha atendido, y no entra en tu línea principal hasta que lo hayas oído funcionar.</span>
+      </div>
+
+      <div>
+        <button class="btn btn-primary llamar" style="font-size:18px; padding:18px 40px;" data-umami-event="demo-abrir-cierre" data-en="Hear it answer — right here, no phone needed" data-nl="Hoor haar opnemen — hier meteen, geen telefoon nodig" data-sv="Hör den svara — här direkt, ingen telefon behövs">Escúchala contestar — aquí mismo, sin teléfono</button>
+        <a class="btn btn-primary tel-movil" style="font-size:18px; padding:18px 40px;" href="tel:+34951870630" data-umami-event="demo-llamar-cierre"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">951 870 630</span></a>
+        <p class="tel-escritorio"><span data-en="or call it on" data-nl="of bel haar op" data-sv="eller ring den på">o llámala al</span> <a href="tel:+34951870630" data-umami-event="demo-llamar-escritorio"><span class="tel-num">951 870 630</span></a></p>
+      </div>
+
+      <small class="letra-chica" data-en="Would you rather I talked you through it? Half an hour, no obligation, and I will tell you whether this fits your business or not. If it does not, I will say so." data-nl="Praat ik je liever even bij? Een half uur, nergens toe verplicht, en ik zeg je of dit bij jouw bedrijf past of niet. Zo niet, dan zeg ik dat." data-sv="Vill du hellre att jag går igenom det med dig? En halvtimme, utan förpliktelser, och jag säger om det här passar ditt företag eller inte. Gör det inte det säger jag det.">¿Prefieres que te lo cuente yo? Media hora, sin compromiso, y te digo si esto le encaja a tu negocio o no. Si no le encaja, te lo digo.</small>
+      <div>
+        <a class="btn btn-outline" style="font-size:18px; padding:18px 40px;" href="https://cal.eu/prime.ai/intro-wa" data-umami-event="reservar-cierre" data-en="Book a call with me" data-nl="Plan een gesprek met mij" data-sv="Boka ett samtal med mig">Reservar una llamada conmigo</a>
+      </div>
+
+      <p class="unidad" data-en="For businesses that do not let the phone ring out." data-nl="Voor bedrijven die de telefoon niet laten overgaan." data-sv="För företag som inte låter telefonen ringa obesvarad.">Para negocios que no dejan que el teléfono suene solo.</p>
+    </div>
+  </section>
+
+  <footer class="pie">
+    <!-- Lleva marcado dentro, así que el intercambio es por innerHTML y el
+         data-en tiene que repetir los enlaces. /voice/privacidad sigue en
+         español en las dos versiones: es la única parte del aviso que no
+         está traducida, y está anotada arriba.
+
+         Dan, 2026-08-07: fuera el nombre y la ciudad. Esta línea decía
+         "Responsable de la grabación: Daniel Kooij (Prime AI), Fuengirola,
+         Málaga — ...". Se queda Prime AI, que es la empresa, no su nombre.
+         Lo que importa que siga aquí es la RUTA: el correo para pedir el
+         borrado y el enlace al aviso. Eso es lo que el visitante necesita
+         para ejercer el derecho; la identidad completa vive una capa más
+         abajo.
+
+         ⚠ Y AHORA ESA CAPA ES LA ÚNICA. Con esto, NINGUNA página de
+         prime-ai.es enseña ya quién es el responsable: el nombre, la
+         dirección y el correo sólo existen en /voice/privacidad, que además
+         la sirve OTRO repositorio (Voice_agent/src/demo.ts, PM2
+         prime-voice). Comprobado el 2026-08-07: esa página devuelve 200 y
+         lleva las tres cosas. Si se vacía, se mueve o se cae, el art. 13 deja
+         de cumplirse en todo el sitio y test-palette.js seguirá en verde,
+         porque sólo puede comprobar que el enlace existe, nunca qué hay al
+         otro lado. Un despliegue del otro repo puede romper esto sin tocar
+         este archivo. -->
+    <div class="container" data-en="Prime AI holds the recording. Want it deleted? Email &lt;a href=&quot;mailto:support@prime-ai.es&quot;&gt;support@prime-ai.es&lt;/a&gt;. &lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with it and how to ask me to delete it (in Spanish)&lt;/a&gt;. Would you rather not be recorded? Email me and we will talk anyway." data-nl="Prime AI bewaart de opname. Wil je hem laten wissen? Mail &lt;a href=&quot;mailto:support@prime-ai.es&quot;&gt;support@prime-ai.es&lt;/a&gt;. &lt;a href=&quot;/voice/privacidad&quot;&gt;Wat ik ermee doe en hoe je me vraagt hem te wissen (in het Spaans)&lt;/a&gt;. Word je liever niet opgenomen? Mail me, dan praten we alsnog." data-sv="Prime AI förvarar inspelningen. Vill du att den raderas? Mejla &lt;a href=&quot;mailto:support@prime-ai.es&quot;&gt;support@prime-ai.es&lt;/a&gt;. &lt;a href=&quot;/voice/privacidad&quot;&gt;Vad jag gör med den och hur du ber mig radera den (på spanska)&lt;/a&gt;. Vill du hellre inte bli inspelad? Mejla mig så pratar vi ändå.">
+      La grabación la guarda Prime AI. ¿Quieres que la borre? Escríbeme a
+      <a href="mailto:support@prime-ai.es">support@prime-ai.es</a>.
+      <a href="/voice/privacidad">Qué hago con ella y cómo pedir que la borre</a>.
+      ¿Prefieres no grabarte? Escríbeme y lo hablamos igual.
+    </div>
+    <!-- FUERA del div con data-en, y eso es deliberado. traducir() sustituye el
+         innerHTML de cada [data-en], así que todo el marcado que viva ahí dentro
+         hay que repetirlo escapado en el atributo — aquí sería el SVG entero,
+         dos veces, y desincronizarlo no daría ningún error visible. "LinkedIn"
+         se escribe igual en español y en inglés, así que este enlace no
+         necesita traducción y no tiene por qué entrar ahí. Mismo perfil y mismo
+         marcado que el pie de receptionist.html, copiado tal cual para que no
+         haya dos iconos que mantener. -->
+    <div class="container pie-social">
+      <a href="https://linkedin.com/in/danielkooij" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+  </footer>
+
+  <!-- ============================================
+       PANEL DE LLAMADA
+       ⚠ El aviso va ENCIMA del botón y el botón repite que se graba,
+       porque darle al botón ES el consentimiento (RGPD art. 13 + AI Act
+       art. 50) y el agente ya no lo dice de viva voz
+       (Voice_agent/src/demo.ts:246). No lo adelgaces.
+       Texto copiado literalmente de demoPageHtml() para que no haya dos
+       redacciones del mismo consentimiento. El inglés de al lado NO tiene
+       original en demo.ts — es traducción de este mismo texto, y dice las
+       mismas tres cosas: que es una IA, que la llamada se graba, y para
+       qué. Si alguien reescribe el español, el data-en va en la misma
+       edición o el consentimiento pasa a existir en dos versiones que no
+       dicen lo mismo, que es justo lo que este comentario evita.
+       ============================================ -->
+  <dialog class="panel" id="panel" aria-labelledby="panel-titulo">
+    <button class="cerrar" id="cerrar" aria-label="Cerrar">&times;</button>
+    <h3 id="panel-titulo" data-en="Hear it answer" data-nl="Hoor haar opnemen" data-sv="Hör den svara">Escúchala contestar</h3>
+    <p class="aviso" data-en="This is an AI, not a person — the same one that would answer your business's phone. The call is recorded, to improve it." data-nl="Dit is een AI, geen mens — dezelfde die de telefoon van jouw bedrijf zou opnemen. Het gesprek wordt opgenomen, om haar te verbeteren." data-sv="Det här är en AI, inte en människa — samma som skulle svara i ditt företags telefon. Samtalet spelas in, för att göra den bättre.">Es una IA, no una persona — la misma que contestaría el teléfono de tu negocio. La llamada se graba, para mejorarla.</p>
+    <p class="panel-chica" data-en="&lt;a href=&quot;/voice/privacidad&quot;&gt;What I do with the recording and how to ask me to delete it (in Spanish)&lt;/a&gt;." data-nl="&lt;a href=&quot;/voice/privacidad&quot;&gt;Wat ik met de opname doe en hoe je me vraagt hem te wissen (in het Spaans)&lt;/a&gt;." data-sv="&lt;a href=&quot;/voice/privacidad&quot;&gt;Vad jag gör med inspelningen och hur du ber mig radera den (på spanska)&lt;/a&gt;."><a href="/voice/privacidad">Qué hago con la grabación y cómo pedir que la borre</a>.</p>
+    <!-- SIN data-umami-event, a propósito. Este botón hace DOS cosas: arranca la
+         llamada y la cuelga (ver el manejador de #ir, que sale por stopCall si
+         `viva`). El atributo dispara en cada clic, así que contaba las dos como
+         si fueran intentos, y la cuenta salía a casi el doble de la real.
+         Medido el 2026-08-25: 73 pulsaciones contra 47 tokens del 20 al 24-08,
+         un desfase que NO se podía leer porque colgar y fallar el micro eran el
+         mismo evento — y colgar cerrando el panel (X, Esc, fondo) no era ninguno.
+         Ahora los eventos los emite el JS en los tres puntos que importan, con
+         pista(): demo-boton-hablar SÓLO al arrancar, demo-en-linea cuando el
+         agente ya se oye, y demo-falla con el motivo. La caída es
+         hablar - en-linea - falla, y ese resto son las que se quedan colgadas
+         en "conectando" sin error, que es el único hueco que no tiene evento
+         propio porque no hay nada que lo dispare. Todo dentro de Umami: el
+         cruce con el log de nginx que decía este comentario no valía, porque
+         nginx va en UTC y Umami en Europe/Madrid y los días no cuadran. -->
+    <button class="btn btn-primary" id="ir" data-en="Talk to the AI (recorded)" data-nl="Praat met de AI (wordt opgenomen)" data-sv="Prata med AI:n (spelas in)">Hablar con la IA (se graba)</button>
+    <p class="estado" id="estado" role="status" aria-live="polite"></p>
+    <!-- El agente cierra apuntando a "el botón de la página" (Voice_agent/src/
+         sales-agent.ts, WEB_CLOSE). Este <dialog> trae fondo oscuro, así que el
+         botón de la página de abajo NO se ve mientras se habla — y cerrar el
+         panel corta la llamada. Éste es el que hace verdad esa instrucción.
+         Mismo href que el de la página.
+
+         El data-en va en el <p>, no en el <a> de dentro, y esto NO es un
+         detalle de estilo. traducir() recorre querySelectorAll('[data-en]')
+         y sustituye innerHTML: al cambiar el del <p>, el <a> original queda
+         desconectado del documento, así que su propio data-en no se llegaría
+         a usar nunca. La versión que se subió a mano a /var/www lo lleva en
+         el <a> — funciona de casualidad, porque el <a> se procesa antes que
+         su padre, y falla en cuanto cambie el orden del recorrido.
+         Así queda igual que el .panel-chica de abajo, que ya guardaba su
+         marcado inglés completo y escapado en el atributo. -->
+    <p class="panel-chica" data-en="&lt;a class=&quot;btn btn-outline&quot; data-umami-event=&quot;reservar-panel&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Book a call with me&lt;/a&gt;" data-nl="&lt;a class=&quot;btn btn-outline&quot; data-umami-event=&quot;reservar-panel&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Plan een gesprek met mij&lt;/a&gt;" data-sv="&lt;a class=&quot;btn btn-outline&quot; data-umami-event=&quot;reservar-panel&quot; href=&quot;https://cal.eu/prime.ai/intro-wa&quot;&gt;Boka ett samtal med mig&lt;/a&gt;"><a class="btn btn-outline" data-umami-event="reservar-panel" href="https://cal.eu/prime.ai/intro-wa">Reservar una llamada conmigo</a></p>
+    <!-- Dan, 2026-08-07: aquí ya no va su nombre. Antes esta línea era
+         "Responsable de la grabación: Daniel Kooij (Prime AI), Fuengirola,
+         Málaga — oscarinfo@proton.me", y presentarse como responsable delante
+         de alguien que sólo quiere oír a la agente sobraba.
+
+         Lo que NO se ha hecho es quitar la identidad del responsable, que es
+         un requisito del art. 13 en el momento del consentimiento, y darle al
+         botón ES el consentimiento. Se ha bajado a la segunda capa:
+         /voice/privacidad lleva el nombre, la dirección y el correo
+         (comprobado en la página en vivo, no supuesto). Divulgación por capas,
+         que es práctica aceptada — pero SÓLO mientras esa página siga cargando
+         esos datos. Si /voice/privacidad se vacía o se cae, esto se queda sin
+         responsable en ninguna parte del flujo. El guardián comprueba que el
+         enlace exista y dónde está; no puede comprobar lo que hay al otro lado.
+
+         El enlace SUBIÓ por encima del botón en esta misma edición, y no es
+         cosmético. Con el nombre puesto aquí abajo daba igual dónde cayera el
+         enlace, porque la identidad ya estaba escrita arriba. Ahora el enlace
+         ES la identidad, y una ruta al responsable que aparece DESPUÉS de
+         pulsar no es una ruta: cuando se pulsa, ya se ha consentido. -->
+  </dialog>
+
+  <script>
+    (function () {
+      // --- IDIOMA: LO QUE NO ESTÁ EN EL MARCADO -------------------------
+      // Todo lo visible vive en data-en. Aquí sólo van las cadenas que no
+      // tienen elemento donde colgarse: el título, la descripción, y lo que
+      // el panel escribe en marcha. Si una de éstas se queda sin traducir,
+      // el visitante inglés se encuentra el fallo justo cuando pulsa para
+      // hablar, que es el único momento de la página que importa.
+      var T = {
+        es: {
+          titulo: 'El teléfono que nunca se queda sin contestar | Prime AI',
+          descripcion: 'Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario. Para negocios de Málaga.',
+          ir: 'Hablar con la IA (se graba)',
+          colgar: 'Colgar',
+          // {n} = llamadas perdidas al mes. El tercio se anuncia como
+          // suposición nuestra porque el agente lo anuncia igual en la
+          // llamada; una cuenta que esconde su propio supuesto es la que
+          // luego no aguanta que la discutan.
+          cuentaPie: 'Unas {n} llamadas perdidas al mes. Contamos sólo un tercio: está claro que no todas habrían reservado, y ese tercio es una suposición nuestra, no una cifra tuya. Al precio de lo más barato que haces. Esto es lo que se te escapa hoy, no lo que te devolvemos nosotros.',
+          navegador: 'Abre esta página en Chrome o en Safari para poder hablar.',
+          pidiendo: 'Pidiendo el micrófono...',
+          conectando: 'Conectando...',
+          enLinea: 'En línea, habla cuando quieras — pregúntale lo que sea.',
+          terminada: 'Llamada terminada.',
+          cortada: 'Se ha cortado la llamada.',
+          sinMicro: 'Necesito el micrófono — permíteselo y vuelve a darle.',
+          ocupado: 'Ahora mismo no puedo. Escríbeme y lo hablamos igual.',
+          noConecta: 'No he podido conectar. Inténtalo otra vez.'
+        },
+        en: {
+          titulo: 'The phone that never goes unanswered | Prime AI',
+          descripcion: "It answers for you when you can't pick up, speaks English or Spanish, and puts the job straight in your calendar. For businesses in Málaga.",
+          ir: 'Talk to the AI (recorded)',
+          colgar: 'Hang up',
+          cuentaPie: 'About {n} missed calls a month. We count only a third of them: obviously not all of them would have booked, and that third is our own assumption, not a figure from you. At the price of the cheapest thing you do. This is what gets past you today, not what we hand back.',
+          navegador: 'Open this page in Chrome or Safari to be able to talk.',
+          pidiendo: 'Asking for the microphone...',
+          conectando: 'Connecting...',
+          enLinea: "You're through — talk whenever you like, ask it anything.",
+          terminada: 'Call ended.',
+          cortada: 'The call dropped.',
+          sinMicro: 'I need the microphone — allow it and press again.',
+          ocupado: "I can't right now. Email me and we will talk anyway.",
+          noConecta: 'Could not connect. Try again.'
+        },
+        // NL y SV se añaden el 2026-08-23, cuando WEB NL y WEB SV ya estaban
+        // publicados en Retell. La descripción nombra el mercado propio, no
+        // Málaga: la página dice «Voor bedrijven in Nederland» arriba y una
+        // meta que dijera Málaga la contradiría en el resultado de búsqueda,
+        // que es donde se lee antes que la página.
+        nl: {
+          titulo: 'De telefoon die nooit meer overgaat zonder antwoord | Prime AI',
+          descripcion: 'Ze neemt op als jij niet kunt, spreekt Nederlands of Engels, en zet de afspraak meteen in je agenda. Voor bedrijven in Nederland.',
+          ir: 'Praat met de AI (wordt opgenomen)',
+          colgar: 'Ophangen',
+          cuentaPie: 'Ongeveer {n} gemiste oproepen per maand. We rekenen maar met een derde: natuurlijk zou niet iedereen geboekt hebben, en dat derde is onze eigen aanname, geen cijfer van jou. Tegen de prijs van het goedkoopste dat je doet. Dit is wat er vandaag langs je heen loopt, niet wat wij teruggeven.',
+          navegador: 'Open deze pagina in Chrome of Safari om te kunnen praten.',
+          pidiendo: 'Microfoon aanvragen...',
+          conectando: 'Verbinden...',
+          enLinea: 'Je bent verbonden — praat wanneer je wilt, vraag haar wat je wilt.',
+          terminada: 'Gesprek beëindigd.',
+          cortada: 'De verbinding is verbroken.',
+          sinMicro: 'Ik heb de microfoon nodig — sta hem toe en druk opnieuw.',
+          ocupado: 'Nu even niet. Mail me, dan praten we alsnog.',
+          noConecta: 'Verbinden lukte niet. Probeer het opnieuw.'
+        },
+        sv: {
+          titulo: 'Telefonen som aldrig får ringa obesvarad | Prime AI',
+          descripcion: 'Den svarar åt dig när du inte kan, talar svenska eller engelska, och lägger in jobbet direkt i din kalender. För företag i Sverige.',
+          ir: 'Prata med AI:n (spelas in)',
+          colgar: 'Lägg på',
+          cuentaPie: 'Ungefär {n} missade samtal i månaden. Vi räknar bara med en tredjedel: självklart hade inte alla bokat, och den tredjedelen är vårt eget antagande, ingen siffra från dig. Till priset på det billigaste du gör. Det här är vad som går dig förbi i dag, inte vad vi lämnar tillbaka.',
+          navegador: 'Öppna den här sidan i Chrome eller Safari för att kunna prata.',
+          pidiendo: 'Begär mikrofonen...',
+          conectando: 'Ansluter...',
+          enLinea: 'Du är framme — prata när du vill, fråga den vad som helst.',
+          terminada: 'Samtalet avslutat.',
+          cortada: 'Samtalet bröts.',
+          sinMicro: 'Jag behöver mikrofonen — tillåt den och tryck igen.',
+          ocupado: 'Jag kan inte just nu. Mejla mig så pratar vi ändå.',
+          noConecta: 'Kunde inte ansluta. Försök igen.'
+        }
+      };
+      var idioma = 'es';
+
+      // --- PREGUNTAS ---
+      document.querySelectorAll('.pregunta-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var item = btn.closest('.pregunta');
+          var abierta = item.classList.contains('abierta');
+          document.querySelectorAll('.pregunta.abierta').forEach(function (otra) {
+            otra.classList.remove('abierta');
+            otra.querySelector('.pregunta-btn').setAttribute('aria-expanded', 'false');
+          });
+          if (!abierta) {
+            item.classList.add('abierta');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      // --- LAS CIFRAS SUBEN AL VERLAS -----------------------------------
+      // Reescribe SÓLO los dígitos de cabeza, y por eso no sabe de idiomas:
+      // "2 tonos" y "2 rings" empiezan los dos por el número, así que si
+      // alguien cambia de idioma a media cuenta el sufijo que quede es el
+      // suyo y la animación sigue igual.
+      //
+      // El valor final sale del propio marcado, no de un data-target. Es
+      // la misma decisión que allí arriba: la página tiene que ser correcta
+      // sin scripts, así que no animar es ya el resultado bueno y esto sólo
+      // le añade el movimiento.
+      var subirCifra = function (el) {
+        var fin = parseInt((el.textContent.match(/^\d+/) || ['0'])[0], 10);
+        if (!fin) return;
+        var t0 = null;
+        var paso = function (t) {
+          if (t0 === null) t0 = t;
+          var p = Math.min((t - t0) / 900, 1);
+          // easeOutCubic: arranca rápido y frena, que es como se lee un contador
+          var v = Math.round(fin * (1 - Math.pow(1 - p, 3)));
+          el.textContent = el.textContent.replace(/^\d+/, v);
+          if (p < 1) requestAnimationFrame(paso);
+        };
+        requestAnimationFrame(paso);
+      };
+
+      // --- APARICIÓN AL BAJAR ---
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        document.querySelectorAll('.aparece').forEach(function (el) { el.classList.add('visible'); });
+      } else {
+        var obs = new IntersectionObserver(function (entradas) {
+          entradas.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+          });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.aparece').forEach(function (el) { obs.observe(el); });
+
+        // Observador aparte para el contador, y no por gusto: con la portada
+        // a 80vh el borde de la banda ya asoma al cargar — un 28% de ella —
+        // así que el observador de arriba, a 0.1, dispara sola al entrar en
+        // la página. Colgar de él la cuenta la gastaba entera mientras el
+        // visitante seguía mirando el titular, con los números todavía por
+        // debajo del corte. A 0.6 sobre la rejilla, y no sobre la sección,
+        // el disparo ocurre cuando las cifras se ven de verdad.
+        var rejilla = document.querySelector('.cifras');
+        if (rejilla) {
+          var obsCifras = new IntersectionObserver(function (entradas) {
+            entradas.forEach(function (e) {
+              if (!e.isIntersecting) return;
+              obsCifras.unobserve(e.target);
+              e.target.querySelectorAll('.cifra-num').forEach(subirCifra);
+            });
+          }, { threshold: 0.6 });
+          obsCifras.observe(rejilla);
+        }
+      }
+
+      // --- LA CUENTA ----------------------------------------------------
+      // Exportada al objeto global sólo para que test-roi.js la pueda leer
+      // y comprobar; nada de la página la llama desde fuera de aquí.
+      //
+      // Un tercio, veinte días, y el precio MÁS BARATO. Los tres vienen de
+      // sales-agent.ts (PITCH_STATE), no de aquí, y no se tocan por
+      // separado: el visitante oye al agente hacer esta misma cuenta poco
+      // después de leerla.
+      var DIAS_LABORABLES = 20;
+      var PROPORCION_QUE_RESERVA = 1 / 3;
+
+      /* `paso` por defecto 50 para no romper a nadie que llame a esto con dos
+         argumentos, que es como estaba hasta el 2026-08-23. En coronas el
+         redondeo a 50 no redondea nada — 50 SEK son cuatro euros — así que
+         cada moneda trae el suyo en MONEDA.paso. */
+      function loQueSeEscapa(perdidasAlDia, precioMasBarato, paso) {
+        paso = paso || 50;
+        var perdidasAlMes = perdidasAlDia * DIAS_LABORABLES;
+        var habrianReservado = perdidasAlMes * PROPORCION_QUE_RESERVA;
+        // A la cincuentena: una cuenta con dos supuestos dentro no se
+        // presenta al euro, porque esa precisión es la parte que no es
+        // verdad. Redondear siempre hacia abajo mantiene la regla del
+        // agente de que una suposición sólo puede hacer el número MENOR.
+        var euros = Math.floor(habrianReservado * precioMasBarato / paso) * paso;
+        return { perdidasAlMes: perdidasAlMes, euros: euros };
+      }
+
+      /* LA CUENTA NO SE TRADUCE, SE CAMBIA DE MERCADO. Traducir la etiqueta
+         «60 €» a «700 kr» y dejar el value en 60 haría una suma sueca con
+         precios españoles, que es peor que no tener la sección: el número
+         saldría bien formateado y mal calculado.
+
+         Los precios NL son los de España a ojo de vista y medio, y los SV su
+         equivalente en coronas — la misma escala que sales-agent.ts ya fijó
+         en NETHERLANDS.roundNumber («about three thousand euros a month») y
+         SWEDEN.roundNumber («about twenty thousand kronor a month»). Si se
+         tocan aquí, se tocan allí: la agente dice esa cifra en voz alta.
+
+         El orden importa: es el orden de los <input name="precio"> en el
+         marcado, y traducir() los recorre con el mismo índice. */
+      var MONEDA = {
+        es: { loc: 'es-ES', cur: 'EUR', paso: 50,  precios: [60, 150, 400, 900] },
+        en: { loc: 'en-IE', cur: 'EUR', paso: 50,  precios: [60, 150, 400, 900] },
+        nl: { loc: 'nl-NL', cur: 'EUR', paso: 50,  precios: [90, 225, 600, 1350] },
+        sv: { loc: 'sv-SE', cur: 'SEK', paso: 500, precios: [700, 1700, 4500, 10000] }
+      };
+      window.loQueSeEscapa = loQueSeEscapa;
+
+      var cifra = document.getElementById('cifra');
+      var cifraPie = document.getElementById('cifra-pie');
+
+      function pintarCuenta() {
+        var lla = document.querySelector('input[name="llamadas"]:checked');
+        var pre = document.querySelector('input[name="precio"]:checked');
+        // Sin las dos no hay cuenta. No hay valores por defecto a propósito:
+        // un número ahí antes de que él diga nada sería una cifra que la
+        // página se ha inventado sobre su negocio.
+        if (!lla || !pre) return;
+
+        var m = MONEDA[idioma];
+        var r = loQueSeEscapa(Number(lla.value), Number(pre.value), m.paso);
+        cifra.textContent = new Intl.NumberFormat(m.loc, {
+          style: 'currency', currency: m.cur, maximumFractionDigits: 0
+        }).format(r.euros);
+        cifraPie.textContent = T[idioma].cuentaPie.replace('{n}', r.perdidasAlMes);
+      }
+
+      document.querySelectorAll('.calc-ops input').forEach(function (radio) {
+        radio.addEventListener('change', pintarCuenta);
+      });
+
+      // --- PANEL DE LLAMADA ---------------------------------------------
+      // Portado de Voice_agent/src/demo.ts, que ya lo tenía funcionando. El
+      // SDK son 540 KB de módulo ES, así que se import()a al primer clic y no
+      // en la carga: quien no llama no lo descarga.
+      var panel = document.getElementById('panel');
+      var ir = document.getElementById('ir');
+      var estado = document.getElementById('estado');
+      // La etiqueta ?c= viene del enlace que se le mandó, igual que en /voice,
+      // para saber de qué negocio venía la llamada.
+      var etiqueta = new URLSearchParams(location.search).get('c') || '';
+      var viva = null;
+
+      function di(t) { estado.textContent = t; }
+
+      // La analítica NUNCA puede ser el motivo de que la llamada no arranque.
+      // El script va con defer y cualquier filtro puede tumbarlo, así que
+      // window.umami puede no existir todavía o no existir nunca, y aquí eso
+      // tiene que ser un no-op y no un TypeError a mitad del manejador.
+      // Firma verificada contra el /s/t.js que se sirve de verdad:
+      // `umami.track(nombre, datos)` con nombre string y datos objeto.
+      function pista(nombre, datos) {
+        if (window.umami) window.umami.track(nombre, datos);
+      }
+
+      function fin(aviso) {
+        viva = null;
+        panel.classList.remove('hablando');
+        ir.disabled = false;
+        ir.textContent = T[idioma].ir;
+        di(aviso);
+      }
+
+      document.querySelectorAll('.llamar').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          di('');
+          panel.showModal();
+          // undefined del todo en un origen no seguro, así que esto también
+          // pilla que se haya abierto por http o desde un archivo local.
+          if (!navigator.mediaDevices) {
+            ir.disabled = true;
+            di(T[idioma].navegador);
+          }
+        });
+      });
+
+      document.getElementById('cerrar').addEventListener('click', function () { panel.close(); });
+
+      // Vale para el botón de cerrar, para Esc y para el fondo: cerrar el panel
+      // a media llamada tiene que colgar, o el agente sigue hablando y
+      // facturando en una habitación vacía.
+      panel.addEventListener('close', function () { if (viva) viva.stopCall(); });
+
+      ir.addEventListener('click', function () {
+        if (viva) { viva.stopCall(); return; }
+        // DESPUÉS del return de colgar: aquí arriba es donde el atributo
+        // contaba de más. Esto es un intento de llamada y nada más.
+        pista('demo-boton-hablar');
+        ir.disabled = true;
+        di(T[idioma].pidiendo);
+
+        // El micrófono lo pedimos NOSOTROS, antes de emitir nada. No es
+        // negociable: el SDK llama a setMicrophoneEnabled(true) sin esperarlo,
+        // así que con el micrófono DENEGADO startCall() resuelve igual, el
+        // agente habla y factura, y no llega ningún evento de error. El
+        // visitante se quedaría oyendo una demo que parece viva sin oír nada
+        // útil, y lo pagamos nosotros.
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(function (flujo) {
+          flujo.getTracks().forEach(function (pista) { pista.stop(); });
+          di(T[idioma].conectando);
+          // `lang` lo lee demo.ts para elegir el saludo inicial en español.
+          // Estaba SÓLO en el fichero desplegado, no aquí: se editó a mano
+          // sobre /var/www el 2026-08-06 y nunca volvió al repo, así que
+          // cualquier despliegue de este fichero lo habría borrado. Se trae
+          // al repo para que el origen vuelva a ser un superconjunto de lo
+          // que hay en producción.
+          //
+          // El servidor que no conozca la clave la ignora — sólo lee `c` —
+          // así que las dos mitades se pueden desplegar en cualquier orden.
+          return fetch('/voice/token', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ c: etiqueta, lang: idioma })
+          });
+        }, function () {
+          throw new Error('micro');
+        }).then(function (res) {
+          if (res.status === 429) throw new Error('ocupado');
+          if (!res.ok) throw new Error('token');
+          return res.json();
+        }).then(function (cuerpo) {
+          return Promise.all([cuerpo.access_token, import('/voice/retell.js')]);
+        }).then(function (partes) {
+          var cliente = new partes[1].RetellWebClient();
+          // Antes de startCall: call_ready puede llegar primero, y el botón que
+          // reactiva es el de colgar.
+          viva = cliente;
+          // call_ready, NO call_started: call_started salta antes de que se
+          // suscriba el audio del agente, así que diría "estás en línea"
+          // mientras el visitante sigue oyendo silencio.
+          cliente.on('call_ready', function () {
+            // Va aquí y no en el then() de startCall por la razón de arriba:
+            // esto cuenta llamadas que el visitante YA oye.
+            pista('demo-en-linea');
+            ir.disabled = false;
+            ir.textContent = T[idioma].colgar;
+            panel.classList.add('hablando');
+            di(T[idioma].enLinea);
+          });
+          cliente.on('call_ended', function () { fin(T[idioma].terminada); });
+          cliente.on('error', function () { fin(T[idioma].cortada); });
+          addEventListener('pagehide', function () { cliente.stopCall(); }, { once: true });
+          return cliente.startCall({ accessToken: partes[0] }).then(function () {
+            // iOS no reproduce el audio de entrada sin un gesto, y este
+            // manejador ES uno. Se llama por precaución: nunca se ha probado en
+            // un iPhone de verdad, y Chromium headless no prueba nada de eso.
+            return cliente.startAudioPlayback();
+          });
+        }).catch(function (err) {
+          // `motivo` es una lista cerrada de cuatro valores a propósito. El
+          // else pilla también lo que lance el SDK, y esos mensajes son
+          // largos y distintos cada vez: meterlos tal cual llenaría el panel
+          // de Umami de valores de uno en uno y no se podría contar nada.
+          var falla = err && err.message;
+          if (falla === 'micro') {
+            pista('demo-falla', { motivo: 'micro' });
+            fin(T[idioma].sinMicro);
+          } else if (falla === 'ocupado') {
+            pista('demo-falla', { motivo: 'ocupado' });
+            fin(T[idioma].ocupado);
+          } else {
+            pista('demo-falla', { motivo: falla === 'token' ? 'token' : 'otro' });
+            fin(T[idioma].noConecta);
+          }
+        });
+      });
+
+      // --- CAMBIO DE IDIOMA ---------------------------------------------
+      // Va al final a propósito: necesita `viva` e `ir`, que se declaran en
+      // el bloque del panel de aquí arriba.
+      //
+      // El español es lo que hay en el marcado. La primera vez que se sale de
+      // él se guarda el original en data-es, y a partir de ahí esto sólo
+      // elige un atributo. innerHTML y no textContent porque el pie
+      // y la letra pequeña del panel llevan <strong> y enlaces dentro; lo
+      // que se inyecta está escrito en este archivo y no viene de fuera.
+      //
+      // El selector sigue siendo [data-en] y no [data-nl], porque el inglés
+      // es el único idioma que tiene TODOS los nodos por definición: es el
+      // que se añadió a la vez que el marcado español. Un nodo con data-nl
+      // pero sin data-en sería un nodo que el bucle no visita nunca, y por
+      // eso test-palette.js exige los tres juntos.
+      function traducir(nuevo) {
+        idioma = nuevo;
+
+        document.querySelectorAll('[data-en]').forEach(function (el) {
+          if (el.dataset.es === undefined) el.dataset.es = el.innerHTML;
+          // El respaldo es el español y no el inglés a propósito: si algún
+          // día falta una traducción, lo que se ve es el marcado original
+          // entero, no un hueco en blanco.
+          el.innerHTML = el.dataset[nuevo] !== undefined ? el.dataset[nuevo] : el.dataset.es;
+        });
+
+        // Los precios de la calculadora, en la moneda del mercado. Va aquí y
+        // no en pintarCuenta() porque los value tienen que estar puestos
+        // ANTES de que nadie pulse un radio, no sólo antes de pintar.
+        document.querySelectorAll('input[name="precio"]').forEach(function (radio, i) {
+          radio.value = MONEDA[nuevo].precios[i];
+        });
+
+        document.documentElement.lang = nuevo;
+        document.title = T[nuevo].titulo;
+        var meta = document.querySelector('meta[name="description"]');
+        if (meta) meta.content = T[nuevo].descripcion;
+
+        // El bucle de arriba acaba de escribir en el botón la etiqueta de
+        // empezar. Si hay una llamada en marcha lo que tiene que decir es
+        // "colgar": dejarlo en "hablar con la IA" en mitad de la llamada
+        // invita a pulsarlo creyendo que aún no ha empezado, y lo que hace
+        // es cortarla.
+        if (viva) ir.textContent = T[nuevo].colgar;
+
+        // Mismo caso que el botón: el bucle acaba de devolver al pie de la
+        // cuenta su texto de "elige tus dos cifras", que es mentira si ya
+        // hay un número puesto encima. Repintar también cambia el formato
+        // de la moneda, que no es el mismo en los dos idiomas.
+        pintarCuenta();
+
+        document.querySelectorAll('.idioma-btn').forEach(function (b) {
+          b.setAttribute('aria-pressed', String(b.dataset.idioma === nuevo));
+        });
+
+        try {
+          localStorage.setItem('idioma', nuevo);
+          // set() sobre la URL que ya hay, no una query nueva: ?c= dice de
+          // qué negocio venía el enlace y se perdería al reescribirla entera.
+          var url = new URL(location.href);
+          url.searchParams.set('lang', nuevo);
+          history.replaceState(null, '', url);
+        } catch (e) {
+          // Safari en privado falla en setItem y file:// falla en
+          // replaceState. Ninguna de las dos cosas impide leer la página, y
+          // el idioma ya está cambiado antes de llegar aquí.
+        }
+      }
+
+      document.querySelectorAll('.idioma-btn').forEach(function (b) {
+        b.addEventListener('click', function () { traducir(b.dataset.idioma); });
+      });
+
+      // ?lang manda sobre lo guardado: un enlace que se manda en inglés tiene
+      // que abrirse en inglés aunque quien lo abra hubiera elegido español
+      // otro día. Sin ninguno de los dos no corre nada y la página se queda
+      // como está en el marcado, que es española.
+      //
+      // Se comprueba contra MONEDA y no contra una lista escrita aquí: un
+      // ?lang=de tiene que caer en español, no romper el bucle de arriba con
+      // un dataset.de que no existe. Añadir un idioma es añadirlo a MONEDA y
+      // a T, y esta línea se entera sola.
+      var pedido = new URLSearchParams(location.search).get('lang');
+      if (!pedido) { try { pedido = localStorage.getItem('idioma'); } catch (e) {} }
+      if (pedido && pedido !== 'es' && MONEDA[pedido] && T[pedido]) traducir(pedido);
+    })();
+  </script>
+
 
   <script src="assets/scroll/scrub-engine.js"></script>
   <script>
     mountScrollWorld(document.getElementById('world'), {
-      brand: { name: 'Prime AI', href: '#top' },
-      cta: { label: 'Reservar una llamada', href: '#demo' },
-      hint: 'baja para entrar',
-      diveScroll: 1.3,
-      connScroll: 0.9,
-      sections: [
+      "brand": {
+        "name": "Prime AI",
+        "href": "#top"
+      },
+      "cta": {
+        "label": "Reservar una llamada",
+        "href": "https://cal.eu/prime.ai/intro-wa"
+      },
+      "hint": "baja para entrar",
+      "diveScroll": 1.3,
+      "connScroll": 0.9,
+      "sections": [
         {
-          id: 'obra', label: 'La obra',
-          still: 'assets/scroll/still/obra.webp',
-          clip:  'assets/scroll/vid/obra.mp4',
-          accent: '#C2703D',
-          scroll: 1.7, linger: 0.45,
-          eyebrow: 'Martes, 10:40',
-          title: 'El teléfono suena con las manos en el sifón.',
-          body: 'No es que no quieras cogerlo. Es que no puedes.',
-          tags: ['Manos ocupadas', 'Suena cinco veces'],
+          "id": "obra",
+          "label": "La obra",
+          "still": "assets/scroll/still/obra.webp",
+          "clip": "assets/scroll/vid/obra.mp4",
+          "accent": "#C2703D",
+          "scroll": 1.7,
+          "linger": 0.45,
+          "eyebrow": "Martes, 10:40",
+          "title": "El teléfono suena con las manos en el sifón.",
+          "body": "No es que no quieras cogerlo. Es que no puedes.",
+          "tags": [
+            "Manos ocupadas",
+            "Suena cinco veces"
+          ]
         },
         {
-          id: 'cocina', label: 'Al otro lado',
-          still: 'assets/scroll/still/cocina.webp',
-          clip:  'assets/scroll/vid/cocina.mp4',
-          accent: '#C2703D',
-          eyebrow: 'Al otro lado',
-          title: 'No deja mensaje. Llama al siguiente.',
-          body: 'El trabajo se lo lleva quien cogió el teléfono, no quien mejor lo hace.',
-          tags: ['Sin mensaje', 'Siguiente de la lista'],
+          "id": "cocina",
+          "label": "Al otro lado",
+          "still": "assets/scroll/still/cocina.webp",
+          "clip": "assets/scroll/vid/cocina.mp4",
+          "accent": "#C2703D",
+          "eyebrow": "Al otro lado",
+          "title": "No deja mensaje. Llama al siguiente.",
+          "body": "El trabajo se lo lleva quien cogió el teléfono, no quien mejor lo hace.",
+          "tags": [
+            "Sin mensaje",
+            "Siguiente de la lista"
+          ]
         },
         {
-          id: 'centralita', label: 'Lo que cambia',
-          still: 'assets/scroll/still/centralita.webp',
-          clip:  'assets/scroll/vid/centralita.mp4',
-          accent: '#C2703D',
-          scroll: 1.5, linger: 0.4,
-          eyebrow: 'Lo que cambia',
-          title: 'Contesta en dos tonos. A las tres de la mañana también.',
-          body: 'Tu número sigue siendo tu número. No tocas nada.',
-          tags: ['Dos tonos', '24 horas', 'Tu mismo número'],
+          "id": "centralita",
+          "label": "Lo que cambia",
+          "still": "assets/scroll/still/centralita.webp",
+          "clip": "assets/scroll/vid/centralita.mp4",
+          "accent": "#C2703D",
+          "scroll": 1.5,
+          "linger": 0.4,
+          "eyebrow": "Lo que cambia",
+          "title": "Contesta en dos tonos. A las tres de la mañana también.",
+          "body": "Tu número sigue siendo tu número. No tocas nada.",
+          "tags": [
+            "Dos tonos",
+            "24 horas",
+            "Tu mismo número"
+          ]
         },
         {
-          id: 'agenda', label: 'La cita',
-          still: 'assets/scroll/still/agenda.webp',
-          clip:  'assets/scroll/vid/agenda.mp4',
-          accent: '#C2703D',
-          eyebrow: 'Mientras sigues debajo del fregadero',
-          title: 'La cita ya está puesta.',
-          body: 'Nombre, dirección, qué le pasa y a qué hora. Te llega escrito.',
-          tags: ['Hora confirmada', 'Dirección', 'Motivo'],
+          "id": "agenda",
+          "label": "La cita",
+          "still": "assets/scroll/still/agenda.webp",
+          "clip": "assets/scroll/vid/agenda.mp4",
+          "accent": "#C2703D",
+          "eyebrow": "Mientras sigues debajo del fregadero",
+          "title": "La cita ya está puesta.",
+          "body": "Nombre, dirección, qué le pasa y a qué hora. Te llega escrito.",
+          "tags": [
+            "Hora confirmada",
+            "Dirección",
+            "Motivo"
+          ]
         },
         {
-          id: 'furgoneta', label: 'A la mañana siguiente',
-          still: 'assets/scroll/still/furgoneta.webp',
-          clip:  'assets/scroll/vid/furgoneta.mp4',
-          accent: '#C2703D',
-          eyebrow: 'A la mañana siguiente',
-          title: 'A las nueve estás en su portal.',
-          body: 'El mismo trabajo que ayer se habría ido a otro.',
-          tags: ['Nueve en punto'],
+          "id": "furgoneta",
+          "label": "A la mañana siguiente",
+          "still": "assets/scroll/still/furgoneta.webp",
+          "clip": "assets/scroll/vid/furgoneta.mp4",
+          "accent": "#C2703D",
+          "eyebrow": "A la mañana siguiente",
+          "title": "A las nueve estás en su portal.",
+          "body": "El mismo trabajo que ayer se habría ido a otro.",
+          "tags": [
+            "Nueve en punto"
+          ]
         },
         {
-          id: 'demo', label: 'Escúchala',
-          still: 'assets/scroll/still/demo.webp',
-          clip:  'assets/scroll/vid/demo.mp4',
-          accent: '#2563EB',
-          scroll: 1.8, linger: 0.5,
-          eyebrow: 'Compruébalo',
-          title: 'Escúchala contestar.',
-          body: 'Reserva quince minutos y te la enseño con tu propio caso.',
-          tags: [],
-          /* El único azul de toda la película está aquí, y es el único botón.
-             OJO: nada de tel: en esta página. Los seis tel: de es.html apuntan al
-             951 870 630, que sigue muerto y apagado por el bloque LÍNEA MUERTA;
-             copiar aquí ese patrón resucitaría un número que no contesta. */
-          cta: { primary: { label: 'Reservar una llamada conmigo',
-                            href: 'https://cal.eu/prime.ai/intro-wa' } },
-        },
+          "id": "demo-film",
+          "label": "Escúchala",
+          "still": "assets/scroll/still/demo.webp",
+          "clip": "assets/scroll/vid/demo.mp4",
+          "accent": "#2563EB",
+          "scroll": 1.8,
+          "linger": 0.5,
+          "eyebrow": "Compruébalo",
+          "title": "Escúchala contestar.",
+          "body": "Sigue bajando: debajo está todo — la calculadora, la demo en directo y el precio.",
+          "tags": [],
+          "cta": {
+            "primary": {
+              "label": "Reservar una llamada conmigo",
+              "href": "https://cal.eu/prime.ai/intro-wa"
+            }
+          }
+        }
       ],
-      connectors: [
-        'assets/scroll/vid/conn_0.mp4',
-        'assets/scroll/vid/conn_1.mp4',
-        'assets/scroll/vid/conn_2.mp4',
-        'assets/scroll/vid/conn_3.mp4',
-        'assets/scroll/vid/conn_4.mp4',
-      ],
+      "connectors": [
+        "assets/scroll/vid/conn_0.mp4",
+        "assets/scroll/vid/conn_1.mp4",
+        "assets/scroll/vid/conn_2.mp4",
+        "assets/scroll/vid/conn_3.mp4",
+        "assets/scroll/vid/conn_4.mp4"
+      ]
     });
   </script>
 </body>

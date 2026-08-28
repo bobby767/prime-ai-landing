@@ -135,6 +135,26 @@ function mountScrollWorld(container, config) {
 
   [sky, scrollbar, topbar, stage, copylayer, route, hint, track].forEach(n => container.appendChild(n));
 
+  // ---- the exit ----
+  // Todo lo de arriba menos `track` es position:fixed, asi que sin esto la pelicula
+  // se queda pegada a la pantalla para siempre y tapa cualquier seccion normal que
+  // venga despues del contenedor (comprobado: la seccion esta ahi, en el viewport,
+  // y no se ve). EXIT_LAYERS se desvanece en el ultimo vh del track y entrega la
+  // pagina al contenido de debajo.
+  // Se activa SOLO si hay algo debajo: una pagina que sea nada mas la pelicula debe
+  // seguir terminando con el ultimo fotograma y su CTA en pantalla, no en blanco.
+  // Dos velocidades. El texto de la pelicula y el de la pagina de debajo se cruzan
+  // en el relevo y a media opacidad se leian los dos a la vez, encima uno de otro.
+  // La capa de copia, la barra y los puntos se van primero; la imagen se queda mas
+  // rato, que es lo que hace de fundido.
+  const EXIT_TEXT = [scrollbar, topbar, copylayer, route];
+  const EXIT_IMAGE = [sky, stage];
+  const hasContentBelow = () => {
+    const n = container.nextElementSibling;
+    return !!n && n.offsetHeight > 0;
+  };
+  let exits = false, lastExit = -1;
+
   // segment scenes
   SEGMENTS.forEach(s => {
     const scene = el('div', 'sw-scene'); scene.style.setProperty('--sw-accent', s.accent || '');
@@ -187,6 +207,7 @@ function mountScrollWorld(container, config) {
     SEGMENTS.forEach(s => { s.start = off * vh; off += s.w; s.end = off * vh; });
     totalW = off;
     track.style.height = (totalW * vh + vh) + 'px';   // +1vh so the last flight completes
+    exits = hasContentBelow();
     read();
   }
 
@@ -266,6 +287,18 @@ function mountScrollWorld(container, config) {
     }
     scrollbarFill.style.transform = `scaleX(${clamp(y / (totalW * vh))})`;
     hint.style.opacity = clamp(1 - y / (0.5 * vh));
+    // El +1vh del track es justo la zona de entrega: la pelicula se apaga mientras
+    // el contenido sube desde abajo. visibility:hidden al final para que deje de
+    // pintar y no intercepte nada.
+    if (exits) {
+      const ex = clamp((y - totalW * vh) / vh);
+      if (ex !== lastExit) {
+        lastExit = ex;
+        const exText = clamp(ex / 0.45);
+        for (const n of EXIT_TEXT)  { n.style.opacity = String(1 - exText); n.style.visibility = exText >= 1 ? 'hidden' : ''; }
+        for (const n of EXIT_IMAGE) { n.style.opacity = String(1 - ex);     n.style.visibility = ex >= 1 ? 'hidden' : ''; }
+      }
+    }
     if (particles) particles.style.transform = `translate3d(0, ${-y * 0.05}px, 0)`;
     ticking = false;
   }
@@ -360,7 +393,15 @@ function injectCSS() {
     --sw-font-display:ui-rounded,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;
     --sw-font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
     color:var(--sw-ink);font-family:var(--sw-font-body);}
-  html,body{margin:0;background:var(--sw-bg,#F5EDE0);overflow-x:hidden;}
+  /* El overflow-x va en el <body> y NUNCA en el <html>. Cualquier valor distinto de
+     visible en la raiz cambia el scrollport y mata el position:sticky de la pagina
+     que va debajo — el nav de es.html se despegaba. Medido las tres veces: con la
+     regla del motor navTop=-1800; con la hoja entera desactivada, 11476 (no llega);
+     poniendo overflow-x:visible en el <html>, 0 = pegado. clip TAMPOCO vale, tiene
+     el mismo efecto en la raiz. En el body si es seguro: es lo que ya hace es.html
+     en produccion, donde el nav se pega perfectamente. */
+  html,body{margin:0;background:var(--sw-bg,#F5EDE0);}
+  body{overflow-x:hidden;}
   .sw-sky{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:var(--sw-bg);}
   .sw-sky__grad{position:absolute;inset:-10%;background:linear-gradient(178deg,color-mix(in srgb,var(--sw-accent) 12%,var(--sw-bg)) 0%,var(--sw-bg) 55%,color-mix(in srgb,var(--sw-accent) 6%,var(--sw-bg)) 100%);}
   .sw-sky__glow{position:absolute;inset:0;background:radial-gradient(60% 42% at 74% 16%,color-mix(in srgb,var(--sw-accent) 22%,transparent),transparent 70%),radial-gradient(46% 34% at 50% 50%,color-mix(in srgb,#fff 45%,transparent),transparent 70%);}
