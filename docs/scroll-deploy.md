@@ -54,6 +54,22 @@ Los fondos empalman sin parpadeo: `--sw-bg` (#FAF8F5) y el `--paper` de `es.html
 (`oklch(0.9798 0.0045 78.3)`) dan los dos `rgb(250,248,245)` exactos, medido en el
 navegador. Si alguien toca uno, tiene que tocar el otro.
 
+## Rutas relativas: el 404 que en local no se ve
+
+`es.html` se sirve en la raiz (`/`), esta pagina en `/scroll/`. Sus rutas relativas
+(`demo-call.mp4`, 22 MB, y su poster) apuntarian a `/scroll/demo-call.mp4` → 404.
+En local NO se nota, porque ahi la pagina de prueba esta en la raiz igual que es.html.
+
+`compose.js` las pasa a absolutas en vez de copiar el video: se sirve el mismo
+fichero. Lo dice al componer:
+
+```
+compose: rutas relativas pasadas a absolutas: demo-call-poster.jpg, demo-call.mp4
+```
+
+Lo unico que sigue siendo relativo a proposito es `assets/scroll/...`, que si cuelga
+de `/scroll/`. `tests/test-scroll-page.js` falla si aparece cualquier otra.
+
 ## Lo que NO habla cuatro idiomas
 
 `es.html` cambia a EN/NL/SV con `traducir()` sobre atributos `data-en`. El motor se

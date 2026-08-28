@@ -49,6 +49,17 @@ const need = (marker) => {
 };
 ['<head>', '</head>', '<body>', '</body>'].forEach(need);
 
+// es.html se sirve en la raiz (/), pero esta pagina vive en /scroll/. Sus rutas
+// relativas (demo-call.mp4 pesa 22 MB) apuntarian a /scroll/demo-call.mp4 y darian
+// 404 — en local no se nota porque ahi la pagina esta en la raiz igual que es.html.
+// Se pasan a absolutas en vez de copiar el video: se sirve el mismo fichero.
+// OJO: esto va ANTES de inyectar nada nuestro. El <script> del motor SI es relativo
+// a proposito (/scroll/assets/...) y no debe tocarse.
+const rewritten = [];
+html = html.replace(
+  /(\s(?:src|href|poster)=")(?!https?:|\/|#|mailto:|tel:|data:)([^"]+)"/g,
+  (m, pre, val) => { rewritten.push(val); return `${pre}/${val}"`; });
+
 if (/name="robots"/.test(html)) throw new Error('compose: es.html ya trae un meta robots; revisalo a mano');
 
 html = html.replace('</head>', `  <!-- GENERADO por scroll-world/compose.js — no editar scroll.html a mano. -->
@@ -83,3 +94,4 @@ html = html.replace('</body>', `
 
 fs.writeFileSync(OUT, html);
 console.log(`compose: scroll.html escrito — ${config.sections.length} escenas sobre ${(html.length / 1024).toFixed(0)} KB de es.html`);
+console.log(`compose: rutas relativas pasadas a absolutas: ${rewritten.length ? rewritten.join(', ') : 'ninguna'}`);

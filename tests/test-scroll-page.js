@@ -38,7 +38,18 @@ if (/html\s*,\s*body\s*\{[^}]*overflow-x/.test(engine)) {
   fail.push('el motor pone overflow-x en html,body — eso rompe el sticky de la pagina de debajo; va solo en body');
 }
 
-// 4. El CSS del motor vive en un template literal: un acento grave suelto en un
+// 4. La pagina se sirve en /scroll/ y es.html en la raiz. Una ruta relativa aqui es
+//    un 404 en produccion que en local NO se ve (en local esta en la raiz igual que
+//    es.html). El unico relativo legitimo es el del motor, que si cuelga de /scroll/.
+const rel = [...scroll.matchAll(/\s(?:src|href|poster)="(?!https?:|\/|#|mailto:|tel:|data:)([^"]+)"/g)]
+  .map(m => m[1])
+  .filter(v => !v.startsWith('assets/scroll/'));
+if (rel.length) {
+  fail.push(`rutas relativas que darian 404 en /scroll/: ${[...new Set(rel)].join(', ')}\n` +
+            '      compose.js deberia haberlas pasado a absolutas');
+}
+
+// 5. El CSS del motor vive en un template literal: un acento grave suelto en un
 //    comentario lo parte y la pagina se despliega sin motor.
 try { new Function(engine); } catch (e) { fail.push(`scrub-engine.js no compila: ${e.message}`); }
 
@@ -47,4 +58,4 @@ if (fail.length) {
   fail.forEach((f, i) => console.error(`  ${i + 1}. ${f}`));
   process.exit(1);
 }
-console.log(`OK — scroll.html reproducible desde es.html + world.config.js, #world seguido de <${m[1]}>, sticky a salvo, motor compila`);
+console.log(`OK — scroll.html reproducible desde es.html + world.config.js, #world seguido de <${m[1]}>, sticky a salvo, sin rutas relativas rotas, motor compila`);
