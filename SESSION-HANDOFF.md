@@ -54,7 +54,7 @@ change.
 - `/home/ubuntu/Prime_AI/Landingpage/es.html` — `pista()` sits next to `di()`; the three call
   sites; the comment block above `#ir` (~line 2311) explains why the attribute is absent and
   must stay absent.
-- `/home/ubuntu/Prime_AI/Landingpage/test-palette.js` — 5 new assertions in the `[es]`
+- `/home/ubuntu/Prime_AI/Landingpage/tests/test-palette.js` — 5 new assertions in the `[es]`
   section, each mutation-tested this session.
 - `/home/ubuntu/Prime_AI/Voice_agent/src/sales-agent.ts` lines 940-1000 — the
   `VOICE_TEMPERATURE` docblock carrying the dB measurements and the two knobs already ruled
@@ -80,7 +80,7 @@ change.
 
 ## Verification — how to confirm things still work
 
-- `cd /home/ubuntu/Prime_AI/Landingpage && node test-palette.js` — exits 0, prints
+- `cd /home/ubuntu/Prime_AI/Landingpage && node tests/test-palette.js` — exits 0, prints
   `OK  en: ... | es: ... | nl: ...`.
 - `curl -s https://prime-ai.es/ | md5sum` — `e41d17ad2903cba4c5c36d96f45e573e`, matching
   `es.html`.

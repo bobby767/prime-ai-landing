@@ -18,7 +18,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const nl = fs.readFileSync(`${__dirname}/nl.html`, 'utf8');
+const nl = fs.readFileSync(`${__dirname}/../nl.html`, 'utf8');
 const blockers = [];
 const cleared = [];
 const check = (name, isBlocked, detail) =>

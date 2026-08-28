@@ -16,7 +16,7 @@
 // they are cleared. Two signals, because folding them into one would mean
 // either this file failing every run or that gate going quiet.
 const fs = require('fs');
-const read = f => fs.readFileSync(`${__dirname}/${f}`, 'utf8');
+const read = f => fs.readFileSync(`${__dirname}/../${f}`, 'utf8');
 const PAGES = { en: read('receptionist.html'), es: read('es.html'), nl: read('nl.html') };
 const fail = [];
 

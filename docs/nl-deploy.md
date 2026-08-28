@@ -3,7 +3,7 @@
 _Written 2026-08-09. **Nothing here has been executed.** The domain is not
 registered, the nginx block is not installed, and `nl.html` is not deployed._
 
-Gate: `node test-nl-ready.js` — exits 1 today with 5 blockers, exits 0 when the
+Gate: `node tests/test-nl-ready.js` — exits 1 today with 5 blockers, exits 0 when the
 page is genuinely deployable. Do not deploy while it is red; it is red for
 reasons that are invisible in a browser.
 
@@ -120,9 +120,9 @@ tree sits on a feature branch and a checkout would silently swap the live page.
 Same rule the `prime-ai.es` config states for `/es/` and `/en/`.
 
 ```bash
-node test-palette.js      # expect OK, 3 pages
-node test-roi.js          # expect OK
-node test-nl-ready.js     # must be exit 0
+node tests/test-palette.js      # expect OK, 3 pages
+node tests/test-roi.js          # expect OK
+node tests/test-nl-ready.js     # must be exit 0
 
 sudo mkdir -p /var/www/prime-ai-nl
 sudo cp /var/www/prime-ai-nl/index.html \

@@ -9,7 +9,7 @@
 const fs = require('fs');
 const assert = require('assert');
 
-const html = fs.readFileSync(__dirname + '/receptionist.html', 'utf8');
+const html = fs.readFileSync(__dirname + '/../receptionist.html', 'utf8');
 
 // new Function() on file contents is deliberate here: the input is our own
 // committed HTML, read by a dev running this locally. Parsing the maps out
@@ -83,7 +83,7 @@ console.log(`  unknown input falls back to: ${JSON.stringify(fallback)}`);
 // If these ever diverge, the prospect hears two different numbers built from
 // the same two answers, which is worse than showing no number at all.
 // ---------------------------------------------------------------------
-const esHtml = fs.readFileSync(__dirname + '/es.html', 'utf8');
+const esHtml = fs.readFileSync(__dirname + '/../es.html', 'utf8');
 
 // Same new Function() reasoning as the top of this file, and the same limits:
 // the only thing interpolated is a slice of our own committed es.html, read by
