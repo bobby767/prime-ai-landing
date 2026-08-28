@@ -100,14 +100,41 @@ compose: rutas relativas pasadas a absolutas: demo-call-poster.jpg, demo-call.mp
 Lo unico que sigue siendo relativo a proposito es `assets/scroll/...`, que si cuelga
 de `/scroll/`. `tests/test-scroll-page.js` falla si aparece cualquier otra.
 
-## Lo que NO habla cuatro idiomas
+## Idiomas: la pelicula tambien
 
-`es.html` cambia a EN/NL/SV con `traducir()` sobre atributos `data-en`. El motor se
-construye su propio DOM desde un objeto JS, asi que `traducir()` no lo alcanza: al
-pulsar la bandera inglesa **la pagina se traduce y la pelicula se queda en espanol**.
-Comprobado. Escribir esa copia es trabajo de redaccion, no de codigo — y la NL/SV sin
-revisar por un nativo esta vetada por `tests/test-nl-ready.js`, asi que no se traduce
-a maquina.
+Cualquier texto de `world.config.js` acepta `'texto'` o `{es, en, nl, sv}`. El motor
+pinta el espanol y cuelga los `data-en` / `data-nl` / `data-sv` al lado. No hace falta
+tocar `es.html`: su `traducir()` hace `querySelectorAll('[data-en]')` **cada vez** que
+se pulsa una bandera, asi que barre la pelicula con el resto de la pagina.
+
+Tres reglas que hacen que funcione:
+
+1. **Los `data-*` van en la hoja del texto** (`h2`, `p`, `span`, `li`), nunca en un
+   envoltorio. `traducir()` reescribe `innerHTML`; colgarlo de `.sw-copy` se llevaria
+   por delante todo lo de dentro.
+2. **El `<script>` del motor va ANTES del `<script>` de es.html** (lo hace
+   `compose.js`). Ese script llama a `traducir()` nada mas cargar; si la pelicula aun
+   no existe, sus `data-en` no estan en el DOM y se queda en espanol con la pagina ya
+   en ingles. Comprobado en las dos ordenes.
+3. **Las banderas de la barra de la pelicula no traducen nada**: pulsan las
+   `.idioma-btn` de la pagina de debajo. Un solo sistema de idiomas. La bandera activa
+   se sincroniza con un `MutationObserver` sobre su `aria-pressed`, asi sigue siendo
+   correcta se pulse arriba o abajo. Si no hay `.idioma-btn` en la pagina, no se
+   pintan.
+
+**ES y EN completos** (39 cadenas). **NL y SV a proposito no**: `traducir()` cae al
+espanol cuando falta una traduccion, asi que un visitante holandes ve la pagina en
+holandes y la pelicula en espanol — sin huecos. Escribir esas dos es trabajo de
+redaccion y `tests/test-nl-ready.js` veta el holandes sin revisar por un nativo, asi
+que no se traduce a maquina. Para anadirlas: `nl:` y `sv:` en `world.config.js` y
+recomponer, sin tocar codigo.
+
+## La barra de arriba va justa
+
+Las banderas (160 px) y el salto (118 px) llenaron una barra que ya iba llena. A 880 px
+el boton de reservar se salia a 1005 px y el `overflow-x:hidden` del body se lo tragaba
+**sin dejar rastro**. El nav de escenas se esconde ahora por debajo de 1080 px: es un
+adorno, y las banderas, el salto y el CTA no lo son. Comprobado de 861 a 1440 px.
 
 ## What is deployed where
 

@@ -85,12 +85,19 @@ html = html.replace('<body>', `<body>
        debajo. -->
   <div id="world"></div>`);
 
-html = html.replace('</body>', `
-  <script src="assets/scroll/scrub-engine.js"></script>
+// El motor va ANTES del <script> de es.html, no al final del body. Ese script lee
+// ?lang / localStorage y llama a traducir() nada mas cargar; si la pelicula todavia
+// no existe, sus data-en no estan en el DOM y se queda en espanol mientras el resto
+// de la pagina ya esta en ingles. Montando antes, traducir() la barre con todo lo
+// demas. #world esta arriba del body, asi que aqui ya existe.
+const HOST_SCRIPT = '  <script>\n    (function () {';
+need(HOST_SCRIPT);
+html = html.replace(HOST_SCRIPT, `  <script src="assets/scroll/scrub-engine.js"></script>
   <script>
     mountScrollWorld(document.getElementById('world'), ${JSON.stringify(config, null, 2).replace(/\n/g, '\n    ')});
   </script>
-</body>`);
+
+${HOST_SCRIPT}`);
 
 fs.writeFileSync(OUT, html);
 console.log(`compose: scroll.html escrito — ${config.sections.length} escenas sobre ${(html.length / 1024).toFixed(0)} KB de es.html`);

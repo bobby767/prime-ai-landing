@@ -80,6 +80,24 @@ function mountScrollWorld(container, config) {
   const N = SECTIONS.length;
   if (!N) return;
 
+  /* Idiomas. Cualquier texto de la config acepta 'hola' o {es,en,nl,sv}.
+     Se pinta el español y se cuelgan los data-* al lado, porque el traducir() de
+     es.html hace querySelectorAll('[data-en]') CADA VEZ que se pulsa una bandera:
+     no hay que tocar es.html, basta con que la pelicula lleve las etiquetas puestas.
+     Los data-* van en la hoja del texto (h2, p, span, li) y NUNCA en un envoltorio:
+     traducir() reescribe innerHTML, asi que colgarlo de .sw-copy se llevaria por
+     delante todo lo que hay dentro. */
+  const I18N = ['en', 'nl', 'sv'];
+  const t = (v) => (v && typeof v === 'object' && !Array.isArray(v)) ? (v.es != null ? v.es : '') : (v != null ? v : '');
+  const tAttrs = (v) => (v && typeof v === 'object' && !Array.isArray(v))
+    ? I18N.filter(l => v[l]).map(l => ` data-${l}="${esc(v[l])}"`).join('')
+    : '';
+  // Para lo que se pinta con textContent en vez de con plantilla.
+  function setI18n(node, v) {
+    node.textContent = t(v);
+    if (v && typeof v === 'object') I18N.forEach(l => { if (v[l]) node.dataset[l] = v[l]; });
+  }
+
   injectCSS();
   container.classList.add('sw-root');
 
@@ -123,11 +141,37 @@ function mountScrollWorld(container, config) {
   // Salida directa. La pelicula dura 14 pantallas de scroll: sin esto, quien solo
   // quiere la web se queda dentro y no encuentra como salir (paso de verdad). Solo
   // aparece si hay algo debajo a lo que saltar.
+  // Banderas. NO traducen nada por su cuenta: pulsan las de la pagina de debajo,
+  // que es donde vive traducir(). Un solo sistema de idiomas, no dos que se
+  // desincronizan. Solo se pintan si esas banderas existen — en una pagina suelta
+  // no hay a quien delegar y no aparecen.
+  const hostFlags = document.querySelectorAll('.idioma-btn');
+  if (hostFlags.length) {
+    const flags = el('div', 'sw-langs');
+    hostFlags.forEach((host) => {
+      const b = el('button', 'sw-lang');
+      b.type = 'button';
+      b.textContent = host.textContent.trim();
+      b.title = host.title || '';
+      b.setAttribute('aria-label', host.getAttribute('aria-label') || '');
+      const code = host.dataset.idioma;
+      const sync = () => b.classList.toggle('is-active', host.getAttribute('aria-pressed') === 'true');
+      sync();
+      // aria-pressed lo reescribe traducir(); se observa en vez de duplicar la
+      // logica, asi la bandera activa sigue siendo correcta se pulse donde se pulse.
+      new MutationObserver(sync).observe(host, { attributes: true, attributeFilter: ['aria-pressed'] });
+      b.addEventListener('click', () => host.click());
+      b.dataset.lang = code;
+      flags.appendChild(b);
+    });
+    topbar.appendChild(flags);
+  }
+
   let skip = null;
   if (container.nextElementSibling) {
     skip = el('a', 'sw-skip');
     skip.href = '#';
-    skip.textContent = config.skipLabel || 'Saltar a la web';
+    setI18n(skip, config.skipLabel || 'Saltar a la web');
     skip.addEventListener('click', (e) => {
       e.preventDefault();
       const below = container.nextElementSibling;
@@ -139,7 +183,7 @@ function mountScrollWorld(container, config) {
     topbar.appendChild(skip);
   }
   if (config.cta && config.cta.label) {
-    const c = el('a', 'sw-topcta'); c.href = config.cta.href || '#'; c.textContent = config.cta.label;
+    const c = el('a', 'sw-topcta'); c.href = config.cta.href || '#'; setI18n(c, config.cta.label);
     topbar.appendChild(c);
   }
 
@@ -147,7 +191,7 @@ function mountScrollWorld(container, config) {
   const copylayer = el('div', 'sw-copylayer');
   const route = el('div', 'sw-route');
   const hint = el('div', 'sw-hint');
-  const hintText = el('span'); hintText.textContent = config.hint || 'scroll'; hint.appendChild(hintText);
+  const hintText = el('span'); setI18n(hintText, config.hint || 'scroll'); hint.appendChild(hintText);
   hint.appendChild(el('i'));
   const track = el('div', 'sw-track');
 
@@ -190,19 +234,19 @@ function mountScrollWorld(container, config) {
     const c = el('article', 'sw-copy'); c.style.setProperty('--sw-accent', s.accent || '');
     c.innerHTML =
       `<span class="sw-copy__num">${pad(i + 1)} / ${pad(N)}</span>` +
-      (s.eyebrow ? `<span class="sw-copy__eyebrow">${esc(s.eyebrow)}</span>` : '') +
-      (s.title ? `<h2 class="sw-copy__title">${esc(s.title)}</h2>` : '') +
-      (s.body ? `<p class="sw-copy__body">${esc(s.body)}</p>` : '') +
-      (s.tags && s.tags.length ? `<ul class="sw-copy__tags">${s.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : '') +
+      (s.eyebrow ? `<span class="sw-copy__eyebrow"${tAttrs(s.eyebrow)}>${esc(t(s.eyebrow))}</span>` : '') +
+      (s.title ? `<h2 class="sw-copy__title"${tAttrs(s.title)}>${esc(t(s.title))}</h2>` : '') +
+      (s.body ? `<p class="sw-copy__body"${tAttrs(s.body)}>${esc(t(s.body))}</p>` : '') +
+      (s.tags && s.tags.length ? `<ul class="sw-copy__tags">${s.tags.map(g => `<li${tAttrs(g)}>${esc(t(g))}</li>`).join('')}</ul>` : '') +
       (s.cta ? `<div class="sw-copy__cta">${ctaBtns(s.cta)}</div>` : '');
     copylayer.appendChild(c); copies.push(c);
 
     const dot = el('button', 'sw-route__dot'); dot.style.setProperty('--sw-accent', s.accent || '');
-    dot.innerHTML = `<span class="sw-route__label">${esc(s.label || '')}</span><i></i>`;
+    dot.innerHTML = `<span class="sw-route__label"${tAttrs(s.label)}>${esc(t(s.label || ''))}</span><i></i>`;
     dot.addEventListener('click', () => jumpTo(i)); route.appendChild(dot); dots.push(dot);
 
     if (config.nav !== false) {
-      const b = el('button', 'sw-nav__item'); b.textContent = s.label || '';
+      const b = el('button', 'sw-nav__item'); setI18n(b, s.label || '');
       b.addEventListener('click', () => jumpTo(i)); nav.appendChild(b);
     }
   });
@@ -379,10 +423,11 @@ function mountScrollWorld(container, config) {
   function el(tag, cls) { const n = document.createElement(tag); if (cls) n.className = cls; return n; }
   function pad(n) { return String(n).padStart(2, '0'); }
   function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
   function ctaBtns(cta) {
     let h = '';
-    if (cta.primary) h += `<a class="sw-btn sw-btn--primary" href="${esc(cta.primary.href || '#')}">${esc(cta.primary.label)}</a>`;
-    if (cta.secondary) h += `<a class="sw-btn sw-btn--ghost" href="${esc(cta.secondary.href || '#')}">${esc(cta.secondary.label)}</a>`;
+    if (cta.primary) h += `<a class="sw-btn sw-btn--primary" href="${esc(cta.primary.href || '#')}"${tAttrs(cta.primary.label)}>${esc(t(cta.primary.label))}</a>`;
+    if (cta.secondary) h += `<a class="sw-btn sw-btn--ghost" href="${esc(cta.secondary.href || '#')}"${tAttrs(cta.secondary.label)}>${esc(t(cta.secondary.label))}</a>`;
     return h;
   }
 }
@@ -473,6 +518,19 @@ function injectCSS() {
   /* Mismo tratamiento de pildora que .sw-nav, y por el mismo motivo: cae encima de
      la pelicula, que es clara y cambia. Con solo color quedaba ilegible — el mismo
      error que la pista de abajo. */
+  /* Las banderas (160px) y el salto (118px) llenaron una barra que ya iba justa: a
+     880px el boton de reservar se salia a 1005px y el overflow-x:hidden del body se
+     lo tragaba sin avisar. El nav de escenas es lo prescindible — es un adorno, y
+     las banderas, el salto y el CTA no lo son. Medido: a 1024px entra por 25px, por
+     debajo no. */
+  @media (max-width:1080px){ .sw-nav{display:none;} }
+  .sw-langs{display:flex;gap:2px;padding:4px;border-radius:999px;background:color-mix(in srgb,#fff 55%,transparent);backdrop-filter:blur(10px);border:1px solid color-mix(in srgb,var(--sw-accent) 16%,transparent);}
+  /* Sin grayscale: en gris las banderas emoji son manchas iguales y no se distingue
+     una de otra. Como la fila de banderas de es.html, a color; la inactiva solo baja
+     de opacidad. */
+  .sw-lang{font:inherit;font-size:1rem;line-height:1;border:0;background:transparent;cursor:pointer;padding:5px 8px;border-radius:999px;opacity:.5;transition:opacity .2s,background .2s;}
+  .sw-lang:hover{opacity:1;}
+  .sw-lang.is-active{opacity:1;background:color-mix(in srgb,var(--sw-accent) 22%,transparent);}
   .sw-skip{font-size:.82rem;font-weight:500;color:var(--sw-ink);text-decoration:none;white-space:nowrap;padding:8px 16px;border-radius:999px;background:color-mix(in srgb,#fff 55%,transparent);backdrop-filter:blur(10px);border:1px solid color-mix(in srgb,var(--sw-accent) 16%,transparent);}
   .sw-skip:hover{background:color-mix(in srgb,#fff 78%,transparent);}
   .sw-hint{position:fixed;left:50%;bottom:26px;z-index:30;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sw-ink);transition:opacity .3s;filter:drop-shadow(0 0 2px var(--sw-bg)) drop-shadow(0 0 5px var(--sw-bg));}
