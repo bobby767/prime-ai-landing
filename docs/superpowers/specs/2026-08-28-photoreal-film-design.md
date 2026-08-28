@@ -1,7 +1,8 @@
 # Scroll Film — Photoreal Redirection
 
 **Date:** 2026-08-28
-**Status:** Approved in brainstorming, **not scheduled**. No render budget committed.
+**Status:** Approved, and the blocking test has now **passed**. Face-free photoreal with
+a person in frame is proven end to end. See "The content-policy constraint".
 **Deliverable:** `scroll-world/prompts/*_real.txt`, `scroll-world/world.config.js`
 (`accent`, copy), regenerated `assets/scroll/{still,vid}/`. No change to `es.html`.
 **Supersedes:** nothing. The clay diorama film stays live until this is rendered.
@@ -29,8 +30,15 @@ Measured, three inputs, same pipeline, on `2026-08-28`:
 | input still | still renders? | dive renders? |
 |---|---|---|
 | `cocina` — woman on the phone, face visible in profile | **yes** (`cocina_real.png`, 2.0 MB) | **no** |
+| `cocina_real2` — same woman, same beat, shot from behind | yes | **yes** (`dive_cocina_real2.mp4`) |
 | `obra` — plumber, head inside the sink cabinet, no face | yes | yes (`dive_obra_real.mp4`) |
 | `rooftop` — rooftops at blue hour, no people | yes | yes (`dive_rooftop_real.mp4`) |
+
+Row 2 is the decisive one, added `2026-08-28` after the reframe. It is the *same
+woman in the same kitchen doing the same thing* as row 1 — only the camera moved,
+to behind her shoulder. The still passed, the dive passed, and across all 193
+frames the camera never comes round in front of her. **The scene was never blocked
+by photoreal; it was blocked by framing.** Cost: $0.166 + $1.131.
 
 The image model generates faces without complaint. The **video** step refuses to
 accept a face as input. The exact refusal, from `vid/dive_cocina_real.json`:
@@ -171,7 +179,9 @@ to a 224px stamp. It becomes correct only once portrait clips exist.
 | full 1080p re-render | ~$50 (pure pixel count; same for 9:16 and 16:9) |
 
 Balance: `GET https://rest.alpha.fal.ai/billing/user_balance` returns a plain USD
-number. $42.02 as of 2026-08-28. A flapping `403 "Exhausted balance"` on a healthy
+number. $40.72 as of 2026-08-28, with the $1.131 dive **not yet settled** — the
+endpoint lags a completed job by minutes, so it is a settled-spend figure and not a
+live one. Do not use it to decide whether the next render fits. A flapping `403 "Exhausted balance"` on a healthy
 balance is stale node state, not the account — retry the **submit** (a failed
 submit has queued nothing, so it cannot duplicate work).
 
@@ -188,9 +198,14 @@ The honest case against, verified from Umami on 2026-08-28:
 Against that: the film is the only asset that explains the product as a story, and
 the work to date is already sunk.
 
-**Decision 2026-08-28: write this spec, spend nothing.** Revisit if `/scroll/` ever
-gets linked, or if traffic justifies it. The cheap next step, whenever it comes, is
-the `cocina` reframe — free if the filter refuses, ~$1.30 if it passes.
+**Decision 2026-08-28, revised the same day.** The first call was "write the spec,
+spend nothing". The user then chose to continue, so the `cocina` reframe was run for
+$1.297 and passed. That was the one test that could have killed the direction, and
+it did not.
+
+What remains is no longer a question of feasibility, only of budget: 6 stills +
+6 dives + 5 connectors, roughly $20 at 480p or $50 at 1080p, against a balance of
+$40.72. Still worth weighing against 2-4 visitors/day to an unlinked page.
 
 ## Open questions
 
@@ -204,8 +219,9 @@ the `cocina` reframe — free if the filter refuses, ~$1.30 if it passes.
 - **`conn_real_0.txt` lifts out of *the kitchen***, but `conn_0` sits between `obra`
   and `cocina`. Either the file is misnamed for `conn_1`, or the photoreal scene
   order differs from the clay one. Unresolved.
-- **`cocina` reframe untested.** It is the one scene written around a face. Needs
-  re-shooting over-the-shoulder or from behind before its dive can exist.
+- ~~`cocina` reframe untested.~~ **Resolved 2026-08-28** — `still_cocina_real2.txt`
+  and `dive_cocina_real2.txt` both pass. The refused `_real` pair is kept beside
+  them as evidence of what does not.
 
 ## Out of scope
 
