@@ -54,6 +54,36 @@ Los fondos empalman sin parpadeo: `--sw-bg` (#FAF8F5) y el `--paper` de `es.html
 (`oklch(0.9798 0.0045 78.3)`) dan los dos `rgb(250,248,245)` exactos, medido en el
 navegador. Si alguien toca uno, tiene que tocar el otro.
 
+## La salida, y por que hace falta
+
+La pelicula dura **14,4 pantallas de scroll** (12.960 px a 900 px de alto): unas 114
+muescas de rueda antes de que aparezca la web. Funciona, pero quien solo quiere la
+pagina se queda dentro sin saber como salir. Por eso el motor pinta **Saltar a la
+web** en la barra de arriba, que salta directo al contenido de debajo. Solo aparece
+si hay algo debajo a lo que saltar.
+
+El salto es `behavior:'instant'` a proposito: `es.html` pone `scroll-behavior:smooth`
+y un scroll suave de 13.000 px obliga al motor a rebobinar todos los clips por el
+camino.
+
+**Acortar la pelicula es gratis** — la distancia de scroll son numeros en
+`world.config.js` (`diveScroll`, `connScroll` y el `scroll` de cada escena), no tiene
+nada que ver con el video. No hay que volver a renderizar nada.
+
+## @layer: la trampa que solo aparece al componer
+
+El motor metia TODA su hoja en `@layer sw`. Una regla en capa pierde contra
+cualquier regla sin capa **pase lo que pase con la especificidad**, asi que al juntarlo
+con `es.html` su reset `*{padding:0}` le ganaba a `.sw-topbar{padding:clamp(...)}`:
+barra sin padding, pildora del nav aplastada y boton pegado al borde. En la pagina
+suelta no se veia, porque no habia otra hoja contra la que perder.
+
+Ahora **solo la primera regla** (los tokens `.sw-root{--sw-*}`) va en la capa, que es
+para lo unico que hacia falta: que los tokens del anfitrion manden sobre los valores
+por defecto. El resto va sin capa y gana por especificidad como cualquier CSS normal.
+Comprobado que la pagina de debajo no cambia: todos sus `oklch` siguen intactos y lo
+unico que hereda del motor es el fondo del `body`, que es exactamente el mismo color.
+
 ## Rutas relativas: el 404 que en local no se ve
 
 `es.html` se sirve en la raiz (`/`), esta pagina en `/scroll/`. Sus rutas relativas

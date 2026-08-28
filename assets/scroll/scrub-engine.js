@@ -120,6 +120,24 @@ function mountScrollWorld(container, config) {
     topbar.appendChild(brand);
   }
   const nav = el('nav', 'sw-nav'); if (config.nav !== false) topbar.appendChild(nav);
+  // Salida directa. La pelicula dura 14 pantallas de scroll: sin esto, quien solo
+  // quiere la web se queda dentro y no encuentra como salir (paso de verdad). Solo
+  // aparece si hay algo debajo a lo que saltar.
+  let skip = null;
+  if (container.nextElementSibling) {
+    skip = el('a', 'sw-skip');
+    skip.href = '#';
+    skip.textContent = config.skipLabel || 'Saltar a la web';
+    skip.addEventListener('click', (e) => {
+      e.preventDefault();
+      const below = container.nextElementSibling;
+      // 'instant' a proposito: es.html pone scroll-behavior:smooth, y un scroll
+      // suave de 13.000 px obliga al motor a rebobinar todos los clips por el
+      // camino. Un salto es un salto.
+      window.scrollTo({ top: below.getBoundingClientRect().top + window.scrollY, behavior: 'instant' });
+    });
+    topbar.appendChild(skip);
+  }
   if (config.cta && config.cta.label) {
     const c = el('a', 'sw-topcta'); c.href = config.cta.href || '#'; c.textContent = config.cta.label;
     topbar.appendChild(c);
@@ -452,6 +470,11 @@ function injectCSS() {
      --sw-ink-soft da 1.99:1 (ilegible) y --sw-ink da 5.36:1. De ahi la tinta fuerte.
      El halo va en el padre, no en el texto, porque asi entra tambien el borde del
      raton y su rueda ::after, que es la mitad que peor se veia. */
+  /* Mismo tratamiento de pildora que .sw-nav, y por el mismo motivo: cae encima de
+     la pelicula, que es clara y cambia. Con solo color quedaba ilegible — el mismo
+     error que la pista de abajo. */
+  .sw-skip{font-size:.82rem;font-weight:500;color:var(--sw-ink);text-decoration:none;white-space:nowrap;padding:8px 16px;border-radius:999px;background:color-mix(in srgb,#fff 55%,transparent);backdrop-filter:blur(10px);border:1px solid color-mix(in srgb,var(--sw-accent) 16%,transparent);}
+  .sw-skip:hover{background:color-mix(in srgb,#fff 78%,transparent);}
   .sw-hint{position:fixed;left:50%;bottom:26px;z-index:30;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sw-ink);transition:opacity .3s;filter:drop-shadow(0 0 2px var(--sw-bg)) drop-shadow(0 0 5px var(--sw-bg));}
   .sw-hint i{width:22px;height:34px;border-radius:12px;border:2px solid color-mix(in srgb,var(--sw-ink) 28%,transparent);position:relative;}
   .sw-hint i::after{content:"";position:absolute;left:50%;top:7px;width:4px;height:7px;border-radius:2px;background:var(--sw-accent);transform:translateX(-50%);animation:sw-wheel 1.7s ease-in-out infinite;}
@@ -482,11 +505,21 @@ function injectCSS() {
   }
   @media (prefers-reduced-motion:reduce){ .sw-hint i::after{animation:none;} .sw-pt{display:none;} }
   `;
-  // Wrap in a cascade layer so the page's own theme tokens (unlayered
-  // :root / .sw-root { --sw-bg / --sw-ink / --sw-accent … }) always win over
-  // these defaults, regardless of injection order. Enables clean dark themes.
+  // SOLO los tokens van en la capa. Una @layer pierde contra CUALQUIER regla sin
+  // capa pase lo que pase con la especificidad, asi que envolver aqui la hoja
+  // entera significaba que el reset de la pagina anfitriona (*{padding:0} en
+  // es.html) ganaba a .sw-topbar{padding:clamp(...)}: la barra se quedaba sin
+  // padding, la pildora del nav se aplastaba y el boton se pegaba al borde. En la
+  // pagina suelta no se veia porque no habia otra hoja contra la que perder.
+  // La capa esta para que los tokens del anfitrion (:root{--sw-bg...}) manden
+  // sobre estos valores por defecto, y para eso basta con la primera regla.
+  const SPLIT = 'color:var(--sw-ink);font-family:var(--sw-font-body);}';
+  const cut = css.indexOf(SPLIT);
+  if (cut < 0) throw new Error('scroll-world: no encuentro el bloque de tokens de .sw-root');
+  const tokens = css.slice(0, cut + SPLIT.length);
+  const layout = css.slice(cut + SPLIT.length);
   const style = document.createElement('style'); style.id = 'sw-css';
-  style.textContent = '@layer sw {\n' + css + '\n}';
+  style.textContent = '@layer sw {\n' + tokens + '\n}\n' + layout;
   document.head.appendChild(style);
 }
 
