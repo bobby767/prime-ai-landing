@@ -34,6 +34,12 @@ Measured, three inputs, same pipeline, on `2026-08-28`:
 | `obra` — plumber, head inside the sink cabinet, no face | yes | yes (`dive_obra_real.mp4`) |
 | `rooftop` — rooftops at blue hour, no people | yes | yes (`dive_rooftop_real.mp4`) |
 
+**Five of six scenes are rendered photoreal and face-free as of 2026-08-28**:
+`obra`, `cocina_real2`, `centralita_real`, `agenda_real`, `furgoneta_real` — all
+stills and all dives accepted, no refusals after the reframe. `demo-film` is held,
+see Open questions. Every one is face-free by a different device: head inside the
+cabinet, shot from behind, no person at all, hand only, walking away.
+
 Row 2 is the decisive one, added `2026-08-28` after the reframe. It is the *same
 woman in the same kitchen doing the same thing* as row 1 — only the camera moved,
 to behind her shoulder. The still passed, the dive passed, and across all 193
@@ -179,7 +185,7 @@ to a 224px stamp. It becomes correct only once portrait clips exist.
 | full 1080p re-render | ~$50 (pure pixel count; same for 9:16 and 16:9) |
 
 Balance: `GET https://rest.alpha.fal.ai/billing/user_balance` returns a plain USD
-number. $40.72 as of 2026-08-28, with the $1.131 dive **not yet settled** — the
+number. $36.665085 as of 2026-08-28, with the most recent dive **often not yet settled** — the
 endpoint lags a completed job by minutes, so it is a settled-spend figure and not a
 live one. Do not use it to decide whether the next render fits. A flapping `403 "Exhausted balance"` on a healthy
 balance is stale node state, not the account — retry the **submit** (a failed
