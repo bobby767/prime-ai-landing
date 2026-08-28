@@ -95,20 +95,23 @@ headless server, so the whole build ran on Fal.
 - Deferred: **native 9:16 mobile chain** — user chose desktop-only. On a phone the 16:9
   film centre-crops and loses the diorama island, which is most of the concept. Roughly
   another chain's cost.
-- Deferred: the `baja para entrar` hint is illegible against the light island edge — one
-  CSS line.
+- ~~Deferred: the `baja para entrar` hint~~ — **done 2026-08-28.** It was not the light
+  island edge: measured, the floor under it is `rgb(175,139,110)` and `--sw-ink-soft` sat
+  at 1.99:1. Now `--sw-ink` (5.36:1) plus a `--sw-bg` halo on `.sw-hint` itself, so the
+  mouse glyph's border and `::after` wheel get it too. Engine-only change; `scroll.html`
+  untouched.
 - Deferred: `prefers-reduced-motion` fallback never observed working; the harness doesn't
   expose emulation for it. Not claimed as working.
-- Open: **which of the three comes next** — 1080p, mobile chain, or hint fix. Asked, not
-  answered.
+- Open: **which of the two remains next** — 1080p or the mobile chain. The hint fix was
+  chosen and is done; these two were not re-asked.
 - Open: **stills cost is unmeasured** — Fal returns no cost field for `openai/gpt-image-2`;
   7 images were generated (6 + one `agenda` re-roll). Read the real figure off the Fal
   dashboard rather than estimating it.
-- Open: three commits sit unpushed on `warm-palette`.
+- Open: the `warm-palette` commits sit unpushed. Push not attempted — needs your go-ahead.
 
 ## Pick up here
 
-Ask which of the three deferred items to do; if told "1080p": set `VRES=1080p` in
+Ask which of the two remaining deferred items to do; if told "1080p": set `VRES=1080p` in
 `/home/ubuntu/Prime_AI/Landingpage/scroll-world/fal.sh`, run `run_dives.sh` →
 `run_conns.sh` → `encode.sh`, re-verify the seams, redeploy to
 `/var/www/prime-ai/es/scroll/`, and start tracking `assets/scroll/vid/`.
