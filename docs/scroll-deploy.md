@@ -193,6 +193,59 @@ cd scroll-world
 VRES=1080p bash run_dives.sh && bash run_conns.sh && bash encode.sh
 ```
 
+## The portrait (9:16) chain, for phones
+
+A phone crops the 16:9 film to ruin. Measured on the live page at 390x844: the clip
+is **864x496**, `object-fit:cover` shows **27% of the frame width**, and 39-48% of the
+diorama island survives depending on the scene. The island IS the concept.
+
+`object-fit:contain` on the 16:9 clip is not the answer — it gives a 224px band on an
+844px screen, with 310px of dead space above and below. The island becomes a stamp.
+
+**The answer is a 9:16 source plus `contain`, and it works because of the background.**
+A 390x844 phone is 9:19.5, taller than 9:16, so even a portrait clip does not fill it.
+But the gap lands top and bottom, and those edges are already the page colour —
+measured on the portrait stills, the top and bottom 8 rows deviate from #FAF8F5 by at
+most 14 (sum of |RGB - 250,248,245|; under 10 is invisible). `--sw-bg` is that exact
+colour, so the letterbox is not visible and the island survives at **100%** instead of
+71-79% under cover. The sides are dirty (up to 142, the island touches them) and it
+does not matter: in a taller box the gap is never at the sides.
+
+So: render 9:16, then `object-fit:contain` under a portrait media query. Do NOT ship
+the contain rule before the 9:16 clips exist — against the 16:9 clips it makes the
+phone strictly worse.
+
+### Running it
+
+`SFX` hangs off the OUTPUT filenames only, never the prompts. Empty (the default) is
+the landscape chain byte for byte. The 480p landscape set is NOT in git (.gitignore
+excludes it on purpose) and cost $10.34, so a run that overwrote it could not be undone
+— hence the suffix rather than a second working directory.
+
+```
+SFX=_9x16 IMG_W=1024 IMG_H=1536 bash run_stills.sh
+SFX=_9x16 VRATIO=9:16          bash run_dives.sh
+SFX=_9x16 VRATIO=9:16          bash run_conns.sh
+SFX=_9x16                      bash encode.sh
+```
+
+The prompts do not change between landscape and portrait. They already say "floating
+as a small rounded island ... centered composition", which is format-agnostic — only
+`image_size` on the still call differs.
+
+### What it costs, from the actual logs
+
+| | each | x | total |
+|---|---|---|---|
+| dive (8s) | $1.131 | 6 | $6.79 |
+| connector (5s) | $0.709 | 5 | $3.55 |
+| | | | **$10.34** at 480p |
+
+Billing is `w*h*duration*24/1024/1000*rate` — pure pixel count. So 9:16 costs the SAME
+as 16:9 at the same tier, and 1080p is ~4.9x either way (~$50). Stills return no cost
+field at all; `gpt-image-2` gives you `content_type` and `file_name` and nulls for the
+rest. The only real figure is on the Fal dashboard.
+
 ## Re-render at 1080p
 
 One variable. `VRES=1080p` in `fal.sh`, same prompts, same model — the model must
