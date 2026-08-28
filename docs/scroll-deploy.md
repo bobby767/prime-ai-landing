@@ -122,12 +122,20 @@ Tres reglas que hacen que funcione:
    correcta se pulse arriba o abajo. Si no hay `.idioma-btn` en la pagina, no se
    pintan.
 
-**ES y EN completos** (39 cadenas). **NL y SV a proposito no**: `traducir()` cae al
-espanol cuando falta una traduccion, asi que un visitante holandes ve la pagina en
-holandes y la pelicula en espanol — sin huecos. Escribir esas dos es trabajo de
-redaccion y `tests/test-nl-ready.js` veta el holandes sin revisar por un nativo, asi
-que no se traduce a maquina. Para anadirlas: `nl:` y `sv:` en `world.config.js` y
-recomponer, sin tocar codigo.
+**Los cuatro idiomas completos: 39 cadenas x ES/EN/NL/SV**, ni una suelta.
+
+Sobre el holandes: `tests/test-nl-ready.js` **no** tiene nada que ver con esto. Ese
+gate es de `nl.html`, la pagina del mercado holandes en prime-ai.nl, y lo que bloquea
+son el responsable del tratamiento, el aviso de privacidad y el nginx de ese dominio.
+El selector de idioma de `es.html` es otra cosa: ya sirve **105 cadenas en NL y 105 en
+SV en produccion** desde antes de todo esto. Dejar la pelicula en espanol encima de una
+pagina en holandes era el estado incoherente, no lo contrario.
+
+El registro se copio del que ya va vivo en `es.html`: la IA es **"haar"** en holandes y
+**"den"** en sueco. Si eso cambia en `es.html`, hay que cambiarlo aqui.
+
+Quien revise: el holandes lo puede leer Dan. El sueco esta al mismo nivel que el sueco
+que ya se sirve en `es.html` — nadie lo ha revisado en ninguno de los dos sitios.
 
 ## La barra de arriba va justa
 
