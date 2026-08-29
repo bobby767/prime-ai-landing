@@ -202,6 +202,37 @@ live one. Do not use it to decide whether the next render fits. A flapping `403 
 balance is stale node state, not the account — retry the **submit** (a failed
 submit has queued nothing, so it cannot duplicate work).
 
+## Assembly — done 2026-08-29
+
+`REAL=1 bash encode.sh` encodes the photoreal shoot to the **same output paths** the
+clay one uses (`assets/scroll/vid/obra.mp4` and friends), so `world.config.js` never
+learns which of the two is behind it and `scroll.html` does not change at all —
+`node scroll-world/compose.js` produces a byte-identical file, and
+`tests/test-scroll-page.js` still passes. The film that ships is whichever was
+encoded last. `bash encode.sh` puts the clay one back; it is an ffmpeg, not a
+render, because both sets of sources are still in `scroll-world/vid/`.
+
+Verified at 1440x900 across a 24-frame scrub of the whole film: every scene reads,
+every seam holds, and the clock arc is visible in sequence — dusk `obra` -> rooftops
+-> dusk `cocina` -> rooftops draining to night -> `centralita` at 3am -> night
+rooftops -> `agenda` -> rooftops at dawn -> `furgoneta` at first light -> morning
+bloom -> `demo-film` resolving to near-white and handing off to `#FAF8F5`. Copy is
+legible in all six at peak opacity. At 390x844 `scrollWidth` is still 390.
+
+**The per-scene `accent` was deliberately NOT changed.** The design assumed the film
+would adopt `#2563EB` as its sky. It did not need to: the sky is blue in the footage
+itself, which makes the existing terracotta `#C2703D` the *complement* rather than a
+clash — it is the colour of the amber lamplight that is the film's only warm source.
+Turning the five scenes blue would flatten the frame and destroy the one accent beat
+that already exists, `demo-film` turning the chrome `#2563EB` at the ending. Nothing
+to change, so nothing was changed.
+
+`object-position: center 42%` was also left alone. It was flagged for re-derivation
+against photoreal footage; measured across the scrub, no subject is clipped at any
+scene, because the crop was tuned to protect a small centred clay island and
+photoreal frames have no such single point of failure. The mobile crop is *less*
+severe than it was with the clay film for the same reason.
+
 ## Should this be built at all
 
 The honest case against, verified from Umami on 2026-08-28:
