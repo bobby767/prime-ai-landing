@@ -29,6 +29,30 @@ const SRC = path.join(ROOT, 'es.html');
 const OUT = process.argv[2] ? path.resolve(process.argv[2]) : path.join(ROOT, 'scroll.html');
 const config = require('./world.config.js');
 
+// CACHE-BUSTER. encode.sh escribe SIEMPRE el mismo nombre (obra.mp4 vale para la
+// plastilina y para el fotorrealista), que es justo lo que hace que cambiar de
+// pelicula no toque world.config.js ni scroll.html. El precio lo pago aqui: nginx
+// no manda Cache-Control, solo etag + last-modified, asi que el navegador aplica
+// frescura HEURISTICA (~10% de la edad del fichero) y puede no revalidar en horas.
+// Medido el 2026-08-29: se desplegaron los 11 clips fotorrealistas, el servidor los
+// servia correctos, y el navegador seguia pintando los de plastilina.
+// El sello sale del mtime real de los ficheros, no de una constante a mano: cambia
+// solo cuando cambian los bytes, y nadie tiene que acordarse de subirlo.
+const stamp = (() => {
+  let m = 0;
+  for (const d of ['assets/scroll/vid', 'assets/scroll/still']) {
+    const dir = path.join(ROOT, d);
+    if (!fs.existsSync(dir)) continue;
+    for (const f of fs.readdirSync(dir)) m = Math.max(m, fs.statSync(path.join(dir, f)).mtimeMs);
+  }
+  return Math.round(m / 1000).toString(36);
+})();
+const bust = (v) =>
+  Array.isArray(v)              ? v.map(bust) :
+  v && typeof v === 'object'    ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, bust(x)])) :
+  typeof v === 'string' && /^assets\/scroll\/.+\.(mp4|webp)$/.test(v) ? `${v}?v=${stamp}` :
+  v;
+
 // El CSS del motor vive dentro de un template literal, asi que un solo acento
 // grave en un comentario lo parte en dos y la pagina se despliega sin motor.
 // Paso una vez por aqui. Se comprueba antes de componer nada.
@@ -103,7 +127,7 @@ const HOST_SCRIPT = '  <script>\n    (function () {';
 need(HOST_SCRIPT);
 html = html.replace(HOST_SCRIPT, `  <script src="assets/scroll/scrub-engine.js"></script>
   <script>
-    mountScrollWorld(document.getElementById('world'), ${JSON.stringify(config, null, 2).replace(/\n/g, '\n    ')});
+    mountScrollWorld(document.getElementById('world'), ${JSON.stringify(bust(config), null, 2).replace(/\n/g, '\n    ')});
   </script>
 
 ${HOST_SCRIPT}`);
