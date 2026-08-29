@@ -34,11 +34,22 @@ Measured, three inputs, same pipeline, on `2026-08-28`:
 | `obra` — plumber, head inside the sink cabinet, no face | yes | yes (`dive_obra_real.mp4`) |
 | `rooftop` — rooftops at blue hour, no people | yes | yes (`dive_rooftop_real.mp4`) |
 
-**Five of six scenes are rendered photoreal and face-free as of 2026-08-28**:
-`obra`, `cocina_real2`, `centralita_real`, `agenda_real`, `furgoneta_real` — all
-stills and all dives accepted, no refusals after the reframe. `demo-film` is held,
-see Open questions. Every one is face-free by a different device: head inside the
-cabinet, shot from behind, no person at all, hand only, walking away.
+**The film is fully shot as of 2026-08-29** — six stills, six dives and five
+connectors, every one accepted, zero refusals across the whole photoreal run.
+`obra_real`, `cocina_real2`, `centralita_real`, `agenda_real`, `furgoneta_real`,
+`demo-film_real2`, and `conn_real_0`..`conn_real_4`. Every scene is face-free by a
+different device: head inside the cabinet, shot from behind, no person at all,
+hand only, walking away, hand only again. Face-free is a framing vocabulary, not a
+single trick, and it cost the film nothing.
+
+`demo-film` needed one reshoot. The `_real` still came back with a legible `00:15`
+and a full stock call-screen UI even though the style block already forbids text —
+a negative constraint does not beat a strong prior, because *"screen showing an
+active call"* **is** a call-timer UI in the training data. `_real2` replaces the
+prohibition with a competing physical fact: the phone is tilted so the screen
+catches the daylight as flat glare, and nothing on it can resolve. Same shape of
+fix as the face problem — `bebd21f` did not pass by saying "no face" harder, it
+passed by moving the camera. The `_real` pair is kept as evidence.
 
 Row 2 is the decisive one, added `2026-08-28` after the reframe. It is the *same
 woman in the same kitchen doing the same thing* as row 1 — only the camera moved,
@@ -185,7 +196,7 @@ to a 224px stamp. It becomes correct only once portrait clips exist.
 | full 1080p re-render | ~$50 (pure pixel count; same for 9:16 and 16:9) |
 
 Balance: `GET https://rest.alpha.fal.ai/billing/user_balance` returns a plain USD
-number. $36.665085 as of 2026-08-28, with the most recent dive **often not yet settled** — the
+number. $31.401697 as of 2026-08-29 with the full shoot settled, and the most recent dive **often not yet settled** — the
 endpoint lags a completed job by minutes, so it is a settled-spend figure and not a
 live one. Do not use it to decide whether the next render fits. A flapping `403 "Exhausted balance"` on a healthy
 balance is stale node state, not the account — retry the **submit** (a failed
@@ -215,16 +226,17 @@ $40.72. Still worth weighing against 2-4 visitors/day to an unlinked page.
 
 ## Open questions
 
-- **Rival van placement.** The approved design puts a rival van in the street below
-  "on connector 2, after *the job goes to whoever picked up*". These conflict: the
-  line about the job going to someone else is in `furgoneta` (index 4), so
-  "after" it means `conn_4`, whereas `conn_2` sits between `centralita` and
-  `agenda` — *before* it. `still_rooftop_real.txt` and `conn_real_0.txt` both
-  already contain "a white work van parked in a narrow street". Unresolved; pick
-  one before rendering.
-- **`conn_real_0.txt` lifts out of *the kitchen***, but `conn_0` sits between `obra`
-  and `cocina`. Either the file is misnamed for `conn_1`, or the photoreal scene
-  order differs from the clay one. Unresolved.
+- ~~**Rival van placement.**~~ **Resolved 2026-08-29.** Both van questions were the
+  same question. The spec said the line *"the job goes to whoever picked up"* is in
+  `furgoneta` (index 4). It is not — it is `cocina`'s body, `world.config.js:67`
+  (`El trabajo se lo lleva quien cogió el teléfono`). The connector immediately
+  after `cocina` is **`conn_1`**, which is exactly what the approved design meant by
+  "connector 2" counting from one. `conn_real_0.txt` was written lifting out of *the
+  kitchen* and already carried the van, so it was never miswritten — only
+  misnumbered. It is now `conn_real_1.txt`, its clock changed to dusk going over
+  into night (`cocina` is blue hour, `centralita` is deep night), and a new
+  `conn_real_0.txt` lifts out of the *bathroom* into the kitchen as `conn_0`
+  requires.
 - ~~`cocina` reframe untested.~~ **Resolved 2026-08-28** — `still_cocina_real2.txt`
   and `dive_cocina_real2.txt` both pass. The refused `_real` pair is kept beside
   them as evidence of what does not.
