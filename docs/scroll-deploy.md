@@ -338,3 +338,40 @@ block then just returns 404, which is what it did before.
 - **`baja para entrar`** sits on the light island edge and is hard to read.
 - **`prefers-reduced-motion` is untested** — the engine claims a stills fallback,
   but it has not been observed working here.
+
+## Caché — por qué un despliegue correcto se veía viejo (2026-08-29)
+
+Se desplegaron los once clips fotorrealistas. El servidor los servía correctos —
+los md5 de los once por HTTPS coincidían con el build, y una petición con un etag
+viejo devolvía `200` con los bytes nuevos — y aun así el navegador seguía pintando
+la película de plastilina. Dos veces.
+
+Son **dos** fallos de caché encadenados, y arreglar solo el primero no se nota:
+
+1. `encode.sh` escribe siempre el mismo nombre (`obra.mp4` vale para las dos
+   películas). Eso es justo lo que hace que cambiar de película no toque
+   `world.config.js` ni `scroll.html` — y también lo que deja al navegador sin
+   ninguna señal de que los bytes han cambiado.
+   → `compose.js` cuelga `?v=<mtime en base36>` de las 17 rutas al serializar la
+   config. Cubre `clip`, `still`, `connectors` y las variantes móviles de una vez.
+
+2. Pero ese sello vive **dentro** del HTML. Nginx no mandaba `Cache-Control` en
+   `/scroll/`, solo `etag` + `last-modified`, así que el navegador aplicaba frescura
+   **heurística** (~10% de la edad del fichero) y podía no revalidar el documento
+   durante horas. Un HTML cacheado nunca llega a pedir las URLs nuevas, así que el
+   punto 1 por sí solo no arregla nada.
+   → `add_header Cache-Control "no-cache";` en el bloque `location = /scroll/` de
+   `/etc/nginx/sites-enabled/prime-ai-demo.conf`. `no-cache` no es "no guardes", es
+   "pregunta antes de usarlo": con el etag la respuesta normal es un **304 de 0
+   bytes**, no 182 KB. Copia previa en `/var/backups/prime-ai-demo.conf.bak-*`.
+
+**Cómo comprobar un despliegue sin engañarse.** Un navegador headless siempre arranca
+sin caché, así que confirma el servidor y **no** lo que ve una persona que ya visitó
+la página. La prueba honesta es una **ventana privada**, o `curl` del fichero y mirar
+un fotograma:
+
+    curl -sS https://prime-ai.es/scroll/assets/scroll/vid/obra.mp4 -o /tmp/o.mp4
+    ffmpeg -y -ss 0 -i /tmp/o.mp4 -frames:v 1 /tmp/o.png
+
+Quien despliega tiene siempre el fichero nuevo en su propia caché, que es
+exactamente por qué este fallo es invisible desde ese lado.
