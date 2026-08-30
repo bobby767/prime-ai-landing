@@ -256,6 +256,15 @@
       min-height: 48px;
       min-width: 48px;
       text-align: center;
+      /* Un inline-flex sin max-width no baja de su ancho de contenido: se sale
+         del padre en silencio y arrastra a la página entera al desbordamiento
+         horizontal. Pasó al poner el +34: a 320px el CTA del cierre —el único
+         con padding en línea, 18px 40px— pedía 297px dentro de un hueco de
+         272 y el documento medía 321. Va en .btn y no en ese botón porque los
+         otros hoy caben por suerte, no por diseño, y la siguiente cadena larga
+         en cualquiera de los cuatro idiomas los saca igual. Con border-box ya
+         puesto, esto sólo limita: la etiqueta pasa a dos líneas y ya está. */
+      max-width: 100%;
     }
 
     .btn-primary {
@@ -494,6 +503,14 @@
     /* Tabular para que los tres grupos midan lo mismo, y nowrap porque
        "951 870 / 630" partido en dos líneas dentro de la barra fija se lee como
        dos números. */
+    /* El +34 se muestra SIEMPRE, en los cuatro idiomas. La página se sirve a
+       Holanda, Suecia e Inglaterra desde el mismo HTML, y «951 870 551» a
+       secas sólo se puede marcar desde España: fuera, un número sin prefijo
+       no es un número, es un dato. El href ya lo llevaba; lo que faltaba era
+       que se pudiera COPIAR y teclear a mano, que es lo que hace quien lee la
+       página en el escritorio y marca desde el móvil.
+       El nowrap de aquí abajo pasa a importar más: sin él «+34» se queda solo
+       al final de una línea y el número se parte en dos. */
     .tel-num {
       font-variant-numeric: tabular-nums;
       letter-spacing: 0.02em;
@@ -1895,7 +1912,7 @@
 
   <div class="cta-movil">
     <button class="btn llamar" data-umami-event="demo-abrir-movil" data-en="Hear it answer — no phone needed" data-nl="Hoor haar opnemen — geen telefoon nodig" data-sv="Hör den svara — ingen telefon behövs">Escúchala contestar — sin teléfono</button>
-    <a class="btn tel-movil" href="tel:+34951870551" data-umami-event="demo-llamar-movil"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">951 870 551</span></a>
+    <a class="btn tel-movil" href="tel:+34951870551" data-umami-event="demo-llamar-movil"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">+34 951 870 551</span></a>
   </div>
 
   <!-- ============================================
@@ -1911,10 +1928,10 @@
            es la frase que no se puede perder al traducir. -->
       <p class="entrada" data-en="It answers for you when you can't pick up, speaks English or Spanish, and puts the job straight in your calendar." data-nl="Ze neemt op als jij niet kunt, spreekt Nederlands of Engels, en zet de afspraak meteen in je agenda." data-sv="Den svarar åt dig när du inte kan, talar svenska eller engelska, och lägger in jobbet direkt i din kalender.">Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario.</p>
       <button class="btn btn-primary llamar" data-umami-event="demo-abrir-portada" data-en="Call it now — right here, no phone needed" data-nl="Bel haar nu — hier meteen, geen telefoon nodig" data-sv="Ring den nu — här direkt, ingen telefon behövs">Llámala ahora — aquí mismo, sin teléfono</button>
-      <a class="btn btn-primary tel-movil" href="tel:+34951870551" data-umami-event="demo-llamar-portada"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">951 870 551</span></a>
+      <a class="btn btn-primary tel-movil" href="tel:+34951870551" data-umami-event="demo-llamar-portada"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">+34 951 870 551</span></a>
       <!-- data-en va en el SPAN, nunca en el <p>: traducir() asigna innerHTML y
            traducir el envoltorio se llevaría por delante el enlace con el número. -->
-      <p class="tel-escritorio"><span data-en="or call it on" data-nl="of bel haar op" data-sv="eller ring den på">o llámala al</span> <a href="tel:+34951870551" data-umami-event="demo-llamar-escritorio"><span class="tel-num">951 870 551</span></a></p>
+      <p class="tel-escritorio"><span data-en="or call it on" data-nl="of bel haar op" data-sv="eller ring den på">o llámala al</span> <a href="tel:+34951870551" data-umami-event="demo-llamar-escritorio"><span class="tel-num">+34 951 870 551</span></a></p>
       <small class="letra-chica letra-escritorio" data-en="I won't tell you about it, you'll hear it. Talk to it on this page and ask it to book you in. Takes a minute." data-nl="Ik vertel het je niet, je hoort het. Praat met haar op deze pagina en vraag om een proefafspraak. Kost een minuut." data-sv="Jag berättar det inte, du hör det. Prata med den här på sidan och be om en provtid. Tar en minut.">No te lo cuento, lo escuchas. Habla con ella en esta misma página y pídele una cita de prueba. Un minuto.</small>
       <!-- La de escritorio dice "en esta misma página", que en móvil es falso:
            ahí el botón marca un número y la llamada se va de la página. Dos
@@ -2390,8 +2407,8 @@
 
       <div>
         <button class="btn btn-primary llamar" style="font-size:18px; padding:18px 40px;" data-umami-event="demo-abrir-cierre" data-en="Hear it answer — right here, no phone needed" data-nl="Hoor haar opnemen — hier meteen, geen telefoon nodig" data-sv="Hör den svara — här direkt, ingen telefon behövs">Escúchala contestar — aquí mismo, sin teléfono</button>
-        <a class="btn btn-primary tel-movil" style="font-size:18px; padding:18px 40px;" href="tel:+34951870551" data-umami-event="demo-llamar-cierre"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">951 870 551</span></a>
-        <p class="tel-escritorio"><span data-en="or call it on" data-nl="of bel haar op" data-sv="eller ring den på">o llámala al</span> <a href="tel:+34951870551" data-umami-event="demo-llamar-escritorio"><span class="tel-num">951 870 551</span></a></p>
+        <a class="btn btn-primary tel-movil" style="font-size:18px; padding:18px 40px;" href="tel:+34951870551" data-umami-event="demo-llamar-cierre"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">+34 951 870 551</span></a>
+        <p class="tel-escritorio"><span data-en="or call it on" data-nl="of bel haar op" data-sv="eller ring den på">o llámala al</span> <a href="tel:+34951870551" data-umami-event="demo-llamar-escritorio"><span class="tel-num">+34 951 870 551</span></a></p>
       </div>
 
       <small class="letra-chica" data-en="Would you rather I talked you through it? Half an hour, no obligation, and I will tell you whether this fits your business or not. If it does not, I will say so." data-nl="Praat ik je liever even bij? Een half uur, nergens toe verplicht, en ik zeg je of dit bij jouw bedrijf past of niet. Zo niet, dan zeg ik dat." data-sv="Vill du hellre att jag går igenom det med dig? En halvtimme, utan förpliktelser, och jag säger om det här passar ditt företag eller inte. Gör det inte det säger jag det.">¿Prefieres que te lo cuente yo? Media hora, sin compromiso, y te digo si esto le encaja a tu negocio o no. Si no le encaja, te lo digo.</small>
