@@ -375,3 +375,54 @@ un fotograma:
 
 Quien despliega tiene siempre el fichero nuevo en su propia caché, que es
 exactamente por qué este fallo es invisible desde ese lado.
+
+## 2026-08-30 — la película pasa a ser la página principal
+
+`/` (la raíz) sirve la película. `/es/` sigue haciendo `rewrite` a `/`, así que la
+URL canónica no cambia. La página plana **no se retira como fuente**: `es.html` es de
+donde `compose.js` saca los 181 KB de texto, y sin ella no hay build.
+
+### Desplegar
+
+```sh
+PUBLIC=1 node scroll-world/compose.js /tmp/index-public.html   # sin noindex, BASE=/scroll/
+sudo cp /tmp/index-public.html /var/www/prime-ai/es/index.html
+sudo chown www-data:www-data /var/www/prime-ai/es/index.html && sudo chmod 644 $_
+```
+
+`PUBLIC=1` cambia DOS cosas, y las dos son necesarias:
+
+1. **Sin `noindex`.** El borrador no puede indexarse; ésta sí.
+2. **`BASE=/scroll/`.** Las rutas de los assets se resuelven contra la URL del
+   documento. En `/scroll/`, `assets/scroll/x` es `/scroll/assets/scroll/x`. En la
+   raíz es `/assets/scroll/x`, que **no existe**. Sin esto la página se despliega
+   con 200, pesa 187 KB y no pinta una sola escena: el motor da 404 y
+   `mountScrollWorld` queda undefined. Pasó el 2026-08-30 y estuvo en producción
+   menos de un minuto.
+
+Los assets NO se duplican: siguen en `/var/www/prime-ai/es/scroll/assets/` y los
+sirve el `location /` general. `compose.js` comprueba las 18 rutas contra el disco
+antes de escribir y revienta si falta una.
+
+### Volver atrás
+
+```sh
+sudo cp es.html /var/www/prime-ai/es/index.html   # la plana, sin película
+```
+
+### Lo que pesa de verdad (390px, medido 2026-08-30)
+
+| Situación | Descarga | Clips |
+|---|---|---|
+| Entra y no baja | **3,1 MB** | 1 (la primera escena carga sola) |
+| Baja la película entera | **22,5 MB** | 11 |
+| `prefers-reduced-motion` | **0,7 MB** | 0 |
+
+No hay encode móvil: `clipM` no está puesto en `world.config.js`, así que un teléfono
+se baja los mismos ficheros que un escritorio. Es la palanca obvia si 22,5 MB
+molestan.
+
+### `Cache-Control`
+
+`location = /` lleva ahora `no-cache`, igual que `/scroll/`. Es obligatorio: el sello
+`?v=` vive DENTRO del HTML, así que un documento cacheado nunca pide las URLs nuevas.
