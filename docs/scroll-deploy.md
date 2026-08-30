@@ -412,15 +412,42 @@ sudo cp es.html /var/www/prime-ai/es/index.html   # la plana, sin película
 
 ### Lo que pesa de verdad (390px, medido 2026-08-30)
 
-| Situación | Descarga | Clips |
-|---|---|---|
-| Entra y no baja | **3,1 MB** | 1 (la primera escena carga sola) |
-| Baja la película entera | **22,5 MB** | 11 |
-| `prefers-reduced-motion` | **0,7 MB** | 0 |
+| Situación | Antes | **Con encode móvil** | Clips |
+|---|---|---|---|
+| Entra y no baja | 3,1 MB | **1,94 MB** | 1 (la primera escena carga sola) |
+| Baja la película entera | 22,5 MB | **11,36 MB** | 11 |
+| `prefers-reduced-motion` | 0,7 MB | **0,72 MB** | 0 |
 
-No hay encode móvil: `clipM` no está puesto en `world.config.js`, así que un teléfono
-se baja los mismos ficheros que un escritorio. Es la palanca obvia si 22,5 MB
-molestan.
+**Al medir esto, no contar las URL `blob:`.** El motor se baja el clip por red UNA vez
+y se lo pasa al `<video>` como blob; si el contador escucha todas las respuestas ve los
+mismos bytes dos veces y sale justo el doble (20,25 MB en vez de 11,36). El camino de
+`prefers-reduced-motion` no tiene clips, así que es el control que delata el error: si
+sale 0,7 MB y el total sale el doble de la suma de los ficheros, se están contando blobs.
+
+### El encode móvil
+
+`world.config.js` trae `clipMobile` en cada escena y `connectorsMobile` para los cinco
+conectores; los ficheros son `<nombre>.m.mp4` al lado de los de escritorio y los genera
+`encode.sh`. El motor los elige con `isMobile()` — «coarse pointer O ≤860px».
+
+**No se baja la resolución, se bajan los bits** (mismo 864×496, crf 28 en vez de 20,
+`-g 4` en vez de `-g 8`). Un teléfono a 390px ya escala estos clips unas 5× porque
+`object-fit:cover` ajusta a la ALTURA del viewport y tira el 73% del ancho, así que la
+resolución ya es el límite y quitar píxeles empeora lo que se ve sin ahorrar apenas.
+Medido sobre `furgoneta.mp4` (3,02 MB):
+
+| Variante | Peso | SSIM contra el máster |
+|---|---|---|
+| 640×368, crf 24 | 1,47 MB | 0,9588 |
+| **864×496, crf 28** | **1,59 MB** | **0,9703** |
+| 648×372, crf 26 | 1,28 MB | 0,9538 |
+
+Recortar el encuadre ahorraría más, pero `isMobile()` también captura un móvil en
+HORIZONTAL (por el coarse pointer), y ahí un clip recortado en vertical se rompe.
+
+Comprobación: `python3 tests/test-mobile-clips.py`. Es un fallo silencioso —
+`clipMobile` es opcional, así que una ruta mal escrita no da error, el motor cae al
+clip de escritorio y la página funciona igual pesando el doble. Solo se ve en la red.
 
 ### `Cache-Control`
 

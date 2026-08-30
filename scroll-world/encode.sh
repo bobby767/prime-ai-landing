@@ -39,3 +39,31 @@ for s in obra cocina centralita agenda furgoneta demo; do
 from PIL import Image; Image.open('frames/poster_$s$SFX.png').convert('RGB').save('../assets/scroll/still/$s$SFX.webp','WEBP',quality=86,method=6)"
 done
 echo "posters refreshed from actual frames"
+
+# --- Variante movil (clipMobile/connectorsMobile del motor) --------------------
+# NO se baja la resolucion. Un telefono a 390px ya escala estos 864x496 unas 5x
+# (object-fit:cover ajusta a la ALTURA del viewport y recorta el 73% del ancho),
+# asi que la resolucion ya es el limite: quitar pixeles empeora lo que se ve y
+# apenas ahorra. Lo que sobra son BITS. Medido sobre furgoneta.mp4 (3,02 MB), todo
+# con -g 4:
+#     640x368 crf 24 -> 1,47 MB  SSIM 0,9588
+#     864x496 crf 28 -> 1,59 MB  SSIM 0,9703   <- este
+#     648x372 crf 26 -> 1,28 MB  SSIM 0,9538
+# El downscale ahorra 0,12 MB y cuesta nitidez de verdad. Ademas isMobile() del
+# motor es «coarse pointer O <=860px», asi que un movil en horizontal tambien se
+# lleva esta variante: recortar el encuadre lo romperia. Mantener el fotograma.
+#
+# -g 4 (mas apretado que el -g 8 de escritorio) es a proposito: en un decoder de
+# movil el coste de un seek lo mandan los fotogramas desde el keyframe. Infla algo
+# el fichero y ese es el precio del scrub suave.
+#
+# Se codifica desde la SALIDA de escritorio, no desde vid/: asi la variante movil
+# siempre corresponde a la tirada que se ha desplegado (plastilina o REAL=1) sin
+# volver a decidir cual era. La perdida generacional esta dentro del SSIM de arriba.
+encm(){ ffmpeg -v error -y -i "$1" -an \
+  -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p \
+  -g 4 -keyint_min 4 -sc_threshold 0 -movflags +faststart "$2"; }
+for f in "$OUT"/*.mp4; do
+  case "$f" in *.m.mp4) continue;; esac
+  encm "$f" "${f%.mp4}.m.mp4" && echo "movil $(basename "${f%.mp4}.m.mp4") $(du -h "${f%.mp4}.m.mp4"|cut -f1)"
+done

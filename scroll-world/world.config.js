@@ -36,6 +36,7 @@ module.exports = {
       label: { es: 'La obra', en: 'The job', nl: 'De klus', sv: 'Jobbet' },
       still: 'assets/scroll/still/obra.webp',
       clip:  'assets/scroll/vid/obra.mp4',
+      clipMobile: 'assets/scroll/vid/obra.m.mp4',
       accent: '#C2703D',
       scroll: 1.7, linger: 0.45,
       eyebrow: { es: 'Martes, 10:40', en: 'Tuesday, 10:40',
@@ -57,6 +58,7 @@ module.exports = {
       label: { es: 'Al otro lado', en: 'The other end', nl: 'De andere kant', sv: 'Andra änden' },
       still: 'assets/scroll/still/cocina.webp',
       clip:  'assets/scroll/vid/cocina.mp4',
+      clipMobile: 'assets/scroll/vid/cocina.m.mp4',
       accent: '#C2703D',
       eyebrow: { es: 'Al otro lado', en: 'The other end',
                  nl: 'De andere kant', sv: 'Andra änden' },
@@ -77,6 +79,7 @@ module.exports = {
       label: { es: 'Lo que cambia', en: 'What changes', nl: 'Wat er verandert', sv: 'Vad som ändras' },
       still: 'assets/scroll/still/centralita.webp',
       clip:  'assets/scroll/vid/centralita.mp4',
+      clipMobile: 'assets/scroll/vid/centralita.m.mp4',
       accent: '#C2703D',
       scroll: 1.5, linger: 0.4,
       eyebrow: { es: 'Lo que cambia', en: 'What changes',
@@ -99,6 +102,7 @@ module.exports = {
       label: { es: 'La cita', en: 'The booking', nl: 'De afspraak', sv: 'Bokningen' },
       still: 'assets/scroll/still/agenda.webp',
       clip:  'assets/scroll/vid/agenda.mp4',
+      clipMobile: 'assets/scroll/vid/agenda.m.mp4',
       accent: '#C2703D',
       eyebrow: { es: 'Mientras sigues debajo del fregadero',
                  en: 'While you are still under the sink',
@@ -120,6 +124,7 @@ module.exports = {
                nl: 'De volgende ochtend', sv: 'Nästa morgon' },
       still: 'assets/scroll/still/furgoneta.webp',
       clip:  'assets/scroll/vid/furgoneta.mp4',
+      clipMobile: 'assets/scroll/vid/furgoneta.m.mp4',
       accent: '#C2703D',
       eyebrow: { es: 'A la mañana siguiente', en: 'Next morning',
                  nl: 'De volgende ochtend', sv: 'Nästa morgon' },
@@ -136,6 +141,7 @@ module.exports = {
       label: { es: 'Escúchala', en: 'Hear it', nl: 'Hoor haar', sv: 'Hör den' },
       still: 'assets/scroll/still/demo.webp',
       clip:  'assets/scroll/vid/demo.mp4',
+      clipMobile: 'assets/scroll/vid/demo.m.mp4',
       accent: '#2563EB',
       scroll: 1.8, linger: 0.5,
       eyebrow: { es: 'Compruébalo', en: 'See for yourself', nl: 'Zie het zelf', sv: 'Se själv' },
@@ -157,5 +163,15 @@ module.exports = {
     'assets/scroll/vid/conn_2.mp4',
     'assets/scroll/vid/conn_3.mp4',
     'assets/scroll/vid/conn_4.mp4',
+  ],
+  /* Mismo encuadre y misma resolucion, menos bits (crf 28) y GOP mas corto
+     (-g 4) para que el seek sea suave en un decoder de movil. Se generan en
+     encode.sh, que explica por que NO se baja la resolucion. */
+  connectorsMobile: [
+    'assets/scroll/vid/conn_0.m.mp4',
+    'assets/scroll/vid/conn_1.m.mp4',
+    'assets/scroll/vid/conn_2.m.mp4',
+    'assets/scroll/vid/conn_3.m.mp4',
+    'assets/scroll/vid/conn_4.m.mp4',
   ],
 };
