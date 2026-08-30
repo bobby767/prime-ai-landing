@@ -87,7 +87,7 @@ existing code rather than needing new code.
   `python3 -m http.server 8901 --bind 127.0.0.1` from
   `/home/ubuntu/Prime_AI/Landingpage`.
 - Open worktrees / branches: branch `warm-palette`, clean, level with
-  `origin/warm-palette` at `1f61c29`. No worktrees.
+  `origin/warm-palette` at `7d71581`. No worktrees.
 
 ## Verification — how to confirm things still work
 
@@ -96,8 +96,13 @@ existing code rather than needing new code.
   was lost).
 - `node tests/test-scroll-page.js` — `OK`, scroll.html still reproducible from source.
 - `PUBLIC=1 node scroll-world/compose.js /tmp/x.html` — prints
-  `18 assets del motor comprobados en disco, BASE="/scroll/"`. An empty BASE here
-  means the apex build would 404 its own engine.
+  `29 assets del motor comprobados en disco, BASE="/scroll/"`. An empty BASE here
+  means the apex build would 404 its own engine. **29, not 18** — 18 was before the
+  mobile clips; a drop back to 18 means `clipMobile`/`connectorsMobile` were lost.
+- `python3 tests/test-mobile-clips.py` — `OK`. Serves the repo and watches the NETWORK
+  at 390px + touch vs 1440px: the phone must fetch 11 `.m.mp4` and **zero** `.mp4`.
+  This is a silent failure otherwise — `clipMobile` is optional, so a bad path throws
+  nothing, the engine just falls back and the phone quietly pays double.
 - `curl -s https://prime-ai.es/ | grep -c 'name="robots"'` — **0** (apex indexable).
   `curl -s https://prime-ai.es/scroll/ | grep -c 'name="robots"'` — **1** (draft hidden).
 - `curl -sSI https://prime-ai.es/ | grep -i cache-control` — `no-cache`.
@@ -106,17 +111,24 @@ existing code rather than needing new code.
   correct md5 while painting zero scenes, and the hero button measured above-the-fold
   locally while sitting 12703px down live. Render the live URL and count
   `.sw-scene.has-clip` (expect 11).
+- **When measuring page weight, discard `blob:` URLs.** The engine fetches each clip
+  over the network ONCE and hands it to the `<video>` as a blob; a listener that counts
+  every response sees the same bytes twice and reports exactly double (20.25 MB instead
+  of 11.36). The `prefers-reduced-motion` path has no clips, so it is the control: if it
+  reads 0.7 MB while the total is double the sum of the files on disk, you are counting
+  blobs.
 
 ## Deferred + open questions
 
-- **Open: the Instagram handle `primeai.solutions` is unverified.** `instagram.com`
-  answers this host with 429 + a login wall whether or not an account exists. It is
-  live and pushed on the user's word alone. One tap on a phone settles it.
-- Deferred: **no mobile video encode.** `clipM` is never set in
-  `scroll-world/world.config.js`, so phones download the same clips as desktops —
-  3.1 MB to land, 22.5 MB to scroll the whole film, 0.7 MB under
-  `prefers-reduced-motion` (measured 2026-08-30 at 390px). This is the obvious lever
-  before pointing paid traffic at the film.
+- **CLOSED 2026-08-30: the Instagram handle `primeai.solutions` is confirmed correct**
+  by the user. It still cannot be checked from this host (429 + login wall), so do not
+  "verify" it with curl and conclude it is broken.
+- **DONE 2026-08-30: the mobile encode shipped** (`7d71581`). `clipMobile` +
+  `connectorsMobile` are set, the files are `<name>.m.mp4`, `encode.sh` builds them.
+  Measured on the LIVE apex: a phone lands on **1.75 MB** (was 3.1) and the whole film
+  costs **11.17 MB** (was 22.5); desktop is untouched at 22.34 MB. Resolution is
+  unchanged — only the bitrate (crf 28) and GOP (`-g 4`). See `docs/scroll-deploy.md`
+  for why downscaling measured WORSE, and why cropping the frame is not an option.
 - **Explicitly NOT to be built by an agent: the WhatsApp AI responder.** The user
   said "we will build that, wait don't — I will build that." When it exists, the
   hero button and bubble labels ("Escríbeme" / "Message me") promise a **person**,
@@ -129,7 +141,17 @@ existing code rather than needing new code.
 
 ## Pick up here
 
-Nothing is broken and everything is deployed and pushed. Most likely next action:
-confirm the Instagram handle with the user and, if wrong, fix `es.html`, rebuild with
-`PUBLIC=1`, redeploy both pages. After that, the mobile encode (`clipM`) is the
-highest-value open item.
+Nothing is broken and everything is deployed and pushed (`7d71581` live and on
+`origin/warm-palette`). Both items the last handoff left open are now closed: the
+Instagram handle is confirmed, and the mobile encode shipped and is verified on the
+live apex.
+
+No obvious next action — the remaining deferrals are all money or judgement calls for
+the user, not work an agent should start:
+- the 1080p re-render (~$50, and `scroll-world/dives_9x16.log` shows the last Fal run
+  died on **"Exhausted balance"** — the account needs a top-up before ANY render);
+- shortening the film from 14.4 screens;
+- the Swedish copy, still unreviewed by a speaker;
+- a site-wide `Cache-Control` policy (only `location = /` and `/scroll/` have one).
+
+Ask the user which of those they want before starting any of them.
