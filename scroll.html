@@ -415,6 +415,47 @@
       filter: brightness(0.93);
     }
 
+    /* La burbuja de WhatsApp, y SOLO mientras corre la pelicula.
+       Dan, 2026-08-30: arriba y muy claro. En la raiz eso ya no es la portada
+       — la pelicula ocupa 15 pantallas por encima de ella, medido — y en la
+       barra de la pelicula no cabe: a 320px ya va 24px pasada de presupuesto y
+       a 1280 sobran 48 para un boton de 181. Flotando no compite por ese hueco.
+
+       El interruptor es body.sw-playing, que pone y quita el motor. Fuera de la
+       pelicula desaparece, y eso evita dos choques a la vez: .cta-movil (fija,
+       80px, z-index 999) y el boton verde de la portada, que ya esta ahi abajo.
+       En la pagina plana la clase nunca existe y la burbuja no aparece nunca:
+       alli el boton de la portada ya sale sin bajar.
+
+       Abajo a la derecha porque es lo unico libre: .sw-route va a media altura
+       por la derecha y .sw-hint abajo al centro. */
+    .burbuja-wa {
+      display: none;
+    }
+
+    body.sw-playing .burbuja-wa {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      right: 20px;
+      /* env() por el gesto de inicio del iPhone: sin esto la burbuja cae justo
+         donde vive la barra del sistema. */
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      z-index: 1000;
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      background: var(--wa);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-lift);
+      text-decoration: none;
+    }
+
+    body.sw-playing .burbuja-wa:hover {
+      filter: brightness(0.93);
+    }
+
     .btn-reservar {
       background: transparent;
       color: var(--accent);
@@ -1976,6 +2017,14 @@
       </div>
     </div>
   </nav>
+
+  <!-- Icono solo, sin etiqueta: "WhatsApp" se escribe igual en los cuatro
+       idiomas, asi que el aria-label no necesita traduccion — mismo argumento
+       que el enlace de LinkedIn del pie. Lleva .wa, asi que ponerWa() le pone
+       el mensaje previo en el idioma que toque sin saber que existe. -->
+  <a class="wa burbuja-wa" href="https://wa.me/34647599453" target="_blank" rel="noopener" data-umami-event="whatsapp-burbuja" aria-label="WhatsApp">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884a9.82 9.82 0 016.988 2.898 9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
 
   <div class="cta-movil">
     <button class="btn llamar" data-umami-event="demo-abrir-movil" data-en="Hear it answer — no phone needed" data-nl="Hoor haar opnemen — geen telefoon nodig" data-sv="Hör den svara — ingen telefon behövs">Escúchala contestar — sin teléfono</button>
