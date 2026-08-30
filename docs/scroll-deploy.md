@@ -401,8 +401,10 @@ sudo chown www-data:www-data /var/www/prime-ai/es/index.html && sudo chmod 644 $
    menos de un minuto.
 
 Los assets NO se duplican: siguen en `/var/www/prime-ai/es/scroll/assets/` y los
-sirve el `location /` general. `compose.js` comprueba las 18 rutas contra el disco
-antes de escribir y revienta si falta una.
+sirve el `location /` general. `compose.js` comprueba **las 29** rutas contra el disco
+antes de escribir y revienta si falta una. Eran 18 antes del encode móvil del
+2026-08-30; si vuelve a decir 18, se han perdido las claves `clipMobile`/
+`connectorsMobile` de `world.config.js` y el móvil está pagando el doble.
 
 ### Volver atrás
 
@@ -453,3 +455,19 @@ clip de escritorio y la página funciona igual pesando el doble. Solo se ve en l
 
 `location = /` lleva ahora `no-cache`, igual que `/scroll/`. Es obligatorio: el sello
 `?v=` vive DENTRO del HTML, así que un documento cacheado nunca pide las URLs nuevas.
+
+### Comprobar el despliegue en vivo (2026-08-30)
+
+`curl` sólo demuestra que el servidor sirve el fichero nuevo. Que el motor **monte**
+hay que renderizarlo:
+
+```js
+// tras navegar a https://prime-ai.es/
+document.querySelectorAll('.sw-scene.has-clip').length   // 0 nada más cargar — NO es un fallo
+```
+
+`has-clip` se pone **escena por escena al bajar**, no al montar. Recién cargada la
+página hay 11 `.sw-scene`, **0** con `has-clip` y **1** solo `<video>`: la primera
+escena, que es justo lo que dice la tabla de peso. Hay que bajar del todo (60 × 2000 px
+con pausas, como hace `tests/test-mobile-clips.py`) antes de contar; entonces son 11 y
+11. Contar antes de bajar y concluir que el despliegue está roto es el error fácil.
