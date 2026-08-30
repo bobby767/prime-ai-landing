@@ -8,9 +8,15 @@
  * fuente para el texto de marketing (es.html) y otra para el de la pelicula
  * (world.config.js); esto solo las junta.
  *
+ *     PUBLIC=1 node scroll-world/compose.js scroll-public.html
+ *
  * Lo que hace, en orden:
- *   1. noindex  — es.html se indexa, este borrador NO puede aparecer en Google al
- *      lado de la pagina real.
+ *   1. noindex  — POR DEFECTO. Un borrador no puede aparecer en Google al lado de
+ *      la pagina real. Con PUBLIC=1 no se pone, y ESA salida es la que se sirve en
+ *      la raiz. El default sigue siendo el borrador a proposito: quien componga sin
+ *      pensar obtiene la version que no se indexa, que es el fallo barato. Nunca
+ *      pueden estar las dos indexadas — misma copia en dos URLs — asi que servir la
+ *      publica en / obliga a que /scroll/ redirija, y no a que sirva lo mismo.
  *   2. tokens --sw-* en el <head>. --sw-bg es #FAF8F5 y --paper de es.html es
  *      oklch(0.9798 0.0045 78.3): las dos dan rgb(250,248,245) exactas, medido en
  *      el navegador. Por eso el relevo no parpadea. Si alguien toca una, tiene que
@@ -28,6 +34,20 @@ const ROOT = path.join(__dirname, '..');
 const SRC = path.join(ROOT, 'es.html');
 const OUT = process.argv[2] ? path.resolve(process.argv[2]) : path.join(ROOT, 'scroll.html');
 const config = require('./world.config.js');
+
+// PUBLIC=1 = esta salida se sirve en la RAIZ y si se indexa.
+const PUBLIC = process.env.PUBLIC === '1';
+
+// BASE existe porque las rutas de los assets se resuelven contra la URL del
+// DOCUMENTO, y este generador daba por supuesto que el documento vive en
+// /scroll/. Ahi «assets/scroll/x» es /scroll/assets/scroll/x y todo cuadra. Servido
+// en la raiz es /assets/scroll/x, que no existe: 404 del motor, mountScrollWorld
+// undefined, cero escenas. La pagina se desplegaba entera y en blanco.
+// Vacio por defecto —relativo— para que /scroll/ y el servidor local sigan
+// funcionando igual; absoluto solo en la publica, que es la unica que se sirve
+// desde otra ruta. Los ficheros no se duplican: /scroll/assets/ los sirve el
+// `location /` general, y se comprueba abajo que no falte ninguno.
+const BASE = PUBLIC ? '/scroll/' : '';
 
 // CACHE-BUSTER. encode.sh escribe SIEMPRE el mismo nombre (obra.mp4 vale para la
 // plastilina y para el fotorrealista), que es justo lo que hace que cambiar de
@@ -50,7 +70,7 @@ const stamp = (() => {
 const bust = (v) =>
   Array.isArray(v)              ? v.map(bust) :
   v && typeof v === 'object'    ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, bust(x)])) :
-  typeof v === 'string' && /^assets\/scroll\/.+\.(mp4|webp)$/.test(v) ? `${v}?v=${stamp}` :
+  typeof v === 'string' && /^assets\/scroll\/.+\.(mp4|webp)$/.test(v) ? `${BASE}${v}?v=${stamp}` :
   v;
 
 // El CSS del motor vive dentro de un template literal, asi que un solo acento
@@ -86,8 +106,9 @@ html = html.replace(
 
 if (/name="robots"/.test(html)) throw new Error('compose: es.html ya trae un meta robots; revisalo a mano');
 
-html = html.replace('</head>', `  <!-- GENERADO por scroll-world/compose.js — no editar scroll.html a mano. -->
-  <meta name="robots" content="noindex, nofollow" />
+const robots = PUBLIC ? '' : '\n  <meta name="robots" content="noindex, nofollow" />';
+
+html = html.replace('</head>', `  <!-- GENERADO por scroll-world/compose.js — no editar a mano. -->${robots}
   <style>
     /* Mismos valores que --paper de es.html. Ver la cabecera de compose.js. */
     :root, .sw-root {
@@ -125,13 +146,31 @@ html = html.replace('<body>', `<body>
 // demas. #world esta arriba del body, asi que aqui ya existe.
 const HOST_SCRIPT = '  <script>\n    (function () {';
 need(HOST_SCRIPT);
-html = html.replace(HOST_SCRIPT, `  <script src="assets/scroll/scrub-engine.js"></script>
+html = html.replace(HOST_SCRIPT, `  <script src="${BASE}assets/scroll/scrub-engine.js"></script>
   <script>
     mountScrollWorld(document.getElementById('world'), ${JSON.stringify(bust(config), null, 2).replace(/\n/g, '\n    ')});
   </script>
 
 ${HOST_SCRIPT}`);
 
+// TODA ruta de asset del motor tiene que existir en disco. El 2026-08-30 la
+// version publica se desplego con el <script> del motor apuntando a
+// /assets/scroll/scrub-engine.js —que no existe— y el resultado fue una pagina
+// que devolvia 200, pesaba 187 KB y no pintaba una sola escena. Nada la habria
+// cazado antes del navegador. Esto la caza aqui: se recogen las rutas tal cual
+// van a salir, se les quita BASE y el ?v=, y se comprueba el fichero.
+const refs = [...new Set(
+  [...html.matchAll(/"([^"]*assets\/scroll\/[^"]+)"/g)].map(m => m[1])
+)];
+const missing = refs.filter(r => {
+  const rel = r.replace(/\?v=[^"]*$/, '').replace(BASE, '').replace(/^\//, '');
+  return !fs.existsSync(path.join(ROOT, rel));
+});
+if (missing.length) throw new Error(
+  `compose: ${missing.length} asset(s) que la pagina pide NO existen en disco:\n  ` +
+  missing.join('\n  ') + `\n(BASE=${JSON.stringify(BASE)} — si esta vacio la pagina SOLO funciona servida en /scroll/)`);
+
 fs.writeFileSync(OUT, html);
+console.log(`compose: ${refs.length} assets del motor comprobados en disco, BASE=${JSON.stringify(BASE)}`);
 console.log(`compose: scroll.html escrito — ${config.sections.length} escenas sobre ${(html.length / 1024).toFixed(0)} KB de es.html`);
 console.log(`compose: rutas relativas pasadas a absolutas: ${rewritten.length ? rewritten.join(', ') : 'ninguna'}`);
