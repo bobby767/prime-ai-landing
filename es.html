@@ -161,6 +161,20 @@
          and weight. Do not reintroduce a colour here without giving it a job
          somewhere else too; a hue used exactly once is an accident. */
 
+      /* El verde de WhatsApp, exacto. No es una elección estética y por eso no
+         contradice la regla de arriba —«un tono usado exactamente una vez es un
+         accidente»—: aquí el color ES el nombre del canal. Un botón verde de
+         WhatsApp se reconoce antes de leerlo, igual que las banderas se leen
+         antes que el nombre del idioma; en otro color habría que explicarlo.
+
+         VA CON TINTA ENCIMA, NO CON PAPEL. Papel sobre este verde da 1.87:1 y
+         es el fallo de accesibilidad clásico de este botón; tinta da 8.42:1.
+         El texto de .btn mide 16px, que para WCAG es texto normal y pide 4.5:1,
+         así que el blanco no estaba disponible. Oscurecer el verde hasta que el
+         blanco pasara (#0B7A45, 5.10:1) funciona pero deja de leerse como
+         WhatsApp, que era justo lo que se compraba con el color. */
+      --wa:          oklch(0.761 0.2015 149.7);  /* #25D366 */
+
       /* Blue is buttons and links. Not decoration. */
       --accent:       #2563EB;
       --accent-hover: #1D4ED8;
@@ -384,6 +398,21 @@
        y se habría roto sola el día que se borre el bloque. */
     .rsv-corto {
       display: none;
+    }
+
+    /* Tinta sobre verde, ver la ficha --wa. El icono hereda currentColor, así
+       que sigue al texto y no hay un segundo color que mantener. */
+    .btn-wa {
+      background: var(--wa);
+      color: var(--text-primary);
+      gap: 8px;
+    }
+
+    .btn-wa:hover {
+      /* Sin ficha nueva para el hover: un filtro sobre el mismo verde no puede
+         desincronizarse de él, que es lo que pasa con un par de fichas
+         hermanas cuando alguien retoca una sola. */
+      filter: brightness(0.93);
     }
 
     .btn-reservar {
@@ -1735,6 +1764,16 @@
         display: block;
       }
 
+      /* Apilados tienen que medir lo mismo. En escritorio van uno al lado del
+         otro y que cada uno mida su texto es lo correcto; en móvil caen en
+         columna y ahí 32px de diferencia —el verde es la etiqueta más corta—
+         se leen como un descuadre, no como dos botones. Sólo en .alto: la
+         barra fija de abajo tiene su propio reparto. */
+      .alto .tel-movil,
+      .alto .btn-wa {
+        width: 100%;
+      }
+
       /* En móvil sobra: el botón grande ES el número. */
       .tel-escritorio {
         display: none;
@@ -1929,6 +1968,27 @@
       <p class="entrada" data-en="It answers for you when you can't pick up, speaks English or Spanish, and puts the job straight in your calendar." data-nl="Ze neemt op als jij niet kunt, spreekt Nederlands of Engels, en zet de afspraak meteen in je agenda." data-sv="Den svarar åt dig när du inte kan, talar svenska eller engelska, och lägger in jobbet direkt i din kalender.">Contesta por ti cuando no puedes cogerlo, habla en español o en inglés, y te deja la cita puesta en el calendario.</p>
       <button class="btn btn-primary llamar" data-umami-event="demo-abrir-portada" data-en="Call it now — right here, no phone needed" data-nl="Bel haar nu — hier meteen, geen telefoon nodig" data-sv="Ring den nu — här direkt, ingen telefon behövs">Llámala ahora — aquí mismo, sin teléfono</button>
       <a class="btn btn-primary tel-movil" href="tel:+34951870551" data-umami-event="demo-llamar-portada"><span data-en="Call it now" data-nl="Bel haar nu" data-sv="Ring den nu">Llámala ahora</span> <span class="tel-num">+34 951 870 551</span></a>
+      <!-- WhatsApp arriba y en verde. Dan, 2026-08-30: "quiero que sea más
+           claro, arriba, y que puedan hablar conmigo directamente".
+           «Conmigo» está en la etiqueta a propósito: esto NO va a la
+           recepcionista, va a su teléfono, y es la única acción de la portada
+           que alcanza a una persona. Si algún día contesta un agente aquí,
+           esta etiqueta es lo primero que hay que reescribir.
+
+           En la portada y NO en la barra de arriba. La barra ya está medida al
+           límite: a 360px logotipo 74 + banderas 132 + un botón más no cabe, y
+           está documentado donde se apagan .nav .llamar y .nav .tel-movil. La
+           portada empieza inmediatamente debajo de «Reservar llamada», así que
+           el botón sale igual de arriba sin tocar lo que ya no cabe.
+
+           data-en va en el SPAN interior, nunca en el <a>: traducir() asigna
+           innerHTML y se llevaría el SVG por delante. Mismo motivo que el pie.
+           Sin ?text= en el marcado — lo pone ponerWa() — porque va
+           percent-encoded y test-palette.js prohíbe «%» en el cuerpo. -->
+      <a class="btn btn-wa wa" href="https://wa.me/34647599453" target="_blank" rel="noopener" data-umami-event="whatsapp-portada">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884a9.82 9.82 0 016.988 2.898 9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span data-en="Message me on WhatsApp" data-nl="Stuur mij een WhatsApp" data-sv="Skriv till mig på WhatsApp">Escríbeme por WhatsApp</span>
+      </a>
       <!-- data-en va en el SPAN, nunca en el <p>: traducir() asigna innerHTML y
            traducir el envoltorio se llevaría por delante el enlace con el número. -->
       <p class="tel-escritorio"><span data-en="or call it on" data-nl="of bel haar op" data-sv="eller ring den på">o llámala al</span> <a href="tel:+34951870551" data-umami-event="demo-llamar-escritorio"><span class="tel-num">+34 951 870 551</span></a></p>
@@ -2964,8 +3024,14 @@
       // «?», así que el número vive en UN solo sitio — el marcado — y no hay
       // cuatro copias que se puedan desincronizar.
       function ponerWa(lang) {
-        var wa = document.querySelector('.pie-social .wa');
-        if (wa && T[lang]) wa.href = wa.href.split('?')[0] + '?text=' + encodeURIComponent(T[lang].wa);
+        if (!T[lang]) return;
+        var txt = '?text=' + encodeURIComponent(T[lang].wa);
+        // TODOS los .wa, no el del pie: desde que hay uno en la portada, un
+        // querySelector a secas dejaba al otro sin mensaje y en español para
+        // siempre, sin error de ninguna clase.
+        document.querySelectorAll('.wa').forEach(function (a) {
+          a.href = a.href.split('?')[0] + txt;
+        });
       }
 
       function traducir(nuevo) {

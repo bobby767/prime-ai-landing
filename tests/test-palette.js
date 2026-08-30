@@ -156,6 +156,34 @@ function sharedChecks() {
     ['--accent',         '--sand',     3.0],  // large text only (#cifras)
   ];
 
+  // El botón de WhatsApp existe hoy SOLO en es.html, asi que el par se ata al
+  // botón y no a la lista fija: se comprueba donde .btn-wa está, y se exige la
+  // ficha donde el botón está. Saltarselo sin mas en las otras paginas seria
+  // exactamente el silencio contra el que avisa :root en es.html — y anadir
+  // --wa a paginas sin boton seria un color sin trabajo. Si manana nl.html
+  // gana el boton, esto empieza a graduarlo solo.
+  // 16px = texto normal para WCAG, luego 4.5 y no 3.0.
+  //
+  // Se lee la ficha QUE EL BOTON DECLARA y se gradua ESA, en vez de meter el
+  // par a mano. Un par escrito a mano dice "tinta sobre este verde se lee",
+  // que es verdad y no sirve de nada: no comprueba que el boton use tinta.
+  // Probado — con `color: var(--text-on-accent)` puesto en .btn-wa, la version
+  // de este bloque que declaraba el par seguia en verde. Papel sobre este
+  // verde da 1.87:1, el fallo clasico de este boton, y pasaba entera.
+  if (/class="[^"]*\bbtn-wa\b/.test(PAGES[PAGE])) {
+    if (!hexOf('--wa')) flag('la pagina trae .btn-wa pero no define la ficha --wa');
+    const rule = PAGES[PAGE].match(/\.btn-wa\s*\{([^}]*)\}/);
+    if (!rule) flag('.btn-wa se usa en el marcado pero no tiene regla CSS');
+    else {
+      const fg = rule[1].match(/(?:^|[;{\s])color:\s*var\((--[\w-]+)\)/);
+      const bg = rule[1].match(/background:\s*var\((--[\w-]+)\)/);
+      if (!fg || !bg) flag('.btn-wa no declara color y background con fichas: no se puede graduar');
+      else PAIRS.push([fg[1], bg[1], 4.5]);
+    }
+  } else if (hexOf('--wa')) {
+    flag('define --wa pero no usa .btn-wa: un tono sin trabajo');
+  }
+
   for (const [fg, bg, min] of PAIRS) {
     const a = hexOf(fg), b = hexOf(bg);
     if (!a || !b) { flag(`missing token or hex comment: ${fg} / ${bg}`); continue; }
